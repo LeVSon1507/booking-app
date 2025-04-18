@@ -1,0 +1,60 @@
+#booking-fixed.fixed {
+  position: fixed !important;
+  top: 7%;
+  left: 0;
+  width: 100%;
+  width: calc(100% + 10px);
+  z-index: 1;
+  transition: all 0.3s;
+  background-color: white;
+}
+
+
+
+.ant-picker {
+  min-height: 39px;
+  border-radius: 5px !important;
+}
+
+.ant-picker,
+input,
+select {
+  margin-top: 10px !important;
+  width: 100% !important;
+  outline: none !important;
+}
+
+input:hover,
+input:focus,
+select:hover,
+select:focus {
+  border-color: #40a9ff;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.no-result {
+  min-height: 100vh;
+  font-size: 25px;
+  text-align: center;
+  color: #333;
+  padding: 80px;
+}
+
+@media only screen and (max-width: 768px) {
+  #booking-fixed.fixed {
+    position: fixed !important;
+    top: 4.5%;
+    left: 0;
+    z-index: 1;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #booking-fixed.fixed {
+    position: fixed !important;
+    top: 6.5%;
+    left: 0;
+    z-index: 1;
+  }
+}

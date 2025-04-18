@@ -1,0 +1,13 @@
+.room_image {
+  min-height: 200px;
+  width: 100% !important;
+  border-radius: 5px !important;
+}
+.btn-room {
+  background: #333;
+  color: white;
+  padding: 10px 25px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin: 10px 0;
+}

@@ -1,0 +1,193 @@
+.login_page {
+  max-width: 500px;
+  margin: auto;
+  color: #444;
+  padding: 0 15px;
+}
+.login_page h2 {
+  text-transform: uppercase;
+  font-size: 2rem;
+  margin: 20px 0;
+  letter-spacing: 1.5px;
+}
+
+.login_page input {
+  width: 100%;
+  height: 45px;
+  margin: 10px 0;
+  border: 2px solid #777;
+  outline: none;
+  padding: 0 10px;
+}
+.login_page .row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap-reverse;
+  align-items: flex-start;
+  margin: 0 !important;
+}
+.login_page .row a {
+  color: crimson;
+}
+.login_page .row button {
+  margin-top: 10px;
+  max-width: 100%;
+  padding: 10px 0;
+  color: white;
+  background: #333;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.login_page p {
+  margin: 10px 0;
+}
+.login_page a {
+  color: #111;
+  font-weight: 500;
+}
+
+/* ------------- Forgot Password --------------- */
+.fg_pass h2 {
+  color: #555;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 2rem;
+  margin: 50px 0;
+  letter-spacing: 1.3px;
+}
+.fg_pass .row {
+  max-width: 500px;
+  margin: auto;
+  padding: 0 10px;
+}
+.fg_pass .row input {
+  width: 100%;
+  height: 45px;
+  border: 1px solid #ccc;
+  outline: none;
+  padding: 0 15px;
+  border-radius: 3px;
+  margin: 5px 0;
+}
+.fg_pass .row button {
+  background: #333;
+  color: white;
+  padding: 10px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
+  border-radius: 3px;
+  margin-top: 15px;
+}
+/* ---------- Facebook / Google ---------------- */
+.login_page .hr {
+  margin: 15px 0;
+  color: crimson;
+}
+
+.login_page .social button {
+  width: 100%;
+  margin: 10px 0;
+  height: 50px;
+  font-size: 14px;
+  font-weight: 200;
+  text-transform: capitalize;
+  letter-spacing: 1.3px;
+  box-shadow: 0 2px 4px #777;
+}
+
+.profile_page {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.profile_page .avatar {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: relative;
+  margin: 15px auto;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.profile_page img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.profile_page .avatar span {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #fff8;
+  text-align: center;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: rgb(255, 140, 45);
+  transition: 0.3s ease-in-out;
+}
+.profile_page .avatar:hover span {
+  bottom: -15%;
+}
+.profile_page #file_up {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.profile_page h2 {
+  text-align: center;
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  color: #333;
+  margin: 10px 0;
+}
+.profile_page label {
+  display: block;
+  margin-top: 5px;
+}
+.profile_page input {
+  width: 100%;
+  height: 40px;
+  margin: 5px 0;
+  border: none;
+  outline: none;
+  background: #fee;
+  padding: 0 5px;
+}
+.profile_page button {
+  background: #333;
+  color: white;
+  padding: 10px 25px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin: 10px 0;
+}
+
+/* -------------- Edit User ----------------- */
+
+.edit_user {
+  margin-top: 50px;
+}
+.edit_user input {
+  background: #eee;
+}
+.edit_user #isAdmin {
+  width: 20px !important;
+  height: 20px;
+  transform: translateY(3px);
+  margin: 0 10px;
+}
+.edit_user #isAdmin + label {
+  display: inline-block;
+  margin-left: 5px;
+}

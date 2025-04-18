@@ -1,0 +1,28 @@
+.booking-room-img {
+  height: 400px;
+  width: 100% !important;
+  border-radius: 5px !important;
+}
+
+.boking-detail {
+  text-align: end;
+}
+
+.btn-booking {
+  background: #333;
+  color: white;
+  padding: 10px 25px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin: 10px 0;
+}
+
+@media only screen and (max-width: 576px) {
+  .boking-detail {
+    text-align: start;
+  }
+  .booking-center {
+    display: flex;
+    justify-content: center;
+  }
+}
