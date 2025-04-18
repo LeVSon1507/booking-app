@@ -138,14 +138,14 @@ const Login = () => {
 
           <div className="social">
             <GoogleLogin
-              clientId="55687161092-slgs7a90j0guvn4f5vi1p6s6sf8vv9m5.apps.googleusercontent.com"
+              clientId="97287736977-qnt2i1j8hf2tqok4dj0fb86hrpfnglim.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
             />
 
             <FacebookLogin
-              appId="160074812626146"
+              appId="685178710652906"
               autoLoad={false}
               fields="name,email,picture"
               callback={responseFacebook}

@@ -34,7 +34,7 @@ button {
   cursor: pointer;
 }
 
-.booking-app-main-container{
+.booking-app-main-container {
   min-height: 100vh;
 }
 
@@ -57,7 +57,6 @@ button {
   left: 50%;
   transform: translateX(-50%);
 }
-
 
 @import url('bootstrap/dist/css/bootstrap.min.css');
 

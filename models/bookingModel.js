@@ -34,6 +34,10 @@ const bookingSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    imageUrls: {
+      type: Array,
+      required: true,
+    },
     status: {
       type: String,
       required: true,

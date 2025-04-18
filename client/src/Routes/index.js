@@ -32,14 +32,22 @@ const Routes = () => {
         <Route path="/edit_user/:id" component={isAdmin ? EditProfile : NotFound} exact />
         {/* Home */}
         <Route path="/" component={Home} exact />
-        <Route path="/book/:id/:startDate/:endDate" component={isLogged ? BookingRoom : Login} exact/>
+        <Route
+          path="/book/:id/:startDate/:endDate"
+          component={isLogged ? BookingRoom : Login}
+          exact
+        />
         <Route path="/mybooking" component={MyBooking} exact />
         {/* <Route  component={NotFound}/> */}
 
         {/* Admin */}
-        <Route path="/admin" component={isAdmin ? Admin : NotFound} exact />
-        <Route path="/admin/booking-detail/:id" component={isAdmin ? BookingDetail : NotFound} exact/>
-        <Route path="/admin/room-detail/:id" component={isAdmin ? RoomDetail : NotFound} exact/>
+        <Route path="/admin" component={Admin} exact />
+        <Route
+          path="/admin/booking-detail/:id"
+          component={isAdmin ? BookingDetail : NotFound}
+          exact
+        />
+        <Route path="/admin/room-detail/:id" component={isAdmin ? RoomDetail : NotFound} exact />
       </Fragment>
     </Switch>
   );

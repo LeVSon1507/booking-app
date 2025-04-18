@@ -3,23 +3,27 @@ import React from 'react';
 import { Navbar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { ReactComponent as ApartmentIcon } from '../../../images/Apartment.svg';
+import { ReactComponent as LoginIcon } from '../../../images/1.svg';
 
 function Header() {
   const auth = useSelector((state) => state.auth);
-
   const { user, isLogged } = auth;
 
   window.onscroll = function () {
+    const header = document.querySelector('header');
     if (document.body.scrollTop >= 400 || document.documentElement.scrollTop >= 400) {
-      document.querySelector('header').classList.add('sticky');
+      header.classList.add('sticky');
     } else {
-      document.querySelector('header').classList.remove('sticky');
+      header.classList.remove('sticky');
     }
-    if (document.querySelector('#booking-fixed')) {
+
+    const bookingFixed = document.querySelector('#booking-fixed');
+    if (bookingFixed) {
       if (document.body.scrollTop >= 600 || document.documentElement.scrollTop >= 600) {
-        document.querySelector('#booking-fixed').classList.add('fixed');
-      } else if (document.body.scrollTop < 600 || document.documentElement.scrollTop < 600) {
-        document.querySelector('#booking-fixed').classList.remove('fixed');
+        bookingFixed.classList.add('fixed');
+      } else {
+        bookingFixed.classList.remove('fixed');
       }
     }
   };
@@ -36,7 +40,7 @@ function Header() {
 
   const userLink = () => {
     return (
-      <li className="drop-nav ">
+      <li className="drop-nav">
         <Link to="#" className="avatar">
           <img src={user.avatar} alt="" />
           <span>
@@ -72,18 +76,22 @@ function Header() {
       <Navbar expand="lg">
         <div className="container">
           <Navbar.Brand href="/">
-            <h2 className="title-app">Booking App</h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ApartmentIcon className="header-icon" />
+              <h5 className="title">Booking App</h5>
+            </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll" className="">
+          <Navbar.Collapse id="navbarScroll">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0"></ul>
             <ul className="d-flex">
               {isLogged ? (
                 userLink()
               ) : (
-                <li>
-                  <Link to="/login">
-                    <i className="fas fa-user"></i> Login
+                <li style={{ display: 'flex', alignItems: 'center' }}>
+                  <LoginIcon className="login-icon" />
+                  <Link to="/login" className="login-link">
+                    Login
                   </Link>
                 </li>
               )}
