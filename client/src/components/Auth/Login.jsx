@@ -31,13 +31,11 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      // call api login
       const res = await userApi.login({ email, password });
       setUser({ ...user, err: '', success: res.message });
       console.log(res);
       setLoading(false);
 
-      // save login info in local
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
@@ -52,7 +50,6 @@ const Login = () => {
 
   const responseGoogle = async (response) => {
     try {
-      // call google login api
       const res = await userApi.loginGoogle({
         tokenId: response.tokenId,
       });
@@ -71,7 +68,6 @@ const Login = () => {
   const responseFacebook = async (response) => {
     try {
       const { accessToken, userID } = response;
-      // call facebook login api
       const res = await userApi.loginFacebook({
         accessToken,
         userID,

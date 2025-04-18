@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { dispatchGetBookingUser, fetchBookingUser } from 'redux/actions/bookingAction';
 import Swal from 'sweetalert2';
 import './MyBooking.css';
+import { ReactComponent as Icon } from '../../images/Domain Names Illustration.svg';
 
 const MyBooking = () => {
   const token = useSelector((state) => state.token);
@@ -58,7 +59,6 @@ const MyBooking = () => {
     }
   };
 
-  // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -66,25 +66,19 @@ const MyBooking = () => {
     }).format(amount);
   };
 
-  // Fixed date formatting function
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
 
     try {
-      // Try direct parsing first
       let date = new Date(dateString);
 
-      // Check if date is valid
       if (isNaN(date.getTime())) {
-        // Try parsing as DD-MM-YYYY format
         const parts = dateString.split('-');
         if (parts.length === 3) {
-          // Rearrange to YYYY-MM-DD for proper parsing
           date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
         }
       }
 
-      // If still invalid, return the original string
       if (isNaN(date.getTime())) {
         return dateString;
       }
@@ -96,11 +90,10 @@ const MyBooking = () => {
       });
     } catch (error) {
       console.error('Error formatting date:', error);
-      return dateString; // Return original if parsing fails
+      return dateString;
     }
   };
 
-  // Get status badge class
   const getStatusBadgeClass = (status) => {
     switch (status) {
       case 'booked':
@@ -119,7 +112,10 @@ const MyBooking = () => {
         <Loader />
       ) : (
         <div className="my-bookings-container">
-          <h2 className="my-bookings-title">My Bookings</h2>
+          <div className="d-flex flex-column align-items-center">
+            <Icon width={'8rem'} height={'8rem'} />
+            <h2 className="my-bookings-title">My Bookings</h2>
+          </div>
 
           {bookings.length === 0 ? (
             <div className="empty-bookings">

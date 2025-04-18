@@ -9,8 +9,9 @@ import React, { Fragment, useEffect, useState } from 'react';
 import LazyLoad from 'react-lazyload';
 import './Home.css';
 import Room from './Room';
-import FilterSearch from './Room/FilterSearch';
-import FilterType from './Room/FilterType';
+import FilterSearch from './Room/FilterSearch/FilterSearch';
+import FilterType from './Room/FilterType/FilterType';
+import { ReactComponent as DateIcon } from '../../images/undraw_schedule-meeting_aklb.svg';
 
 const { RangePicker } = DatePicker;
 
@@ -87,13 +88,18 @@ const Home = () => {
         <Fragment>
           <Banner />
           <div className="container" id="home">
-            <h1 className="text-center mt-5 title">BOOK NOW</h1>
+            <div className="row justify-content-center">
+              <h1 className="text-center mt-5 title">BOOK NOW</h1>
+              <DateIcon width={100} height={100} />
+            </div>
             <div className="row bs" id="booking-fixed">
               <div className="col-md-4" id="datepicker">
                 <RangePicker
+                  placeholder={['Start date', 'End date']}
                   format="DD-MM-YYYY"
                   disabledDate={disabledDate}
                   onChange={filterByDate}
+                  nextIcon={<DateIcon width={100} height={100} />}
                 />
               </div>
               <div className="col-md-4">

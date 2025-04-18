@@ -29,16 +29,12 @@ const GetAllUser = () => {
       // Admins cannot be deleted
       console.log(user._id);
       if (user._id !== id) {
-        // const response = await userApi.deleteUser(`${id}`, {
-        //   headers: { Authorization: token },
-        // });
         Swal.fire('', 'User deleted successfully', 'success').then(() => {
           window.location.href = '/admin';
         });
       }
     } catch (err) {
       console.log(err);
-      // err.response.data.message && Swal.fire('Oops', `${err.response.data.message}`, 'error');
     }
   };
 

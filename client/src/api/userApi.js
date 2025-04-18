@@ -49,7 +49,6 @@ const userApi = {
     const url = `/api/auth/delete/${id}`;
     return axiosClient.delete(url, token);
   },
-  // Socail
   loginGoogle(tokenId) {
     const url = '/api/auth/google_login';
     return axiosClient.post(url, tokenId);

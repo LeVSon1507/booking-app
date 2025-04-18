@@ -30,7 +30,6 @@ mongoose.connect(
   }
 );
 
-// Routes
 app.use("/api/auth", require("./router/userRouter"));
 app.use("/api", require("./router/roomRouter"));
 app.use("/api", require("./router/bookingRouter"));

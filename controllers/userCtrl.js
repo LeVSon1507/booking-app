@@ -19,7 +19,6 @@ const userCtrl = {
       if (!name || !email || !password) {
         return res.status(400).json({ message: "Please enter all fields 😢" });
       }
-      // check if email exists
       if (!validateEmail(email)) {
         return res.status(400).json({ message: "Invalid email" });
       }
@@ -30,7 +29,6 @@ const userCtrl = {
           .status(400)
           .json({ message: "This email already exists 😢" });
 
-      // check password length
       if (password.length < 6)
         return res
           .status(400)
@@ -42,7 +40,6 @@ const userCtrl = {
         email,
         password: passwordHash,
       };
-      // create activation code
       const activation_token = createActivationToken(newUser);
 
       const url = `${CLIENT_URL}/api/auth/activate/${activation_token}`;
@@ -240,7 +237,8 @@ const userCtrl = {
         {
           name,
           avatar,
-        }
+        },
+        { new: true }
       );
 
       res.status(200).json({ message: "Information updated successfully!" });
@@ -354,6 +352,9 @@ const userCtrl = {
         if (!isMatch)
           return res.status(400).json({ message: "Password is incorrect." });
 
+        // Create access token to return to client
+        const access_token = createAccessToken({ id: user._id });
+
         const refresh_token = createRefreshToken({ id: user._id });
         res.cookie("refreshtoken", refresh_token, {
           httpOnly: true,
@@ -361,7 +362,18 @@ const userCtrl = {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        res.status(200).json({ message: "Login successful!" }, user);
+        // Fix this line to return both token and user info
+        res.status(200).json({
+          message: "Login successful!",
+          token: access_token,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+          },
+        });
       } else {
         const newUser = new Users({
           name,
@@ -372,6 +384,9 @@ const userCtrl = {
 
         await newUser.save();
 
+        // Create access token for new user
+        const access_token = createAccessToken({ id: newUser._id });
+
         const refresh_token = createRefreshToken({ id: newUser._id });
         res.cookie("refreshtoken", refresh_token, {
           httpOnly: true,
@@ -379,7 +394,18 @@ const userCtrl = {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        res.json({ message: "Login success!" });
+        // Return complete information for new user
+        res.status(200).json({
+          message: "Login success!",
+          token: access_token,
+          user: {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            role: newUser.role,
+            avatar: newUser.avatar,
+          },
+        });
       }
     } catch (err) {
       next(err);

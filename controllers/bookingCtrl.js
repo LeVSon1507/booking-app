@@ -11,7 +11,6 @@ const bookingCtrl = {
       const { room, userId, startDate, endDate, totalAmount, totalDays } =
         req.body;
 
-      // Get room details to access imageUrls
       const roomDetails = await Room.findOne({ _id: room._id });
       if (!roomDetails) {
         return res.status(404).json({ message: "Room not found" });
@@ -26,7 +25,7 @@ const bookingCtrl = {
         totalAmount,
         totalDays,
         transactionId: v4(),
-        imageUrls: roomDetails.imageUrls, // Add room images to booking
+        imageUrls: roomDetails.imageUrls,
       });
 
       const booking = await newBooking.save();
@@ -58,10 +57,8 @@ const bookingCtrl = {
         return res.status(404).json({ message: "Booking not found" });
       }
 
-      // You can also include room details if needed
       const room = await Room.findOne({ _id: booking.roomId });
 
-      // You can include user details if needed
       const user = await User.findOne({ _id: booking.userId });
 
       res.status(200).json({
@@ -87,7 +84,6 @@ const bookingCtrl = {
     }
   },
 
-  // Rest of your controller methods remain the same
   getAllBooking: async (req, res, next) => {
     try {
       const bookings = await Booking.find({});
@@ -109,12 +105,10 @@ const bookingCtrl = {
   cancelBooking: async (req, res, next) => {
     try {
       const { bookedId, roomId } = req.body;
-      // trỏ đến id của booking -> chuyển status = cancel
       const bookingItem = await Booking.findOne({ _id: bookedId });
       bookingItem.status = "cancelled";
       await bookingItem.save();
 
-      // trỏ đến id của room -> xét remove() bookingId của room.currentBookings
       const roomItem = await Room.findOne({ _id: roomId });
       const bookings = roomItem.currentBookings;
 
@@ -144,7 +138,6 @@ const bookingCtrl = {
         });
       }
 
-      // Use deleteOne instead of remove (as remove is deprecated)
       await Booking.deleteOne({ _id: req.params.id });
 
       res.status(200).json({

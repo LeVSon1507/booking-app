@@ -41,7 +41,7 @@ const Routes = () => {
         {/* <Route  component={NotFound}/> */}
 
         {/* Admin */}
-        <Route path="/admin" component={Admin} exact />
+        <Route path="/admin" component={isAdmin ? Admin : NotFound} exact />
         <Route
           path="/admin/booking-detail/:id"
           component={isAdmin ? BookingDetail : NotFound}

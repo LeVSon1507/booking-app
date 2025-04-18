@@ -14,12 +14,10 @@ const roomCtrl = {
       let rooms = await Room.find(condition);
 
       if (type == "all") {
-        // tạo biến rỗng
         let filtered = {};
         if (search) {
           filtered.name = new RegExp(search, "i");
         }
-        // ?type=all&search=hotel
         rooms = await Room.find(filtered);
       }
       return res.status(200).json(rooms);

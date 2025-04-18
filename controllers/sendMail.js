@@ -17,7 +17,6 @@ const oauth2Client = new OAuth2(
   OAUTH_PLAYGROUND
 );
 
-// send mail
 const sendEmail = (options) => {
   oauth2Client.setCredentials({
     refresh_token: MAILING_SERVICE_REFRESH_TOKEN,
