@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import './Admin.css';
 
 const GetAllRoom = () => {
-  const formater = new Intl.NumberFormat('vi-VN', {
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
   });
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,11 +36,11 @@ const GetAllRoom = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Tên phòng</th>
-                <th>Giá </th>
-                <th>SL đặt phòng</th>
-                <th>Loại phòng</th>
-                <th>Hành động</th>
+                <th>Room Name</th>
+                <th>Price</th>
+                <th>Bookings</th>
+                <th>Room Type</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -48,7 +48,7 @@ const GetAllRoom = () => {
                 <tr key={room._id}>
                   <td>{room._id}</td>
                   <td>{room.name}</td>
-                  <td>{formater.format(room.price)}</td>
+                  <td>{formatter.format(room.price)}</td>
                   <td>{room.currentBookings.length}</td>
                   <td>{room.type}</td>
                   <td className="text-center">

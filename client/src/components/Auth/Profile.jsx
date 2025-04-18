@@ -38,21 +38,21 @@ const Profile = () => {
         setTimeout(() => setData({ ...data, err: null, success: null }), 1500);
         return setData({
           ...data,
-          err: 'Không có file nào được tải lên.',
+          err: 'No files were uploaded.',
           success: '',
         });
       }
 
       if (file.size > 1024 * 1024) {
         setTimeout(() => setData({ ...data, err: null, success: null }), 1500);
-        return setData({ ...data, err: 'Kích cỡ quá lớn.', success: '' });
+        return setData({ ...data, err: 'File size is too large.', success: '' });
       }
 
       if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
         setTimeout(() => setData({ ...data, err: null, success: null }), 1500);
         return setData({
           ...data,
-          err: 'File không đúng định dạng.',
+          err: 'Invalid file format.',
           success: '',
         });
       }
@@ -87,8 +87,8 @@ const Profile = () => {
         }
       );
 
-      setData({ ...data, err: '', success: 'Cập nhập thông tin thành công!' });
-      Swal.fire('', 'Cập nhập thông tin thành công!', 'success').then(() => {
+      setData({ ...data, err: '', success: 'Profile updated successfully!' });
+      Swal.fire('', 'Profile updated successfully!', 'success').then(() => {
         window.location.href = '/profile';
       });
     } catch (err) {
@@ -102,14 +102,14 @@ const Profile = () => {
       setTimeout(() => setData({ ...data, err: null, success: null }), 1500);
       return setData({
         ...data,
-        err: 'Mật khẩu phải 6 ký tự trở lên.',
+        err: 'Password must be at least 6 characters.',
         success: '',
       });
     }
 
     if (!isMatch(password, cf_password)) {
       setTimeout(() => setData({ ...data, err: null, success: null }), 1500);
-      return setData({ ...data, err: 'Mật khẩu không khớp.', success: '' });
+      return setData({ ...data, err: 'Passwords do not match.', success: '' });
     }
 
     try {
@@ -120,8 +120,8 @@ const Profile = () => {
         }
       );
 
-      setData({ ...data, err: '', success: 'Cập nhập thông tin thành công!' });
-      Swal.fire('', 'Cập nhập thông tin thành công!', 'success').then(() => {
+      setData({ ...data, err: '', success: 'Profile updated successfully!' });
+      Swal.fire('', 'Profile updated successfully!', 'success').then(() => {
         window.location.href = '/profile';
       });
     } catch (err) {
@@ -137,7 +137,7 @@ const Profile = () => {
 
   return (
     <Fragment>
-      <MetaData title="Thông tin cá nhân"/>
+      <MetaData title="Profile" />
       {isLoading ? (
         <Loader />
       ) : (
@@ -149,19 +149,19 @@ const Profile = () => {
           </div>
           <div className="profile_page container-fluid">
             <div className="m-auto">
-              <h2>{isAdmin ? 'Admin Profile' : 'Thông tin cá nhân'}</h2>
+              <h2>{isAdmin ? 'Admin Profile' : 'Profile'}</h2>
 
               <div className="avatar">
                 <img src={avatar ? avatar : user.avatar} alt="" />
                 <span>
                   <i className="fas fa-camera"></i>
-                  <p>Thay đổi</p>
+                  <p>Change</p>
                   <input type="file" name="file" id="file_up" onChange={changeAvatar} />
                 </span>
               </div>
 
               <div className="form-group">
-                <label htmlFor="name">Họ tên</label>
+                <label htmlFor="name">Name</label>
                 <input
                   type="text"
                   name="name"
@@ -174,17 +174,11 @@ const Profile = () => {
 
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  defaultValue={user.email}
-                  disabled
-                />
+                <input type="email" name="email" id="email" defaultValue={user.email} disabled />
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">Mật khẩu mới</label>
+                <label htmlFor="password">New Password</label>
                 <input
                   type="password"
                   name="password"
@@ -196,7 +190,7 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="cf_password">Xác nhận mật khẩu mới</label>
+                <label htmlFor="cf_password">Confirm New Password</label>
                 <input
                   type="password"
                   name="cf_password"
@@ -209,12 +203,13 @@ const Profile = () => {
 
               <div>
                 <em style={{ color: 'crimson' }}>
-                  * Nếu bạn cập nhật mật khẩu tại đây, bạn sẽ không thể đăng nhập nhanh bằng google và facebook.
+                  * If you update your password here, you will not be able to login quickly using
+                  Google and Facebook.
                 </em>
               </div>
               <div className="d-flex justify-content-center mt-2">
                 <button disabled={loading} onClick={handleUpdate}>
-                  Cập nhật
+                  Update
                 </button>
               </div>
             </div>

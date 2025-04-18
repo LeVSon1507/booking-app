@@ -17,24 +17,24 @@ const userCtrl = {
     try {
       const { name, email, password } = req.body;
       if (!name || !email || !password) {
-        return res
-          .status(400)
-          .json({ message: "Xin mời nhập tất cả các trường 😢" });
+        return res.status(400).json({ message: "Please enter all fields 😢" });
       }
-      // kiểm tra email tồn tại
+      // check if email exists
       if (!validateEmail(email)) {
         return res.status(400).json({ message: "Invalid email" });
       }
 
       const user = await Users.findOne({ email });
       if (user)
-        return res.status(400).json({ message: "Email này đã tồn tại 😢" });
+        return res
+          .status(400)
+          .json({ message: "This email already exists 😢" });
 
-      // check độ dài mật khẩu
+      // check password length
       if (password.length < 6)
         return res
           .status(400)
-          .json({ message: "Mật khẩu phải lớn hơn hoặc bằng 6 😢" });
+          .json({ message: "Password must be at least 6 characters 😢" });
 
       const passwordHash = await bcrypt.hash(password, 10);
       const newUser = {
@@ -42,32 +42,32 @@ const userCtrl = {
         email,
         password: passwordHash,
       };
-      // tạo mã active
+      // create activation code
       const activation_token = createActivationToken(newUser);
 
       const url = `${CLIENT_URL}/api/auth/activate/${activation_token}`;
       const message = `<div style="max-width: 700px; margin:auto; border: 10px solid gray; padding: 50px 20px; font-size: 110%;">
       <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to Booking App.</h2>
-      <p>Xin chúc mừng! Bạn sắp bắt đầu sử dụng BOOKING APP.
-       Chỉ cần nhấp vào nút bên dưới để xác thực địa chỉ email của bạn.
+      <p>Congratulations! You're about to start using BOOKING APP.
+       Just click the button below to verify your email address.
       </p>
 
-      <a href=${url} style="background: #333; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Xác nhận địa chỉ email</a>
+      <a href=${url} style="background: #333; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Verify Email Address</a>
 
-      <p>Nếu nút không hoạt động vì bất kỳ lý do gì, bạn cũng có thể nhấp vào liên kết bên dưới:</p>
+      <p>If the button doesn't work for any reason, you can also click on the link below:</p>
 
       <div>${url}</div>
       </div>`;
 
-      // gửi email qua /api/auth/activate/${activation_token}
+      // send email via /api/auth/activate/${activation_token}
       await sendMail({
         email: newUser.email,
-        subject: "Booking App password Recovery",
+        subject: "Booking App Password Recovery",
         message,
       });
 
       res.status(200).json({
-        message: "Đăng ký thành công! Xin mời xác nhận email để bắt đầu",
+        message: "Registration successful! Please check your email to activate",
       });
     } catch (err) {
       next(err);
@@ -76,7 +76,7 @@ const userCtrl = {
   activateEMail: async (req, res, next) => {
     try {
       const { activation_token } = req.body;
-      // Thực hiện giải mã token xem có hợp lệ hay không?
+      // Decode token to verify if it's valid
       const user = jwt.verify(
         activation_token,
         process.env.ACTIVATION_TOKEN_SECRET
@@ -85,7 +85,7 @@ const userCtrl = {
 
       const check = await Users.findOne({ email });
       if (check)
-        return res.status(400).json({ message: "Email đã tồn tại. 😢" });
+        return res.status(400).json({ message: "Email already exists. 😢" });
 
       const newUser = new Users({
         name,
@@ -96,7 +96,7 @@ const userCtrl = {
       await newUser.save();
 
       res.status(201).json({
-        message: "Tài khoản đã được kích hoạt 😇 ",
+        message: "Account has been activated 😇",
       });
     } catch (err) {
       next(err);
@@ -110,18 +110,18 @@ const userCtrl = {
       if (!formatedEmail || !password)
         return res
           .status(400)
-          .json({ message: "Xin mời nhập email hoặc mật khẩu 😢" });
+          .json({ message: "Please enter email or password 😢" });
 
       const user = await Users.findOne({ email: formatedEmail });
       if (!user)
-        return res.status(400).json({ message: "Email không tồn tại 😢!" });
+        return res.status(400).json({ message: "Email does not exist 😢!" });
 
-      // so sánh mật khẩu
+      // compare password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
-        return res.status(400).json({ message: "Mật khẩu không đúng 😢!" });
+        return res.status(400).json({ message: "Password is incorrect 😢!" });
 
-      // tạo mã truy cập
+      // create access token
       const access_token = createAccessToken({ id: user._id });
 
       const refresh_token = createRefreshToken({ id: user._id });
@@ -133,7 +133,7 @@ const userCtrl = {
 
       res.status(200).json({
         token: access_token,
-        message: "Đăng nhập thành công!",
+        message: "Login successful!",
         user,
       });
     } catch (err) {
@@ -144,13 +144,10 @@ const userCtrl = {
     try {
       const rf_token = req.cookies.refreshtoken;
       if (!rf_token)
-        return res.status(400).json({ message: "Đăng nhập ngay bây giờ" });
+        return res.status(400).json({ message: "Please login now" });
 
       jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-        if (err)
-          return res
-            .status(400)
-            .json({ message: "Hãy đăng nhập ngay bây giờ" });
+        if (err) return res.status(400).json({ message: "Please login now" });
 
         const access_token = createAccessToken({ id: user.id });
         res.json({ access_token });
@@ -165,35 +162,35 @@ const userCtrl = {
       const { email } = req.body;
       const user = await Users.findOne({ email });
       if (!user)
-        return res.status(400).json({ message: "Email không tồn tại" });
+        return res.status(400).json({ message: "Email does not exist" });
 
       const access_token = createAccessToken({ id: user._id });
       const url = `${CLIENT_URL}/api/auth/reset-password/${access_token}`;
 
       const message = `<div style="max-width: 700px; margin:auto; border: 10px solid gray; padding: 50px 20px; font-size: 110%;">
       <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to Booking App.</h2>
-      <p>Xin chúc mừng! Bạn sắp bắt đầu sử dụng SHOPPING APP.
-      Chỉ cần nhấp vào nút bên dưới để thay đổi mật khẩu của bạn.
+      <p>Congratulations! You're about to start using SHOPPING APP.
+      Just click the button below to change your password.
       </p>
 
-      <a href=${url} style="background: #333; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Đặt lại mật khẩu</a>
-      <p>Nếu nút không hoạt động vì bất kỳ lý do gì, bạn cũng có thể nhấp vào liên kết bên dưới:</p>
+      <a href=${url} style="background: #333; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Reset Password</a>
+      <p>If the button doesn't work for any reason, you can also click on the link below:</p>
 
       <div>${url}</div>
       </div>`;
       await sendMail({
         email: user.email,
-        subject: "Booking App password Recovery",
+        subject: "Booking App Password Recovery",
         message,
       });
       res.json({
-        message: "Gửi lại mật khẩu, vui lòng kiểm tra email của bạn.",
+        message: "Password reset link sent, please check your email.",
       });
     } catch (err) {
       next(err);
     }
   },
-  resetPassword: async (req, res) => {
+  resetPassword: async (req, res, next) => {
     try {
       const { password } = req.body;
       const passwordHash = await bcrypt.hash(password, 10);
@@ -204,7 +201,7 @@ const userCtrl = {
           password: passwordHash,
         }
       );
-      res.status(200).json({ message: "Mật khẩu thay đổi thành công" });
+      res.status(200).json({ message: "Password changed successfully" });
     } catch (err) {
       next(err);
     }
@@ -230,7 +227,7 @@ const userCtrl = {
   logout: async (req, res, next) => {
     try {
       res.clearCookie("refreshtoken", { path: "/api/auth/refresh_token" });
-      res.status(200).json({ message: "Đăng xuất thành công" });
+      res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
       next(err);
     }
@@ -246,7 +243,7 @@ const userCtrl = {
         }
       );
 
-      res.status(200).json({ message: "Cập nhập thông tin thành công!" });
+      res.status(200).json({ message: "Information updated successfully!" });
     } catch (err) {
       next(err);
     }
@@ -262,7 +259,7 @@ const userCtrl = {
         }
       );
 
-      res.status(200).json({ message: "Cập nhập thông tin thành công!" });
+      res.status(200).json({ message: "Information updated successfully!" });
     } catch (err) {
       next(err);
     }
@@ -271,7 +268,7 @@ const userCtrl = {
     try {
       await Users.findByIdAndDelete(req.params.id);
 
-      res.status(200).json({ message: "Xóa người dùng thành công!" });
+      res.status(200).json({ message: "User deleted successfully!" });
     } catch (err) {
       next(err);
     }
@@ -364,7 +361,7 @@ const userCtrl = {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        res.status(200).json({ message: "Đăng nhập thành công!" }, user);
+        res.status(200).json({ message: "Login successful!" }, user);
       } else {
         const newUser = new Users({
           name,
@@ -396,21 +393,21 @@ function validateEmail(email) {
   return res.test(String(email).toLowerCase());
 }
 
-// mã token để active tài khoản
+// token to activate account
 const createActivationToken = (payload) => {
   return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
     expiresIn: "5m",
   });
 };
 
-// token truy cập
+// access token
 const createAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "15m",
   });
 };
 
-// mã token để duy trì tài khoản
+// token to maintain account
 const createRefreshToken = (payload) => {
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "7d",

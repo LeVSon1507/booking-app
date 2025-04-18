@@ -5,9 +5,9 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const BookingDetail = ({ match }) => {
-  const formater = new Intl.NumberFormat('vi-VN', {
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
   });
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState([]);
@@ -37,12 +37,12 @@ const BookingDetail = ({ match }) => {
 
   return (
     <Fragment>
-      <MetaData title="Chi tiết đặt phòng" />
+      <MetaData title="Booking Details" />
       {loading ? (
         <Loader />
       ) : (
         <Fragment>
-          <h1 className="text-center mt-3 title">Chi tiết đặt phòng</h1>
+          <h1 className="text-center mt-3 title">Booking Details</h1>
           <div className="container">
             <div className="bs">
               <h5>{booking.room}</h5>
@@ -58,10 +58,10 @@ const BookingDetail = ({ match }) => {
                 </b>
               </p>
               <p>
-                <b>Tổng ngày: {booking.totalDays}/ngày </b>
+                <b>Total Days: {booking.totalDays}/day </b>
               </p>
               <p>
-                <b>Tổng tiền: {formater.format(booking.totalAmount)} </b>
+                <b>Total Amount: {formatter.format(booking.totalAmount)} </b>
               </p>
               <p>
                 <b>TransactionId: {booking.transactionId} </b>
@@ -70,9 +70,9 @@ const BookingDetail = ({ match }) => {
                 <b>
                   Status:
                   {booking.status === 'booked' ? (
-                    <span className="badge bg-success">Hoàn thành</span>
+                    <span className="badge bg-success">Completed</span>
                   ) : (
-                    <span className="badge bg-danger">Hủy phòng</span>
+                    <span className="badge bg-danger">Cancelled</span>
                   )}
                 </b>
               </p>

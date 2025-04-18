@@ -34,7 +34,7 @@ const GetAllBooking = () => {
         headers: { Authorization: token },
       });
 
-      Swal.fire('', 'Xóa đặt phòng thành công', 'success').then(() => {
+      Swal.fire('', 'Booking deleted successfully', 'success').then(() => {
         window.location.href = '/admin';
       });
     } catch (error) {
@@ -52,11 +52,11 @@ const GetAllBooking = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Phòng</th>
-                <th>Ngày</th>
-                <th>Trạng thái</th>
-                <th>Tổng tiền</th>
-                <th>Hành động</th>
+                <th>Room</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Total Amount</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>

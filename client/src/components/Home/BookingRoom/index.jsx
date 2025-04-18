@@ -10,9 +10,9 @@ import Swal from 'sweetalert2';
 import './BookingRoom.css';
 
 const BookingRoom = ({ match }) => {
-  const formater = new Intl.NumberFormat('vi-VN', {
+  const formater = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
   });
   const { user } = useSelector((state) => state.auth);
   const token = useSelector((state) => state.token);
@@ -56,50 +56,50 @@ const BookingRoom = ({ match }) => {
         headers: { Authorization: token },
       });
       setDisable(true);
-      Swal.fire('Chúc mừng', 'Đặt phòng thành công', 'success').then(() => {
+      Swal.fire('Congratulations', 'Booking successful', 'success').then(() => {
         window.location.href = '/';
       });
     } catch (error) {
       console.log(error);
-      Swal.fire('Oops', 'Đã xảy ra sự cố', 'error');
+      Swal.fire('Oops', 'Something went wrong', 'error');
     }
   };
 
   return (
     <Fragment>
-      <MetaData title="Đặt phòng" />
+      <MetaData title="Booking" />
       {loading ? (
         <Loader />
       ) : error ? (
         showErrMsg(error)
       ) : (
-        <div className="container ">
+        <div className="container">
           <div className="row bs mt-5" data-aos="flip-left">
             <div className="col-md-5 mb-2">
               <h4>{room.name}</h4>
               <img src={room.imageUrls[0]} alt={room.name} className="booking-room-img" />
             </div>
-            <div className="col-md-7 boking-detail mb-2">
-              <h1 className="">Chi tiết đặt phòng</h1>
+            <div className="col-md-7 booking-detail mb-2">
+              <h1>Booking Details</h1>
               <hr />
               <b>
-                <p>Tên: {user.name} </p>
-                <p>Ngày nhận phòng: {match.params.startDate} </p>
-                <p>Ngày trả phòng: {match.params.endDate} </p>
-                <p>Giá phòng: {room.price}/ngày</p>
+                <p>Name: {user.name} </p>
+                <p>Check-in Date: {match.params.startDate} </p>
+                <p>Check-out Date: {match.params.endDate} </p>
+                <p>Room Price: {room.price}/day</p>
               </b>
 
-              <h1>Tổng</h1>
+              <h1>Total</h1>
               <hr />
               <b>
-                <p>Tổng ngày: {totalDays} ngày</p>
-                <p>Giá thuê phòng: {room.price} </p>
-                <p>Tổng tiền: {formater.format(totalAmount)}</p>
+                <p>Total Days: {totalDays} days</p>
+                <p>Room Rent: {room.price} </p>
+                <p>Total Amount: {formater.format(totalAmount)}</p>
               </b>
 
               <div className="booking-center">
                 <button className="btn-booking" disabled={disable} onClick={handleBooking}>
-                  Thanh toán
+                  Pay Now
                 </button>
               </div>
             </div>

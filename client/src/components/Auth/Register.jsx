@@ -24,31 +24,29 @@ const Register = () => {
     setUser({ ...user, [name]: value, err: '', success: '' });
   };
 
-  // hàm submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isEmpty(name) || isEmpty(password)) {
       setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
-      return setUser({ ...user, err: 'Xin mời điền tất cả các trường.', success: '' });
+      return setUser({ ...user, err: 'Please fill in all fields.', success: '' });
     }
 
     if (!isEmail(email)) {
       setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
-      return setUser({ ...user, err: 'Thiếu trường email.', success: '' });
+      return setUser({ ...user, err: 'Invalid email.', success: '' });
     }
 
     if (isLength(password)) {
       setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
-      return setUser({ ...user, err: 'Mật khẩu 6 ký tự trở lên.', success: '' });
+      return setUser({ ...user, err: 'Password must be at least 6 characters.', success: '' });
     }
 
-    if (!isMatch(password, cf_password)){
+    if (!isMatch(password, cf_password)) {
       setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
-      return setUser({ ...user, err: 'Mật khẩu không khớp.', success: '' });
+      return setUser({ ...user, err: 'Passwords do not match.', success: '' });
     }
     try {
       setLoading(true);
-      // gọi api đăng ký
       const res = await userApi.register({
         name,
         email,
@@ -66,12 +64,12 @@ const Register = () => {
   };
   return (
     <Fragment>
-      <MetaData title={'Đăng ký'} />
+      <MetaData title={'Register'} />
       {loading ? (
         <Loader />
       ) : (
         <div className="login_page">
-          <h2 className="text-center">Đăng ký</h2>
+          <h2 className="text-center">Register</h2>
           {err && showErrMsg(err)}
           {success && showSuccessMsg(success)}
 
@@ -80,7 +78,7 @@ const Register = () => {
               <label htmlFor="name">Nickname</label>
               <input
                 type="text"
-                placeholder="Nhập nickname"
+                placeholder="Enter your nickname"
                 id="name"
                 value={name}
                 name="name"
@@ -92,7 +90,7 @@ const Register = () => {
               <label htmlFor="email">Email</label>
               <input
                 type="text"
-                placeholder="vd: abc@gmail.com"
+                placeholder="e.g: abc@gmail.com"
                 id="email"
                 value={email}
                 name="email"
@@ -101,7 +99,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="password">Mật khẩu</label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 placeholder="*********"
@@ -113,7 +111,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label htmlFor="cf_password">Xác nhận mật khẩu</label>
+              <label htmlFor="cf_password">Confirm Password</label>
               <input
                 type="password"
                 placeholder="*********"
@@ -126,13 +124,13 @@ const Register = () => {
 
             <div className="row">
               <button type="submit">
-                <b>Đăng ký</b>
+                <b>Register</b>
               </button>
             </div>
           </form>
 
           <p className="text-center">
-            Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+            Already have an account? <Link to="/login">Login now</Link>
           </p>
         </div>
       )}

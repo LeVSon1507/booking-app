@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-
 function EditProfile(props) {
   const { id } = useParams();
   const history = useHistory();
@@ -60,33 +59,32 @@ function EditProfile(props) {
 
   return (
     <Fragment>
-      <MetaData title="Cập nhật thông tin người dùng"/>
+      <MetaData title="Update User Information" />
       <div className="profile_page edit_user">
-      <div className="m-auto">
-        <h2>Cập nhật thông tin người dùng</h2>
+        <div className="m-auto">
+          <h2>Update User Information</h2>
 
-        <div className="form-group">
-          <label htmlFor="name">Tên</label>
-          <input type="text" name="name" defaultValue={editUser.name} disabled />
-        </div>
+          <div className="form-group">
+            <label htmlFor="name">Name</label>
+            <input type="text" name="name" defaultValue={editUser.name} disabled />
+          </div>
 
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input type="email" name="email" defaultValue={editUser.email} disabled />
-        </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input type="email" name="email" defaultValue={editUser.email} disabled />
+          </div>
 
-        <div className="form-group d-flex">
-          <label htmlFor="isAdmin">isAdmin</label>
-          <input type="checkbox" id="isAdmin" checked={checkAdmin} onChange={handleCheck} />
-        </div>
-        <div className="d-flex justify-content-center m-3">
-          <button onClick={handleUpdate}>Cập nhật</button>
+          <div className="form-group d-flex">
+            <label htmlFor="isAdmin">isAdmin</label>
+            <input type="checkbox" id="isAdmin" checked={checkAdmin} onChange={handleCheck} />
+          </div>
+          <div className="d-flex justify-content-center m-3">
+            <button onClick={handleUpdate}>Update</button>
+          </div>
         </div>
       </div>
-    </div>
- 
     </Fragment>
-    );
+  );
 }
 
 export default EditProfile;

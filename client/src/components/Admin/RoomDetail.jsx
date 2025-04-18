@@ -4,9 +4,9 @@ import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useEffect, useState } from 'react';
 
 const RoomDetail = ({ match }) => {
-  const formater = new Intl.NumberFormat('vi-VN', {
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
   });
   const [loading, setLoading] = useState(true);
   const [room, setRoom] = useState([]);
@@ -28,12 +28,12 @@ const RoomDetail = ({ match }) => {
 
   return (
     <Fragment>
-      <MetaData title="Chi tiết phòng" />
+      <MetaData title="Room Details" />
       {loading ? (
         <Loader />
       ) : (
         <Fragment>
-          <h1 className="text-center mt-3 title">Chi tiết phòng</h1>
+          <h1 className="text-center mt-3 title">Room Details</h1>
           <div className="container">
             <div className="bs">
               <h5>{room.name}</h5>
@@ -41,16 +41,16 @@ const RoomDetail = ({ match }) => {
                 <b>RoomId: {room._id} </b>
               </p>
               <p>
-                <b>Giá: {formater.format(room.price)} </b>
+                <b>Price: {formatter.format(room.price)} </b>
               </p>
               <p>
-                <b>Loại phòng: {room.type} </b>
+                <b>Room Type: {room.type} </b>
               </p>
               <p>
-                <b>Số lượng đặt phòng hiện tại: {room.currentBookings.length} đặt </b>
+                <b>Current Bookings: {room.currentBookings.length} bookings </b>
               </p>
               <div className="row">
-                <b className="mb-3">Ảnh phòng</b>
+                <b className="mb-3">Room Images</b>
                 {room.imageUrls?.map((img) => (
                   <div key={img} className="col-md-4">
                     <img className="w-100" src={img} alt={img} />
@@ -58,18 +58,20 @@ const RoomDetail = ({ match }) => {
                 ))}
               </div>
               <p className="mt-3">
-                <b>Mô tả: {room.description} </b>
+                <b>Description: {room.description} </b>
               </p>
             </div>
             <div>
-              {room.currentBookings.length === 0 ? ('') : (
+              {room.currentBookings.length === 0 ? (
+                ''
+              ) : (
                 <Fragment>
-                  <h3 className="text-center title m-3">Đặt phòng hiện tại</h3>
+                  <h3 className="text-center title m-3">Current Bookings</h3>
                   <div className="bs">
                     {room.currentBookings?.map((booking) => (
-                      <Fragment>
+                      <Fragment key={booking.bookingId}>
                         <p>
-                          <b>RoomId: {booking.bookingId} </b>
+                          <b>BookingId: {booking.bookingId} </b>
                         </p>
                         <p>
                           <b>UserId: {booking.userId} </b>
@@ -80,7 +82,7 @@ const RoomDetail = ({ match }) => {
                           </b>
                         </p>
                         <p>
-                          <b>Trạng thái: {booking.status} </b>
+                          <b>Status: {booking.status} </b>
                         </p>
                         <hr />
                       </Fragment>

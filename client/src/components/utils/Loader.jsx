@@ -12,7 +12,7 @@ const override = css`
 `;
 
 const Loader = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(true);
 
   return (
     <div className="sweet-loading text-center">

@@ -22,10 +22,10 @@ function ResetPassword() {
 
   const handleResetPass = async () => {
     if (isLength(password))
-      return setData({ ...data, err: 'Mật khẩu phải 6 ký tự trở lên.', success: '' });
+      return setData({ ...data, err: 'Password must be at least 6 characters.', success: '' });
 
     if (!isMatch(password, cf_password))
-      return setData({ ...data, err: 'Mật khẩu không khớp.', success: '' });
+      return setData({ ...data, err: 'Passwords do not match.', success: '' });
 
     try {
       const res = await userApi.resetPassword(
@@ -44,13 +44,13 @@ function ResetPassword() {
 
   return (
     <div className="fg_pass">
-      <h2>ĐẶT LẠI MẬT KHẨU CỦA BẠN</h2>
+      <h2>RESET YOUR PASSWORD</h2>
 
       <div className="row">
         {err && showErrMsg(err)}
         {success && showSuccessMsg(success)}
 
-        <label htmlFor="password">Mật khẩu</label>
+        <label htmlFor="password">Password</label>
         <input
           type="password"
           name="password"
@@ -59,7 +59,7 @@ function ResetPassword() {
           onChange={handleChangeInput}
         />
 
-        <label htmlFor="cf_password">Xác nhận mật khẩu</label>
+        <label htmlFor="cf_password">Confirm Password</label>
         <input
           type="password"
           name="cf_password"
@@ -68,7 +68,9 @@ function ResetPassword() {
           onChange={handleChangeInput}
         />
 
-        <button onClick={handleResetPass}><b>ĐẶT LẠI MẬT KHẨU</b></button>
+        <button onClick={handleResetPass}>
+          <b>RESET PASSWORD</b>
+        </button>
       </div>
     </div>
   );

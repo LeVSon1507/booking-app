@@ -9,22 +9,22 @@ const { TabPane } = Tabs;
 
 const Admin = () => {
   return (
-     <Fragment>
-       <MetaData title="Admin"/>
-       <div className="mt-3">
+    <Fragment>
+      <MetaData title="Admin" />
+      <div className="mt-3">
         <Tabs defaultActiveKey="1">
           <TabPane tab="Bookings" key="1">
-            <GetAllBooking/>
+            <GetAllBooking />
           </TabPane>
-          <TabPane tab="Người dùng" key="2">
+          <TabPane tab="Users" key="2">
             <GetAllUser />
           </TabPane>
-          <TabPane tab="Phòng" key="3">
+          <TabPane tab="Rooms" key="3">
             <GetAllRoom />
           </TabPane>
         </Tabs>
       </div>
-     </Fragment>
+    </Fragment>
   );
 };
 

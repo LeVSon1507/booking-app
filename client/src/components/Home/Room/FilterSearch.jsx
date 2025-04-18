@@ -16,17 +16,17 @@ const FilterSearch = ({ onSubmit }) => {
       const formValues = {
         searchRoom: e.target.value,
       };
-   
+
       onSubmit(formValues);
     }, 300);
-  }
+  };
 
   return (
     <form>
       <input
         type="text"
         className="form-control"
-        placeholder="Tìm kiếm..."
+        placeholder="Search..."
         value={searchRoom}
         onChange={handleSearchChange}
       />

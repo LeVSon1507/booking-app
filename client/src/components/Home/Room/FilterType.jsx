@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const FilterType = ({ onChange }) => {
   const [filterType, setFilterType] = useState('all');
+
   const handleFilterType = (e) => {
     setFilterType(e);
     if (!onChange) return;
@@ -9,13 +10,9 @@ const FilterType = ({ onChange }) => {
       filterRoom: e,
     };
 
-    if (e !== 'all') {
-      onChange(formValues);
-    } else {
-      onChange(formValues);
-      console.log(formValues);
-    }
+    onChange(formValues);
   };
+
   return (
     <div>
       <select
@@ -23,7 +20,7 @@ const FilterType = ({ onChange }) => {
         value={filterType}
         onChange={(e) => handleFilterType(e.target.value)}
       >
-        <option value="all">Tất cả</option>
+        <option value="all">All</option>
         <option value="standard">Standard</option>
         <option value="delux">Delux</option>
       </select>

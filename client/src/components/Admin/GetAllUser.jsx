@@ -1,4 +1,3 @@
-import userApi from 'api/userApi';
 import Loader from 'components/utils/Loader';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,13 +26,13 @@ const GetAllUser = () => {
 
   const handleDelete = async (id) => {
     try {
-      // không đc phép xóa admin
-      console.log(user._id)
+      // Admins cannot be deleted
+      console.log(user._id);
       if (user._id !== id) {
         // const response = await userApi.deleteUser(`${id}`, {
         //   headers: { Authorization: token },
         // });
-        Swal.fire('', 'Xóa người dùng thành công', 'success').then(() => {
+        Swal.fire('', 'User deleted successfully', 'success').then(() => {
           window.location.href = '/admin';
         });
       }
@@ -42,6 +41,7 @@ const GetAllUser = () => {
       // err.response.data.message && Swal.fire('Oops', `${err.response.data.message}`, 'error');
     }
   };
+
   return (
     <Fragment>
       {loading ? (
@@ -55,7 +55,7 @@ const GetAllUser = () => {
                 <th>Nickname</th>
                 <th>Email</th>
                 <th>Admin</th>
-                <th>Hành động</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>

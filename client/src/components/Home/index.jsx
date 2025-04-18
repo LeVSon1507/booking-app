@@ -33,7 +33,6 @@ const Home = () => {
         setRooms(response.data);
         setDuplicateRoom(response.data);
         setLoading(false);
-        // window.scrollTo(0, 0);
       } catch (error) {
         console.log(error);
         setLoading(false);
@@ -41,50 +40,38 @@ const Home = () => {
     })();
   }, [filters]);
 
-  // chọn ngày
   const filterByDate = (dates) => {
     if (!dates) return;
-    console.log(moment(dates[0]).format('DD-MM-YYYY'));
-    console.log(moment(dates[1]).format('DD-MM-YYYY'));
     setStartDate(dates[0].format('DD-MM-YYYY'));
     setEndDate(dates[1].format('DD-MM-YYYY'));
 
     let tempRooms = [];
     let availability = false;
 
-    // duyệt qua tất cả rooms
     for (const room of duplicateRoom) {
-      // nếu currentBookings > 0 -> loại bỏ ko cho room
       if (room.currentBookings.length > 0) {
-        // duyệt qua tất cả  room.currentBooking -> check lịch
         for (const booking of room.currentBookings) {
           console.log(booking);
         }
       }
-      // nếu currentBookings == 0 -> push(room)
       if (availability === true || room.currentBookings.length === 0) {
         tempRooms.push(room);
       }
-      // setRooms(tempRooms);
     }
   };
 
-  // chặn chọn ngày trước đó
   function disabledDate(current) {
     return current && current.valueOf() < moment().endOf('day');
   }
 
   const handleSearchForm = (newFilter) => {
-    // set filter kéo theo giưa search và type
     setFilters({
       ...filters,
       search: newFilter.searchRoom,
     });
-    console.log(filters);
   };
 
   const handleOnChangeType = (newFilter) => {
-    // set filter kéo theo giưa search và type
     setFilters({
       ...filters,
       type: newFilter.filterRoom,
@@ -93,14 +80,14 @@ const Home = () => {
 
   return (
     <Fragment>
-      <MetaData title="Trang chủ" />
+      <MetaData title="Home" />
       {loading ? (
         <Loader />
       ) : (
         <Fragment>
           <Banner />
           <div className="container" id="home">
-            <h1 className="text-center mt-5 title">ĐẶT PHÒNG NGAY</h1>
+            <h1 className="text-center mt-5 title">BOOK NOW</h1>
             <div className="row bs" id="booking-fixed">
               <div className="col-md-4" id="datepicker">
                 <RangePicker
@@ -120,7 +107,7 @@ const Home = () => {
             <div className="row justify-content-center mt-2">
               {rooms.length === 0 ? (
                 <div className="no-result bs mt-3">
-                  <h2 className="mt-5">Không tìm thấy kết quả</h2>
+                  <h2 className="mt-5">No results found</h2>
                 </div>
               ) : (
                 <Fragment>

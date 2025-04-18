@@ -31,13 +31,13 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      // gọi api đăng nhập
+      // call api login
       const res = await userApi.login({ email, password });
       setUser({ ...user, err: '', success: res.message });
       console.log(res);
       setLoading(false);
 
-      // lưu đăng nhập ở local
+      // save login info in local
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
@@ -52,12 +52,12 @@ const Login = () => {
 
   const responseGoogle = async (response) => {
     try {
-      // gọi api đăng nhập google
+      // call google login api
       const res = await userApi.loginGoogle({
         tokenId: response.tokenId,
       });
 
-      setUser({ ...user, error: "", success: res.data.message });
+      setUser({ ...user, error: '', success: res.data.message });
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
@@ -71,7 +71,7 @@ const Login = () => {
   const responseFacebook = async (response) => {
     try {
       const { accessToken, userID } = response;
-      // gọi api đăng nhập facebook
+      // call facebook login api
       const res = await userApi.loginFacebook({
         accessToken,
         userID,
@@ -79,7 +79,6 @@ const Login = () => {
 
       setUser({ ...user, error: '', success: res.data.message });
       localStorage.setItem('userCurrent', true);
-
 
       dispatch(dispatchLogin());
       history.push('/');
@@ -91,12 +90,12 @@ const Login = () => {
 
   return (
     <Fragment>
-      <MetaData title={'Đăng nhập'} />
+      <MetaData title={'Login'} />
       {loading ? (
         <Loader />
       ) : (
         <div className="login_page">
-          <h2 className="text-center">Đăng nhập</h2>
+          <h2 className="text-center">Login</h2>
           {err && showErrMsg(err)}
           {success && showSuccessMsg(success)}
 
@@ -105,7 +104,7 @@ const Login = () => {
               <label htmlFor="email">Email</label>
               <input
                 type="text"
-                placeholder="vd: example@gmail.com"
+                placeholder="e.g: example@gmail.com"
                 id="email"
                 value={email}
                 name="email"
@@ -114,7 +113,7 @@ const Login = () => {
             </div>
 
             <div>
-              <label htmlFor="password">Mật khẩu</label>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 placeholder="*********"
@@ -127,20 +126,20 @@ const Login = () => {
 
             <div className="row">
               <button type="submit">
-                <b>Đăng nhập</b>
+                <b>Login</b>
               </button>
               <Link to="/forgot_password" className="d-flex justify-content-end">
-                Quên mật khẩu?
+                Forgot password?
               </Link>
             </div>
           </form>
 
-          <div className="hr text-center">Hoặc đăng nhập với</div>
+          <div className="hr text-center">Or login with</div>
 
           <div className="social">
             <GoogleLogin
               clientId="55687161092-slgs7a90j0guvn4f5vi1p6s6sf8vv9m5.apps.googleusercontent.com"
-              buttonText="Đăng nhập Google"
+              buttonText="Login with Google"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
             />
@@ -154,7 +153,7 @@ const Login = () => {
           </div>
 
           <p className="text-center">
-            Chưa có tài khoản. <Link to="/register">Đăng ký tại đây</Link>
+            Don't have an account? <Link to="/register">Register here</Link>
           </p>
         </div>
       )}

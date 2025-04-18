@@ -1,5 +1,5 @@
-import userApi from "api/userApi";
-import { GET_USER_SUCCESS, LOGIN } from "redux/contants";
+import userApi from 'api/userApi';
+import { GET_USER_SUCCESS, LOGIN } from 'redux/contants';
 
 export const dispatchLogin = () => {
   return {
@@ -8,7 +8,6 @@ export const dispatchLogin = () => {
 };
 
 export const fetchUser = async (token) => {
-  
   const res = await userApi.getUsersInfor({
     headers: { Authorization: token },
   });
@@ -20,9 +19,7 @@ export const dispatchGetUser = (res) => {
     type: GET_USER_SUCCESS,
     payload: {
       user: res.data,
-      isAdmin: res.data.user.role === 1 ? true : false,
+      isAdmin: res.data.user.role === 1,
     },
   };
 };
-
-

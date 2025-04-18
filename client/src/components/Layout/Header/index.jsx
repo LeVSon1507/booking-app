@@ -55,11 +55,11 @@ function Header() {
             </li>
           )}
           <li>
-            <Link to="/profile">Cá nhân</Link>
+            <Link to="/profile">Profile</Link>
           </li>
           <li>
             <Link to="/" onClick={handleLogout}>
-              Đăng xuất
+              Logout
             </Link>
           </li>
         </ul>
@@ -83,7 +83,7 @@ function Header() {
               ) : (
                 <li>
                   <Link to="/login">
-                    <i className="fas fa-user"></i> Đăng nhập
+                    <i className="fas fa-user"></i> Login
                   </Link>
                 </li>
               )}

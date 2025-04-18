@@ -20,7 +20,7 @@ function ForgotPassword() {
   };
 
   const forgotPassword = async () => {
-    if (!isEmail(email)) return setData({ ...data, err: 'Xin mời nhập email.', success: '' });
+    if (!isEmail(email)) return setData({ ...data, err: 'Please input email.', success: '' });
 
     try {
       setLoading(true);
@@ -36,32 +36,30 @@ function ForgotPassword() {
 
   return (
     <Fragment>
-      <MetaData title="Quên mật khẩu" />
+      <MetaData title="Forgot Password" />
       {loading ? (
         <Loader />
       ) : (
         <div className="fg_pass">
-          <h2 className="title">Quên mật khẩu?</h2>
+          <h2 className="title">Forgot Password?</h2>
 
           <div className="row">
             {err && showErrMsg(err)}
             {success && showSuccessMsg(success)}
 
-            <label htmlFor="email">
-              Nhập email của bạn
-            </label>
+            <label htmlFor="email">Enter your email</label>
             <input
               type="email"
               name="email"
               id="email"
               value={email}
               onChange={handleChangeInput}
-              placeholder="vd: example@gmail.com"
+              placeholder="e.g: example@gmail.com"
             />
-            <button onClick={forgotPassword}>Xác nhận địa chỉ email</button>
+            <button onClick={forgotPassword}>Verify Email Address</button>
           </div>
         </div>
-       )} 
+      )}
     </Fragment>
   );
 }

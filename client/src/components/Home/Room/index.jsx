@@ -5,9 +5,9 @@ import { useHistory } from 'react-router-dom';
 import './Room.css';
 
 const Room = ({ room, startDate, endDate }) => {
-  const formater = new Intl.NumberFormat('vi-VN', {
+  const formater = new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'VND',
+    currency: 'USD',
   });
   const history = useHistory();
   const [show, setShow] = useState(false);
@@ -18,12 +18,12 @@ const Room = ({ room, startDate, endDate }) => {
 
   const handleClick = () => {
     if (!startDate || !endDate) {
-      setAlert('Xin mời chọn ngày !');
+      setAlert('Please select a date!');
       setTimeout(() => {
         setAlert(null);
       }, 1500);
     } else if (startDate === endDate) {
-      setAlert('Không được phép chọn ngày trùng nhau !');
+      setAlert('Start and end dates cannot be the same!');
       setTimeout(() => {
         setAlert(null);
       }, 1500);
@@ -31,6 +31,7 @@ const Room = ({ room, startDate, endDate }) => {
       history.push(`/book/${room._id}/${startDate}/${endDate}`);
     }
   };
+
   return (
     <>
       <div className="row bs">
@@ -39,14 +40,14 @@ const Room = ({ room, startDate, endDate }) => {
         </div>
         <div className="col-md-8 mb-1">
           <h5>{room.name}</h5>
-          <p>Giá phòng: {formater.format(room.price)}/ngày</p>
-          <p>Loại phòng: {room.type}</p>
+          <p>Price: {formater.format(room.price)}/day</p>
+          <p>Room Type: {room.type}</p>
           <a href="#/" onClick={handleShow}>
-            Xem chi tiết {'>>'}
+            View Details {'>>'}
           </a>
-          <div className="d-flex justify-content-end ">
+          <div className="d-flex justify-content-end">
             <button className="btn-room" onClick={handleClick}>
-              Đặt phòng
+              Book Now
             </button>
           </div>
 
@@ -63,7 +64,7 @@ const Room = ({ room, startDate, endDate }) => {
                 ))}
               </Carousel>
               <span className="mt-2">
-                <b>Mô tả: </b> {room.description}
+                <b>Description: </b> {room.description}
               </span>
             </Modal.Body>
           </Modal>
