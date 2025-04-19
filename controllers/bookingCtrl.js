@@ -17,7 +17,10 @@ const bookingCtrl = {
         startDate,
         endDate,
         totalAmount,
+        paymentMethod,
         totalDays,
+        guestDetails,
+        specialRequests,
       } = req.body;
 
       const roomDetails = await Room.findOne({ _id: room._id });
@@ -45,12 +48,14 @@ const bookingCtrl = {
         endDate: moment(endDate).format("MM-DD-YYYY"),
         totalAmount,
         totalDays,
+        paymentMethod,
         transactionId: v4(),
         imageUrls: roomDetails.imageUrls,
-        guestDetails: {
+        guestDetails: guestDetails || {
           name: user.name,
           email: user.email,
         },
+        specialRequests: specialRequests || "",
       });
 
       const booking = await newBooking.save();

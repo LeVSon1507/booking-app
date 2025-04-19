@@ -49,7 +49,6 @@ const HotelDetail = () => {
 
         setLoading(false);
       } catch (error) {
-        // Xử lý lỗi chi tiết hơn
         console.error('Error loading hotel:', error);
         if (error.response && error.response.status === 404) {
           setAlert(`Hotel with ID ${id} not found. It may have been deleted.`);

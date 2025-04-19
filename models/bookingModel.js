@@ -45,6 +45,11 @@ const bookingSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    paymentMethod: {
+      type: String,
+      required: true,
+      default: "credit_card",
+    },
     imageUrls: {
       type: Array,
       required: true,

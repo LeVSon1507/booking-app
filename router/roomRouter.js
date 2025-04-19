@@ -5,6 +5,8 @@ router.get("/rooms", roomCtrl.getAllRooms);
 
 router.get("/room/:id", roomCtrl.getRoomById);
 
+router.post("/rooms", roomCtrl.createRoom);
+
 router.get("/rooms/hotel/:hotelId", roomCtrl.getRoomsByHotelId);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const sgMail = require("@sendgrid/mail");
 const moment = require("moment");
 
-const sendBookingConfirmationEmail = async (booking, room, user) => {
+const sendBookingConfirmationEmail = async (booking, room, user, hotel) => {
   try {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -29,8 +29,8 @@ const sendBookingConfirmationEmail = async (booking, room, user) => {
     const templateData = {
       guest_name: user.name,
       booking_id: booking._id,
-      hotel_name: room.name || booking.room,
-      room_type: room.name || booking.room,
+      hotel_name: hotel.name,
+      room_type: room.name,
       check_in_date: formattedStartDate,
       check_out_date: formattedEndDate,
       nights: booking.totalDays,
@@ -42,8 +42,10 @@ const sendBookingConfirmationEmail = async (booking, room, user) => {
       service_fee: serviceFee,
       tax_amount: taxAmount,
       total_amount: booking.totalAmount.toFixed(2),
-      payment_method: "Credit Card",
-      payment_status: booking.status === "booked" ? "Paid" : booking.status,
+      payment_method: booking.paymentMethod,
+      transaction_id: booking.transactionId,
+      booking_status: booking.status,
+      payment_status: booking.status === "booked" ? "Booked" : booking.status,
       booking_management_url: `${process.env.FRONTEND_URL}/booking-details/${booking._id}`,
       unsubscribe_url: `${process.env.FRONTEND_URL}/unsubscribe`,
       privacy_policy_url: `${process.env.FRONTEND_URL}/privacy-policy`,
@@ -55,6 +57,7 @@ const sendBookingConfirmationEmail = async (booking, room, user) => {
 
       booking: {
         hotelData: {
+          ...hotel,
           name: room.name,
           address: room.address,
           city: room.city,

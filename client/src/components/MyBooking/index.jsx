@@ -1,84 +1,108 @@
 import { bookingApi } from 'api/bookingApi';
-import { hotelApi } from 'api/hotelApi';
 import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
-import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import React, { Fragment, useEffect, useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { dispatchGetBookingUser, fetchBookingUser } from 'redux/actions/bookingAction';
+import Swal from 'sweetalert2';
 import './MyBooking.css';
+import { ReactComponent as Icon } from '../../images/my-booking-icon.svg';
 
 const MyBooking = () => {
-  const [loading, setLoading] = useState(true);
-  const [bookings, setBookings] = useState([]);
-  const [alert, setAlert] = useState('');
-  const [success, setSuccess] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [hotelDetails, setHotelDetails] = useState({});
-  const navigate = useNavigate();
-  const { isLogged } = useSelector((state) => state.auth);
+  const token = useSelector((state) => state.token);
+  const { bookings, loading } = useSelector((state) => state.booking);
+  const [cancellingId, setCancellingId] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!isLogged) {
-      navigate('/login');
+    if (token) {
+      fetchBookingUser(token).then((res) => {
+        dispatch(dispatchGetBookingUser(res));
+      });
     }
-  }, [isLogged, navigate]);
+  }, [token, dispatch]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await bookingApi.getBookingsByUserId();
-        setBookings(res.data);
-        const hotelIds = [...new Set(res.data.map((booking) => booking.hotelId))];
-        const hotelDetailsObj = {};
+  const handleCancelBooking = async (bookedId, roomId) => {
+    try {
+      setCancellingId(bookedId);
 
-        await Promise.all(
-          hotelIds.map(async (hotelId) => {
-            try {
-              const hotelRes = await hotelApi.getHotelById(hotelId);
-              hotelDetailsObj[hotelId] = hotelRes.data.hotel;
-            } catch (error) {
-              console.log(`Error fetching hotel ${hotelId}:`, error);
-            }
-          })
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel it!',
+      });
+
+      if (result.isConfirmed) {
+        const response = await bookingApi.cancelBooking(
+          { bookedId, roomId },
+          { headers: { Authorization: token } }
         );
 
-        setHotelDetails(hotelDetailsObj);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
+        Swal.fire('Cancelled!', response.data.message, 'success').then(() => {
+          fetchBookingUser(token).then((res) => {
+            dispatch(dispatchGetBookingUser(res));
+            setCancellingId(null);
+          });
+        });
+      } else {
+        setCancellingId(null);
       }
-    })();
-  }, []);
-
-  const handleCancel = async (bookingId, roomId) => {
-    try {
-      setLoading(true);
-      const res = await bookingApi.cancelBooking({ bookedId: bookingId, roomId });
-      setSuccess(res.data.message);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     } catch (error) {
-      setAlert(error.response.data.message);
-      setTimeout(() => {
-        setAlert('');
-      }, 2000);
-      setLoading(false);
+      console.error('Error cancelling booking:', error);
+      Swal.fire('Error', 'Something went wrong while cancelling your booking', 'error');
+      setCancellingId(null);
     }
   };
 
-  const handleViewDetails = (booking) => {
-    setSelectedBooking(booking);
-    setShowModal(true);
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedBooking(null);
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+
+    try {
+      let date = new Date(dateString);
+
+      if (isNaN(date.getTime())) {
+        const parts = dateString.split('-');
+        if (parts.length === 3) {
+          date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+        }
+      }
+
+      if (isNaN(date.getTime())) {
+        return dateString;
+      }
+
+      return date.toLocaleDateString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return dateString;
+    }
+  };
+
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case 'booked':
+        return 'badge-success';
+      case 'cancelled':
+        return 'badge-danger';
+      default:
+        return 'badge-secondary';
+    }
   };
 
   return (
@@ -87,181 +111,116 @@ const MyBooking = () => {
       {loading ? (
         <Loader />
       ) : (
-        <Fragment>
-          <div className="container mt-5 mb-5">
-            <h2 className="text-center mb-4">My Bookings</h2>
-            {bookings.length === 0 ? (
-              <div className="no-bookings">
-                <h3>You have no bookings yet</h3>
-                <button className="btn btn-primary" onClick={() => navigate('/')}>
-                  Book Now
-                </button>
-              </div>
-            ) : (
+        <div className="my-bookings-container">
+          <div className="d-flex flex-column align-items-center">
+            <Icon width={'8rem'} height={'8rem'} />
+            <h2 className="my-bookings-title">My Bookings</h2>
+          </div>
+
+          {bookings.length === 0 ? (
+            <div className="empty-bookings">
+              <i className="fas fa-calendar-times empty-icon"></i>
+              <h3>You don't have any bookings yet</h3>
+              <p>When you book a room, it will appear here</p>
+              <a href="/" className="btn btn-primary">
+                Browse Rooms
+              </a>
+            </div>
+          ) : (
+            <div className="container">
               <div className="row">
-                {bookings.map((booking) => (
-                  <div className="col-md-6 mb-4" key={booking._id}>
+                {bookings?.map((booking) => (
+                  <div className="col-md-6 col-lg-4 mb-4" key={booking._id}>
                     <div className="booking-card">
-                      <div className="booking-image">
-                        <img src={booking.imageUrls[0]} alt={booking.room} />
-                        <div className={`booking-status ${booking.status}`}>{booking.status}</div>
-                      </div>
-                      <div className="booking-content">
-                        <h4>{booking.room}</h4>
-                        {hotelDetails[booking.hotelId] && (
-                          <h6 className="hotel-name">
-                            <i className="fas fa-hotel"></i> {hotelDetails[booking.hotelId].name}
-                          </h6>
+                      <div className="booking-image-container">
+                        {booking.imageUrls && booking.imageUrls.length > 0 ? (
+                          <img
+                            src={booking.imageUrls[0]}
+                            alt={booking.room}
+                            className="booking-image"
+                          />
+                        ) : (
+                          <div className="no-image">No image available</div>
                         )}
-                        <div className="booking-dates">
-                          <div className="date">
-                            <span>Check In</span>
-                            <strong>{booking.startDate}</strong>
-                          </div>
-                          <div className="date-separator">to</div>
-                          <div className="date">
-                            <span>Check Out</span>
-                            <strong>{booking.endDate}</strong>
-                          </div>
-                        </div>
+                        <span className={`status-badge ${getStatusBadgeClass(booking.status)}`}>
+                          {booking.status === 'booked' ? 'Booked' : 'Cancelled'}
+                        </span>
+                      </div>
+
+                      <div className="booking-details">
+                        <h4 className="room-name">{booking.room}</h4>
+
                         <div className="booking-info">
                           <div className="info-item">
-                            <span>Days</span>
-                            <strong>{booking.totalDays}</strong>
+                            <i className="fas fa-calendar-check"></i>
+                            <div>
+                              <span className="label">Check-in:</span>
+                              <span className="value">{formatDate(booking.startDate)}</span>
+                            </div>
                           </div>
+
                           <div className="info-item">
-                            <span>Amount</span>
-                            <strong>${booking.totalAmount}</strong>
+                            <i className="fas fa-calendar-minus"></i>
+                            <div>
+                              <span className="label">Check-out:</span>
+                              <span className="value">{formatDate(booking.endDate)}</span>
+                            </div>
+                          </div>
+
+                          <div className="info-item">
+                            <i className="fas fa-money-bill-wave"></i>
+                            <div>
+                              <span className="label">Total:</span>
+                              <span className="value">{formatCurrency(booking.totalAmount)}</span>
+                            </div>
+                          </div>
+
+                          <div className="info-item">
+                            <i className="fas fa-credit-card"></i>
+                            <div>
+                              <span className="label">Payment Method:</span>
+                              <span className="value font-bold text-uppercase">
+                                {booking?.paymentMethod}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                        <div className="booking-actions">
-                          <button
-                            className="btn btn-info"
-                            onClick={() => handleViewDetails(booking)}
-                          >
-                            View Details
-                          </button>
-                          {booking.status !== 'cancelled' && (
-                            <button
-                              className="btn btn-danger"
-                              onClick={() => handleCancel(booking._id, booking.roomId)}
-                            >
-                              Cancel
-                            </button>
-                          )}
+
+                        <div className="booking-id">
+                          <small>Booking ID: {booking._id}</small>
                         </div>
+
+                        {booking.status !== 'cancelled' && (
+                          <div className="booking-actions">
+                            <button
+                              className="btn-cancel"
+                              onClick={() => handleCancelBooking(booking._id, booking.roomId)}
+                              disabled={cancellingId === booking._id}
+                            >
+                              {cancellingId === booking._id ? (
+                                <span>
+                                  <i className="fas fa-spinner fa-spin"></i> Processing...
+                                </span>
+                              ) : (
+                                <span>
+                                  <i className="fas fa-times"></i> Cancel Booking
+                                </span>
+                              )}
+                            </button>
+
+                            <a href={`/booking-details/${booking._id}`} className="btn-details">
+                              <i className="fas fa-info-circle"></i> Details
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
-            )}
-            {alert && showErrMsg(alert)}
-            {success && showSuccessMsg(success)}
-          </div>
-
-          {/* Booking Details Modal */}
-          <Modal show={showModal} onHide={handleCloseModal} size="lg" centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Booking Details</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {selectedBooking && (
-                <div className="booking-details-modal">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <img
-                        src={selectedBooking.imageUrls[0]}
-                        alt={selectedBooking.room}
-                        className="img-fluid rounded mb-3"
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <h4>{selectedBooking.room}</h4>
-                      {hotelDetails[selectedBooking.hotelId] && (
-                        <div className="hotel-info mb-3">
-                          <h6>
-                            <i className="fas fa-hotel mr-2"></i>{' '}
-                            {hotelDetails[selectedBooking.hotelId].name}
-                          </h6>
-                          <p>
-                            <i className="fas fa-map-marker-alt mr-2"></i>{' '}
-                            {hotelDetails[selectedBooking.hotelId].address},{' '}
-                            {hotelDetails[selectedBooking.hotelId].city}
-                          </p>
-                        </div>
-                      )}
-                      <div className="booking-status-badge mb-3">
-                        Status:{' '}
-                        <span className={selectedBooking.status}>{selectedBooking.status}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="row mt-3">
-                    <div className="col-md-12">
-                      <h5>Booking Information</h5>
-                      <table className="table table-bordered">
-                        <tbody>
-                          <tr>
-                            <td>Booking ID</td>
-                            <td>{selectedBooking._id}</td>
-                          </tr>
-                          <tr>
-                            <td>Check In</td>
-                            <td>{selectedBooking.startDate}</td>
-                          </tr>
-                          <tr>
-                            <td>Check Out</td>
-                            <td>{selectedBooking.endDate}</td>
-                          </tr>
-                          <tr>
-                            <td>Total Days</td>
-                            <td>{selectedBooking.totalDays}</td>
-                          </tr>
-                          <tr>
-                            <td>Total Amount</td>
-                            <td>${selectedBooking.totalAmount}</td>
-                          </tr>
-                          <tr>
-                            <td>Booking Date</td>
-                            <td>
-                              {new Date(selectedBooking.createdAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Transaction ID</td>
-                            <td>{selectedBooking.transactionId}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Close
-              </Button>
-              {selectedBooking && selectedBooking.status !== 'cancelled' && (
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    handleCancel(selectedBooking._id, selectedBooking.roomId);
-                    handleCloseModal();
-                  }}
-                >
-                  Cancel Booking
-                </Button>
-              )}
-            </Modal.Footer>
-          </Modal>
-        </Fragment>
+            </div>
+          )}
+        </div>
       )}
     </Fragment>
   );

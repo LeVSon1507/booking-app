@@ -1,4 +1,3 @@
-// src/Routes/index.js
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from 'components/Home';
@@ -22,7 +21,7 @@ import HotelDetail from 'components/Home/HotelDetail';
 import GetAllHotels from 'components/Admin/GetAllHotels';
 import AdminHotelDetail from 'components/Admin/HotelDetail';
 import AddHotel from 'components/Admin/AddHotel';
-import AddRoom from 'components/Admin/AddRoom';
+import AddRoomForm from 'components/Admin/AddRoomForm';
 
 const Router = () => {
   return (
@@ -41,7 +40,7 @@ const Router = () => {
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/users" element={<GetAllUser />} />
       <Route path="/admin/rooms" element={<GetAllRoom />} />
-      <Route path="/admin/add-room/:hotelId" element={<AddRoom />} />
+      <Route path="/admin/add-room/:hotelId" element={<AddRoomForm />} />
       <Route path="/admin/bookings" element={<GetAllBooking />} />
       <Route path="/admin/booking/:id" element={<BookingDetail />} />
       <Route path="/admin/room/:id" element={<RoomDetail />} />

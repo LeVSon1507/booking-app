@@ -1,108 +1,133 @@
+.my-bookings-container {
+  padding: 30px 0;
+}
+
+.my-bookings-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
 .booking-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  height: 100%;
-  transition: transform 0.3s ease;
 }
 
 .booking-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.booking-image-container {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
 }
 
 .booking-image {
-  position: relative;
-  height: 200px;
-}
-
-.booking-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
-.booking-status {
+.booking-card:hover .booking-image {
+  transform: scale(1.05);
+}
+
+.no-image {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  color: #999;
+  font-style: italic;
+}
+
+.status-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
+  top: 15px;
+  right: 15px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.8rem;
+  color: white;
 }
 
-.booking-status.booked {
+.badge-success {
   background-color: #28a745;
-  color: white;
 }
 
-.booking-status.cancelled {
+.badge-danger {
   background-color: #dc3545;
-  color: white;
 }
 
-.booking-content {
-  padding: 15px;
+.badge-secondary {
+  background-color: #6c757d;
+}
+
+.booking-details {
+  padding: 20px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-.booking-content h4 {
-  margin-bottom: 5px;
-}
-
-.hotel-name {
-  color: #666;
+.room-name {
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 15px;
-}
-
-.hotel-name i {
-  margin-right: 5px;
-}
-
-.booking-dates {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-}
-
-.date {
-  display: flex;
-  flex-direction: column;
-}
-
-.date span {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-.date-separator {
-  color: #999;
+  color: #333;
 }
 
 .booking-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  flex-grow: 1;
 }
 
 .info-item {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 12px;
 }
 
-.info-item span {
-  font-size: 0.8rem;
+.info-item i {
+  margin-right: 12px;
+  color: #e2ba76;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  margin-top: 3px;
+}
+
+.info-item .label {
+  font-weight: 500;
   color: #666;
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.info-item .value {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.booking-id {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  color: #999;
+  font-size: 12px;
+  word-break: break-all;
 }
 
 .booking-actions {
@@ -111,56 +136,81 @@
   margin-top: auto;
 }
 
-.booking-actions button {
-  flex: 1;
-  margin: 0 5px;
+.btn-cancel,
+.btn-details {
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
-.no-bookings {
+.btn-cancel {
+  background-color: #fff;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-details {
+  background-color: #f8f9fa;
+  color: #e2ba76;
+  border: 1px solid #dee2e6;
+}
+
+.btn-details:hover {
+  background-color: #e9ecef;
+  color: #e2ba76;
+}
+
+.btn-cancel i,
+.btn-details i {
+  margin-right: 5px;
+}
+
+.empty-bookings {
   text-align: center;
-  padding: 50px 0;
+  padding: 60px 20px;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.no-bookings h3 {
+.empty-icon {
+  font-size: 60px;
+  color: #ccc;
   margin-bottom: 20px;
 }
 
-.booking-status-badge {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #f5f5f5;
+.empty-bookings h3 {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #555;
 }
 
-.booking-status-badge span {
-  padding: 3px 8px;
-  border-radius: 3px;
-  font-weight: bold;
-  text-transform: uppercase;
+.empty-bookings p {
+  color: #888;
+  margin-bottom: 25px;
 }
 
-.booking-status-badge span.booked {
-  background-color: #28a745;
-  color: white;
-}
-
-.booking-status-badge span.cancelled {
-  background-color: #dc3545;
-  color: white;
-}
-
-.hotel-info {
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.hotel-info h6,
-.hotel-info p {
-  margin-bottom: 5px;
-}
-
-.hotel-info i {
-  margin-right: 8px;
+@media (max-width: 767px) {
+  .booking-card {
+    margin-bottom: 20px;
+  }
 }

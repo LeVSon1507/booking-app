@@ -33,17 +33,17 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await userApi.login({ email, password });
-      setUser({ ...user, err: '', success: res.message });
-      console.log(res);
-      setLoading(false);
-
+      localStorage.setItem('token', res.data?.token || '');
       localStorage.setItem('userCurrent', true);
+
+      setUser({ ...user, err: '', success: res.data?.message });
+      setLoading(false);
 
       dispatch(dispatchLogin());
       navigate('/');
     } catch (err) {
-      err.response.data.message &&
-        setUser({ ...user, err: err.response.data.message, success: '' });
+      const errorMessage = err.response?.data?.message || 'Login failed';
+      setUser({ ...user, err: errorMessage, success: '' });
       setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
       setLoading(false);
     }

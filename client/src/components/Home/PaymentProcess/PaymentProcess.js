@@ -6,7 +6,6 @@ import { bookingApi } from 'api/bookingApi';
 import { ReactComponent as PaymentIcon } from '../../../images/payment-card.svg';
 
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
-
 const PaymentProcess = ({
   room,
   bookingInfo,
@@ -29,7 +28,7 @@ const PaymentProcess = ({
   });
 
   const paypalOptions = {
-    'client-id': 'AeLhcrJR5isasR4bmqKGOk0Z2Umpa4nChNSix_siHE_ovsZIbLnVI3Bw6lUsE98MqXyFKzHk2Mcc9d1N', // Replace with your actual client ID
+    'client-id': process.env.PAYPAL_CLIENT_ID,
     currency: 'USD',
     intent: 'capture',
   };
@@ -41,11 +40,12 @@ const PaymentProcess = ({
       const bookingDetail = {
         room,
         userId: user._id,
+        hotelId: room.hotelId,
         startDate: startDate.format('YYYY-MM-DD'),
         endDate: endDate.format('YYYY-MM-DD'),
         totalAmount,
         totalDays: Number(totalDays),
-        paymentMethod: 'Cash on Arrival',
+        paymentMethod: 'Cash',
         isPaid: false,
         guestInfo: bookingInfo,
       };
@@ -61,11 +61,10 @@ const PaymentProcess = ({
         'Your booking has been confirmed. You will pay on arrival.',
         'success'
       ).then(() => {
-        navigate('/mybooking');
+        navigate('/my-booking');
       });
     } catch (error) {
       setPaymentLoading(false);
-      console.error('Booking error:', error);
       Swal.fire('Booking Failed', error.response?.data?.message || 'Something went wrong', 'error');
     }
   };
@@ -100,7 +99,7 @@ const PaymentProcess = ({
         'Your booking has been confirmed and payment received.',
         'success'
       ).then(() => {
-        navigate('/mybooking');
+        navigate('/my-booking');
       });
     } catch (error) {
       setPaymentLoading(false);
@@ -288,7 +287,7 @@ const PaymentProcess = ({
                                   'Your booking has been confirmed and payment received.',
                                   'success'
                                 ).then(() => {
-                                  navigate('/mybooking');
+                                  navigate('/my-booking');
                                 });
                               } catch (error) {
                                 setPaymentLoading(false);

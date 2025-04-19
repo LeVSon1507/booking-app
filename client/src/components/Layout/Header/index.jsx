@@ -58,7 +58,7 @@ function Header() {
         <ul className="dropdown">
           {user && user.role !== 1 ? (
             <li>
-              <Link to="/mybooking">Booking</Link>
+              <Link to="/my-booking">Booking</Link>
             </li>
           ) : (
             <li>

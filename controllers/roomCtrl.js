@@ -1,5 +1,6 @@
 const Room = require("../models/roomModel");
 const Hotel = require("../models/hotelModel");
+const mongoose = require("mongoose");
 
 const roomCtrl = {
   getAllRooms: async (req, res, next) => {
@@ -64,11 +65,26 @@ const roomCtrl = {
   getRoomsByHotelId: async (req, res, next) => {
     try {
       const { hotelId } = req.params;
+      console.log("Fetching rooms for hotelId:", hotelId);
+
+      if (!mongoose.Types.ObjectId.isValid(hotelId)) {
+        return res.status(400).json({
+          message: "Invalid hotel ID format",
+          rooms: [],
+        });
+      }
+
       const rooms = await Room.find({ hotelId });
+      console.log(`Found ${rooms.length} rooms for hotel ${hotelId}`);
 
       return res.status(200).json(rooms);
     } catch (error) {
-      next(error);
+      console.error("Error in getRoomsByHotelId:", error);
+      return res.status(500).json({
+        message: "Server error when fetching rooms",
+        error: error.message,
+        rooms: [],
+      });
     }
   },
 

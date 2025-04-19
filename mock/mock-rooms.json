@@ -1,0 +1,216 @@
+[
+  {
+    "_id": "60d21b4667d0d8992e610c90",
+    "name": "Deluxe King Room",
+    "hotelId": "60d21b4667d0d8992e610c85",
+    "type": "Deluxe",
+    "price": 299,
+    "capacity": 2,
+    "description": "Spacious room with a king-size bed, luxury linens, and a marble bathroom. Features a city view, work desk, and sitting area.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "King Bed",
+      "City View",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Mini Bar",
+      "Free Wi-Fi",
+      "Coffee Machine"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c91",
+    "name": "Executive Suite",
+    "hotelId": "60d21b4667d0d8992e610c85",
+    "type": "Suite",
+    "price": 499,
+    "capacity": 3,
+    "description": "Elegant suite with separate living room and bedroom featuring a king-size bed. Includes premium amenities, a deep soaking tub, and panoramic city views.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "King Bed",
+      "Separate Living Area",
+      "Panoramic View",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Mini Bar",
+      "Free Wi-Fi",
+      "Coffee Machine",
+      "Bathrobe & Slippers"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c92",
+    "name": "Twin Room",
+    "hotelId": "60d21b4667d0d8992e610c85",
+    "type": "Standard",
+    "price": 249,
+    "capacity": 2,
+    "description": "Comfortable room with two twin beds, modern amenities, and a work desk. Perfect for friends or colleagues traveling together.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "Twin Beds",
+      "City View",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Mini Bar",
+      "Free Wi-Fi"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c93",
+    "name": "Ocean View Suite",
+    "hotelId": "60d21b4667d0d8992e610c86",
+    "type": "Suite",
+    "price": 599,
+    "capacity": 2,
+    "description": "Luxurious suite with a private balcony overlooking the ocean. Features a king-size bed, separate living area, and a spa-inspired bathroom with a rainfall shower.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "King Bed",
+      "Ocean View",
+      "Private Balcony",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Mini Bar",
+      "Free Wi-Fi",
+      "Coffee Machine",
+      "Bathrobe & Slippers"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c94",
+    "name": "Beachfront Bungalow",
+    "hotelId": "60d21b4667d0d8992e610c86",
+    "type": "Bungalow",
+    "price": 799,
+    "capacity": 4,
+    "description": "Private bungalow steps away from the beach with a spacious bedroom, living area, and kitchenette. Enjoy direct beach access and a private patio with loungers.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1599619351208-3e6c839d6828?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "King Bed",
+      "Sofa Bed",
+      "Beachfront",
+      "Private Patio",
+      "Kitchenette",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Free Wi-Fi",
+      "Outdoor Shower"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c95",
+    "name": "Poolside Room",
+    "hotelId": "60d21b4667d0d8992e610c86",
+    "type": "Standard",
+    "price": 349,
+    "capacity": 2,
+    "description": "Convenient room with direct access to the pool area. Features a queen-size bed, modern decor, and a small patio with pool views.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "Queen Bed",
+      "Pool Access",
+      "Patio",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Mini Bar",
+      "Free Wi-Fi"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c96",
+    "name": "Mountain View Cabin",
+    "hotelId": "60d21b4667d0d8992e610c87",
+    "type": "Cabin",
+    "price": 399,
+    "capacity": 2,
+    "description": "Cozy cabin with stunning mountain views, a fireplace, and rustic decor. Features a queen-size bed and a private deck with seating area.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1518602164848-4f07461bedf0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "Queen Bed",
+      "Fireplace",
+      "Mountain View",
+      "Private Deck",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Coffee Machine",
+      "Free Wi-Fi"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c97",
+    "name": "Family Suite",
+    "hotelId": "60d21b4667d0d8992e610c87",
+    "type": "Suite",
+    "price": 549,
+    "capacity": 5,
+    "description": "Spacious suite perfect for families with a master bedroom, second bedroom with twin beds, and a living area with a sofa bed. Includes a kitchenette and dining area.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1574643156929-51fa098b0394?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "King Bed",
+      "Twin Beds",
+      "Sofa Bed",
+      "Kitchenette",
+      "Dining Area",
+      "Mountain View",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Free Wi-Fi"
+    ]
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c98",
+    "name": "Rustic Lodge Room",
+    "hotelId": "60d21b4667d0d8992e610c87",
+    "type": "Standard",
+    "price": 299,
+    "capacity": 2,
+    "description": "Charming room with rustic mountain decor, a comfortable queen-size bed, and forest views. Features wooden furnishings and a cozy atmosphere.",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1566195992011-5f6b21e539aa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1596957901846-a0722f546502?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "isAvailable": true,
+    "features": [
+      "Queen Bed",
+      "Forest View",
+      "Air Conditioning",
+      "Flat-screen TV",
+      "Coffee Machine",
+      "Free Wi-Fi"
+    ]
+  }
+]

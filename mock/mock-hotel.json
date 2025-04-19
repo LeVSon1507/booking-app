@@ -1,0 +1,123 @@
+[
+  {
+    "_id": "60d21b4667d0d8992e610c85",
+    "name": "Grand Luxury Hotel",
+    "address": "123 Main Street",
+    "city": "New York",
+    "description": "Experience luxury and comfort in the heart of New York City. Our hotel offers premium amenities, spacious rooms, and exceptional service to make your stay unforgettable.",
+    "rating": 4.8,
+    "reviews": [
+      {
+        "userId": "60d0fe4f5311236168a109ca",
+        "name": "John Doe",
+        "rating": 5,
+        "comment": "Excellent service and beautiful rooms!"
+      },
+      {
+        "userId": "60d0fe4f5311236168a109cb",
+        "name": "Jane Smith",
+        "rating": 4.5,
+        "comment": "Great location and friendly staff."
+      }
+    ],
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Free Wi-Fi",
+      "Swimming Pool",
+      "Fitness Center",
+      "Restaurant",
+      "Spa",
+      "Room Service",
+      "Concierge"
+    ],
+    "contactInfo": {
+      "phone": "+1 212-555-1234",
+      "email": "info@grandluxuryhotel.com"
+    }
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c86",
+    "name": "Seaside Resort & Spa",
+    "address": "456 Beach Avenue",
+    "city": "Miami",
+    "description": "Escape to our beachfront paradise with stunning ocean views and world-class amenities. Enjoy direct beach access, multiple pools, and a full-service spa for the ultimate relaxation experience.",
+    "rating": 4.6,
+    "reviews": [
+      {
+        "userId": "60d0fe4f5311236168a109cc",
+        "name": "Robert Johnson",
+        "rating": 5,
+        "comment": "Perfect beach vacation! The views are amazing."
+      },
+      {
+        "userId": "60d0fe4f5311236168a109cd",
+        "name": "Emily Wilson",
+        "rating": 4.2,
+        "comment": "Beautiful property but the restaurant was a bit expensive."
+      }
+    ],
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1540541338287-41700207dee6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Free Wi-Fi",
+      "Beachfront",
+      "Swimming Pools",
+      "Spa",
+      "Restaurant",
+      "Bar",
+      "Fitness Center",
+      "Water Sports"
+    ],
+    "contactInfo": {
+      "phone": "+1 305-555-6789",
+      "email": "reservations@seasideresort.com"
+    }
+  },
+  {
+    "_id": "60d21b4667d0d8992e610c87",
+    "name": "Mountain View Lodge",
+    "address": "789 Alpine Road",
+    "city": "Denver",
+    "description": "Nestled in the Rocky Mountains, our lodge offers a cozy retreat with breathtaking mountain views. Enjoy outdoor activities year-round, from skiing in winter to hiking in summer, all while experiencing rustic luxury.",
+    "rating": 4.5,
+    "reviews": [
+      {
+        "userId": "60d0fe4f5311236168a109ce",
+        "name": "Michael Brown",
+        "rating": 4.7,
+        "comment": "Great hiking trails and the staff was very knowledgeable about local attractions."
+      },
+      {
+        "userId": "60d0fe4f5311236168a109cf",
+        "name": "Sarah Davis",
+        "rating": 4.3,
+        "comment": "Cozy rooms with amazing views. Perfect for a weekend getaway."
+      }
+    ],
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1517840901100-8179e982acb7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1469796466635-455ede028aca?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80"
+    ],
+    "amenities": [
+      "Free Wi-Fi",
+      "Fireplace",
+      "Restaurant",
+      "Bar",
+      "Hiking Trails",
+      "Ski Storage",
+      "Shuttle Service"
+    ],
+    "contactInfo": {
+      "phone": "+1 303-555-9876",
+      "email": "info@mountainviewlodge.com"
+    }
+  }
+]

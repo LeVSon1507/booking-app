@@ -21,9 +21,8 @@ export const bookingApi = {
     const url = '/api/cancelbooking';
     return axiosClient.post(url, data, token);
   },
-  deleteBooking(id,data ,token) {
+  deleteBooking(id, data, token) {
     const url = `/api/booking/${id}`;
-    return axiosClient.delete(url,data ,token);
+    return axiosClient.delete(url, data, token);
   },
-
 };
