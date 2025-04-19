@@ -32,7 +32,7 @@ Documents the process of searching for, selecting, and booking hotel rooms.
 
 ### Payment Processing
 
-<img src='./sequence-diagram/payment-processing-sequence.svg' width="500">
+<img src='./sequence-diagram/booking-and-payment-sequence.svg' width="500">
 
 Unified sequence diagram showing both PayPal and cash payment flows:
 
@@ -46,13 +46,13 @@ Unified sequence diagram showing both PayPal and cash payment flows:
 
 ### System Architecture
 
-<img src='./docs/architecture/system-architecture.svg' width="500">
+<img src='./sequence-diagram/system-architecture.svg' width="500">
 
 Provides a high-level overview of the application's components, services, and their interactions.
 
 ### Frontend Structure
 
-<img src='./docs/architecture/frontend-structure.svg' width="500">
+<img src='./sequence-diagram/frontend-structure.svg' width="500">
 
 Details the React component hierarchy, Redux store organization, and client-side routing.
 
