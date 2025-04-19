@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -13,7 +14,8 @@ import { ReactComponent as IconMoney } from '../../../images/money3.svg';
 
 import './BookingRoom.css';
 
-const BookingRoom = ({ match }) => {
+const BookingRoom = () => {
+  const { id, startDate: startDateParam, endDate: endDateParam } = useParams();
   const [room, setRoom] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,9 +36,8 @@ const BookingRoom = ({ match }) => {
     currency: 'USD',
   });
 
-  const roomId = match.params.id;
-  const startDate = moment(match.params.startDate, 'DD-MM-YYYY');
-  const endDate = moment(match.params.endDate, 'DD-MM-YYYY');
+  const startDate = moment(startDateParam, 'DD-MM-YYYY');
+  const endDate = moment(endDateParam, 'DD-MM-YYYY');
 
   const totalDays = moment.duration(endDate.diff(startDate)).asDays();
   const totalAmount = totalDays * (room?.price || 0);
@@ -45,7 +46,7 @@ const BookingRoom = ({ match }) => {
     const fetchRoomDetails = async () => {
       try {
         setLoading(true);
-        const response = await roomApi.getRoomById(roomId);
+        const response = await roomApi.getRoomById(id);
         setRoom(response.data);
         setLoading(false);
         window.scrollTo(0, 0);
@@ -56,7 +57,7 @@ const BookingRoom = ({ match }) => {
     };
 
     fetchRoomDetails();
-  }, [roomId]);
+  }, [id]);
 
   useEffect(() => {
     if (user) {

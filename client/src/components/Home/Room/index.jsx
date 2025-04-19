@@ -1,7 +1,7 @@
 import { showErrMsg } from 'components/utils/Notification';
 import React, { useState } from 'react';
 import { Button, Carousel, Modal } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Room.css';
 
 const Room = ({ room, startDate, endDate }) => {
@@ -9,7 +9,7 @@ const Room = ({ room, startDate, endDate }) => {
     style: 'currency',
     currency: 'USD',
   });
-  const history = useHistory();
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [alert, setAlert] = useState('');
 
@@ -28,7 +28,7 @@ const Room = ({ room, startDate, endDate }) => {
         setAlert(null);
       }, 1500);
     } else {
-      history.push(`/book/${room._id}/${startDate}/${endDate}`);
+      navigate(`/book/${room._id}/${startDate}/${endDate}`);
     }
   };
   return (

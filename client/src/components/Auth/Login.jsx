@@ -5,7 +5,7 @@ import React, { Fragment, useState } from 'react';
 import FacebookLogin from 'react-facebook-login';
 // import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { dispatchLogin } from 'redux/actions/authAction';
 import { showErrMsg, showSuccessMsg } from '../utils/Notification';
 import { ReactComponent as LoginIcon } from '../../images/login.svg';
@@ -19,7 +19,7 @@ const Login = () => {
     success: '',
   });
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { email, password, err, success } = user;
 
@@ -40,7 +40,7 @@ const Login = () => {
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
-      history.push('/');
+      navigate('/');
     } catch (err) {
       err.response.data.message &&
         setUser({ ...user, err: err.response.data.message, success: '' });
@@ -59,7 +59,7 @@ const Login = () => {
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
-      history.push('/');
+      navigate('/');
     } catch (err) {
       err.response.data.message &&
         setUser({ ...user, err: err.response.data.message, success: '' });
@@ -78,7 +78,7 @@ const Login = () => {
       localStorage.setItem('userCurrent', true);
 
       dispatch(dispatchLogin());
-      history.push('/');
+      navigate('/');
     } catch (err) {
       err.response.data.message &&
         setUser({ ...user, err: err.response.data.message, success: '' });

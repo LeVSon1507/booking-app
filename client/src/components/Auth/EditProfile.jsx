@@ -2,12 +2,12 @@ import userApi from 'api/userApi';
 import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 function EditProfile(props) {
   const { id } = useParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [editUser, setEditUser] = useState([]);
 
   const users = useSelector((state) => state.users);
@@ -25,9 +25,9 @@ function EditProfile(props) {
         }
       });
     } else {
-      history.push('/profile');
+      navigate('/profile');
     }
-  }, [users, id, history]);
+  }, [users, id, navigate]);
 
   const handleUpdate = async () => {
     try {

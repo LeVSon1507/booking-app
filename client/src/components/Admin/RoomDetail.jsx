@@ -2,8 +2,10 @@ import { roomApi } from 'api/roomApi';
 import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-const RoomDetail = ({ match }) => {
+const RoomDetail = () => {
+  const { id } = useParams();
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -11,12 +13,10 @@ const RoomDetail = ({ match }) => {
   const [loading, setLoading] = useState(true);
   const [room, setRoom] = useState([]);
 
-  const roomId = match.params.id;
-
   useEffect(() => {
     (async () => {
       try {
-        const response = await roomApi.getRoomById(`${roomId}`);
+        const response = await roomApi.getRoomById(`${id}`);
         setRoom(response.data);
         setLoading(false);
       } catch (error) {
@@ -24,7 +24,7 @@ const RoomDetail = ({ match }) => {
         console.log(error);
       }
     })();
-  }, [roomId]);
+  }, [id]);
 
   return (
     <Fragment>

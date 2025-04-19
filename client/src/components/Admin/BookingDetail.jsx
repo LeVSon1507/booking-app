@@ -3,8 +3,10 @@ import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-const BookingDetail = ({ match }) => {
+const BookingDetail = () => {
+  const { id } = useParams();
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -13,13 +15,11 @@ const BookingDetail = ({ match }) => {
   const [booking, setBooking] = useState([]);
   const token = useSelector((state) => state.token);
 
-  const bookingId = match.params.id;
-
   const getBooking = useCallback(async () => {
-    return await bookingApi.getBookingById(`${bookingId}`, {
+    return await bookingApi.getBookingById(`${id}`, {
       headers: { Authorization: token },
     });
-  }, [token, bookingId]);
+  }, [token, id]);
 
   useEffect(() => {
     (async () => {

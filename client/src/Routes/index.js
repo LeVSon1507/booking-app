@@ -14,40 +14,38 @@ import MyBooking from 'components/MyBooking';
 import NotFound from 'components/utils/NotFound';
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
-import { Route, Switch } from 'react-router';
+import { Route, Routes } from 'react-router-dom';
 
-const Routes = () => {
+const AppRoutes = () => {
   const auth = useSelector((state) => state.auth);
   const { isLogged, isAdmin } = auth;
   return (
-    <Switch>
+    <Routes>
       <Fragment>
-        <Route path="/login" component={Login} exact />
-        <Route path="/register" component={Register} exact />
-        <Route path="/forgot_password" component={isLogged ? NotFound : ForgotPassword} exact />
-        <Route path="/api/auth/reset-password/:token" component={ResetPassword} exact />
-        <Route path="/api/auth/activate/:activation_token" component={ActivationEmail} exact />
-        <Route path="/profile" component={isLogged ? Profile : NotFound} exact />
-        <Route path="/edit_user/:id" component={isAdmin ? EditProfile : NotFound} exact />
-        <Route path="/" component={Home} exact />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot_password" element={isLogged ? <NotFound /> : <ForgotPassword />} />
+        <Route path="/api/auth/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/api/auth/activate/:activation_token" element={<ActivationEmail />} />
+        <Route path="/profile" element={isLogged ? <Profile /> : <NotFound />} />
+        <Route path="/edit_user/:id" element={isAdmin ? <EditProfile /> : <NotFound />} />
+        <Route path="/" element={<Home />} />
         <Route
           path="/book/:id/:startDate/:endDate"
-          component={isLogged ? BookingRoom : Login}
-          exact
+          element={isLogged ? <BookingRoom /> : <Login />}
         />
-        <Route path="/mybooking" component={MyBooking} exact />
-        <Route path="/booking-details/:id" component={BookingDetail} exact />
+        <Route path="/mybooking" element={<MyBooking />} />
+        <Route path="/booking-details/:id" element={<BookingDetail />} />
 
-        <Route path="/admin" component={isAdmin ? Admin : NotFound} exact />
+        <Route path="/admin" element={isAdmin ? <Admin /> : <NotFound />} />
         <Route
           path="/admin/booking-detail/:id"
-          component={isAdmin ? BookingDetail : NotFound}
-          exact
+          element={isAdmin ? <BookingDetail /> : <NotFound />}
         />
-        <Route path="/admin/room-detail/:id" component={isAdmin ? RoomDetail : NotFound} exact />
+        <Route path="/admin/room-detail/:id" element={isAdmin ? <RoomDetail /> : <NotFound />} />
       </Fragment>
-    </Switch>
+    </Routes>
   );
 };
 
-export default Routes;
+export default AppRoutes;

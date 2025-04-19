@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { bookingApi } from 'api/bookingApi';
 import { ReactComponent as PaymentIcon } from '../../../images/payment-card.svg';
@@ -16,7 +16,7 @@ const PaymentProcess = ({
   totalAmount,
   onBack,
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const token = useSelector((state) => state.token);
 
@@ -61,7 +61,7 @@ const PaymentProcess = ({
         'Your booking has been confirmed. You will pay on arrival.',
         'success'
       ).then(() => {
-        history.push('/mybooking');
+        navigate('/mybooking');
       });
     } catch (error) {
       setPaymentLoading(false);
@@ -100,7 +100,7 @@ const PaymentProcess = ({
         'Your booking has been confirmed and payment received.',
         'success'
       ).then(() => {
-        history.push('/mybooking');
+        navigate('/mybooking');
       });
     } catch (error) {
       setPaymentLoading(false);
@@ -115,7 +115,7 @@ const PaymentProcess = ({
         <div className="col-lg-8">
           <div className="card shadow">
             <div className="d-flex align-items-center card-header text-white">
-              <h3 className="mb-0 mx-2">Payment Options</h3>
+              <h3 className="mb-0 mx-2 text-black font-bold">Payment Options</h3>
               <PaymentIcon width={100} height={100} />
             </div>
             <div className="card-body">
@@ -194,34 +194,36 @@ const PaymentProcess = ({
               ) : (
                 <>
                   <div className="booking-summary mb-4">
-                    <h4 className="color-[#e2ba76]">Booking Summary</h4>
+                    <h4 className="text-primary1" style={{ fontWeight: 'bold', color: '#e2ba76' }}>
+                      Booking Summary
+                    </h4>
                     <div className="row">
                       <div className="col-md-6">
-                        <p>
+                        <p className="text-black">
                           <strong>Room:</strong> {room.name}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Check-in:</strong> {startDate.format('DD MMM YYYY')}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Check-out:</strong> {endDate.format('DD MMM YYYY')}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Duration:</strong> {totalDays}{' '}
                           {totalDays === 1 ? 'night' : 'nights'}
                         </p>
                       </div>
                       <div className="col-md-6">
-                        <p>
+                        <p className="text-black">
                           <strong>Guest:</strong> {bookingInfo.name}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Email:</strong> {bookingInfo.email}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Phone:</strong> {bookingInfo.phone}
                         </p>
-                        <p>
+                        <p className="text-black">
                           <strong>Total Amount:</strong> {formatter.format(totalAmount)}
                         </p>
                       </div>
@@ -229,7 +231,12 @@ const PaymentProcess = ({
                   </div>
 
                   <div className="payment-methods">
-                    <h4 className="mb-3">Select Payment Method</h4>
+                    <h4
+                      className="mb-3 text-primary1"
+                      style={{ fontWeight: 'bold', color: '#e2ba76' }}
+                    >
+                      Select Payment Method
+                    </h4>
 
                     <div className="payment-option mb-4">
                       <h5>Pay with PayPal</h5>
@@ -281,7 +288,7 @@ const PaymentProcess = ({
                                   'Your booking has been confirmed and payment received.',
                                   'success'
                                 ).then(() => {
-                                  history.push('/mybooking');
+                                  navigate('/mybooking');
                                 });
                               } catch (error) {
                                 setPaymentLoading(false);

@@ -1,5 +1,5 @@
 import userApi from 'api/userApi';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navbar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -10,23 +10,30 @@ function Header() {
   const auth = useSelector((state) => state.auth);
   const { user, isLogged } = auth;
 
-  window.onscroll = function () {
-    const header = document.querySelector('header');
-    if (document.body.scrollTop >= 400 || document.documentElement.scrollTop >= 400) {
-      header.classList.add('sticky');
-    } else {
-      header.classList.remove('sticky');
-    }
-
-    const bookingFixed = document.querySelector('#booking-fixed');
-    if (bookingFixed) {
-      if (document.body.scrollTop >= 600 || document.documentElement.scrollTop >= 600) {
-        bookingFixed.classList.add('fixed');
-      } else {
-        bookingFixed.classList.remove('fixed');
+  useEffect(() => {
+    const handleScroll = () => {
+      const header = document.querySelector('header');
+      if (header) {
+        if (document.body.scrollTop >= 400 || document.documentElement.scrollTop >= 400) {
+          header.classList.add('sticky');
+        } else {
+          header.classList.remove('sticky');
+        }
       }
-    }
-  };
+
+      const bookingFixed = document.querySelector('#booking-fixed');
+      if (bookingFixed) {
+        if (document.body.scrollTop >= 600 || document.documentElement.scrollTop >= 600) {
+          bookingFixed.classList.add('fixed');
+        } else {
+          bookingFixed.classList.remove('fixed');
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
