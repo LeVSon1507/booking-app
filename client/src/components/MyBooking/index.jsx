@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { dispatchGetBookingUser, fetchBookingUser } from 'redux/actions/bookingAction';
 import Swal from 'sweetalert2';
 import './MyBooking.css';
-import { ReactComponent as Icon } from '../../images/Domain Names Illustration.svg';
+import { ReactComponent as Icon } from '../../images/my-booking-icon.svg';
 
 const MyBooking = () => {
   const token = useSelector((state) => state.token);

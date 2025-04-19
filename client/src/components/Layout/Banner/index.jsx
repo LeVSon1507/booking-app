@@ -1,6 +1,6 @@
 import React from 'react';
-import { ReactComponent as WelcomeIcon } from '../../../images/Apartment.svg';
-import { ReactComponent as Icon1 } from '../../../images/Travel Plans Illustration.svg';
+import { ReactComponent as WelcomeIcon } from '../../../images/welcome-icon.svg';
+import { ReactComponent as WelcomeIcon2 } from '../../../images/welcome-icon-2.svg';
 
 const Banner = () => {
   return (
@@ -14,7 +14,7 @@ const Banner = () => {
         </p>
 
         <a href="#home" className="head-btn">
-          <Icon1 style={{ width: '70px', height: '100px', marginRight: '10px' }} />
+          <WelcomeIcon2 style={{ width: '70px', height: '100px', marginRight: '10px' }} />
           WELCOME
         </a>
       </div>

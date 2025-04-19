@@ -3,11 +3,12 @@ import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useState } from 'react';
 import FacebookLogin from 'react-facebook-login';
-import { GoogleLogin } from 'react-google-login';
+// import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { dispatchLogin } from 'redux/actions/authAction';
 import { showErrMsg, showSuccessMsg } from '../utils/Notification';
+import { ReactComponent as LoginIcon } from '../../images/login.svg';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -91,7 +92,12 @@ const Login = () => {
         <Loader />
       ) : (
         <div className="login_page">
-          <h2 className="text-center">Login</h2>
+          <div className="d-flex justify-content-center align-items-center">
+            <h2 className="text-center" style={{ color: '#e2ba76' }}>
+              Login
+            </h2>
+            <LoginIcon width={100} height={100} />
+          </div>
           {err && showErrMsg(err)}
           {success && showSuccessMsg(success)}
 
@@ -124,21 +130,27 @@ const Login = () => {
               <button type="submit">
                 <b>Login</b>
               </button>
-              <Link to="/forgot_password" className="d-flex justify-content-end">
+              <Link
+                to="/forgot_password"
+                className="d-flex justify-content-end"
+                style={{ color: '#e2ba76' }}
+              >
                 Forgot password?
               </Link>
             </div>
           </form>
 
-          <div className="hr text-center">Or login with</div>
+          <div style={{ color: '#e2ba76' }} className="hr text-center">
+            Or login with
+          </div>
 
           <div className="social">
-            <GoogleLogin
+            {/* <GoogleLogin
               clientId="97287736977-qnt2i1j8hf2tqok4dj0fb86hrpfnglim.apps.googleusercontent.com"
               buttonText="Login with Google"
               onSuccess={responseGoogle}
               cookiePolicy={'single_host_origin'}
-            />
+            /> */}
 
             <FacebookLogin
               appId="685178710652906"

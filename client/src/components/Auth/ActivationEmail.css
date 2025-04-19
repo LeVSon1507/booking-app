@@ -1,0 +1,154 @@
+.activation-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.activation-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.status-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 24px;
+}
+
+.status-icon.success {
+  color: #28a745;
+}
+
+.status-icon.error {
+  color: #dc3545;
+}
+
+h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.message {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.redirect-info {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.countdown {
+  font-weight: bold;
+  color: #e85042;
+  font-size: 20px;
+}
+
+button {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  margin: 8px;
+}
+
+.redirect-button {
+  background-color: #e85042;
+  color: white;
+}
+
+.redirect-button:hover {
+  background-color: #d63a2a;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.retry-button {
+  background-color: #e85042;
+  color: white;
+}
+
+.home-button {
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.retry-button:hover {
+  background-color: #d63a2a;
+}
+
+.home-button:hover {
+  background-color: #e9ecef;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #e85042;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 24px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .activation-card {
+    padding: 30px 20px;
+  }
+
+  .status-icon {
+    width: 100px;
+    height: 100px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  .message {
+    font-size: 16px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+}

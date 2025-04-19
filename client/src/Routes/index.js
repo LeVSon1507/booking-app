@@ -38,7 +38,7 @@ const Routes = () => {
           exact
         />
         <Route path="/mybooking" component={MyBooking} exact />
-        {/* <Route  component={NotFound}/> */}
+        <Route path="/booking-details/:id" component={BookingDetail} exact />
 
         {/* Admin */}
         <Route path="/admin" component={isAdmin ? Admin : NotFound} exact />

@@ -1,184 +1,351 @@
-import { bookingApi } from 'api/bookingApi';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
+import Swal from 'sweetalert2';
+
 import { roomApi } from 'api/roomApi';
+
 import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import { showErrMsg } from 'components/utils/Notification';
-import moment from 'moment';
-import React, { Fragment, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import Swal from 'sweetalert2';
+import PaymentProcess from '../PaymentProcess/PaymentProcess';
+import { ReactComponent as IconMoney } from '../../../images/money3.svg';
+
 import './BookingRoom.css';
 
 const BookingRoom = ({ match }) => {
-  const formater = new Intl.NumberFormat('en-US', {
+  const [room, setRoom] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showPayment, setShowPayment] = useState(false);
+  const [bookingInfo, setBookingInfo] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    specialRequests: '',
+  });
+
+  const { user } = useSelector((state) => state.auth);
+
+  const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   });
-  const { user } = useSelector((state) => state.auth);
-  const token = useSelector((state) => state.token);
-  const [room, setRoom] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [disable, setDisable] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const roomId = match.params.id;
   const startDate = moment(match.params.startDate, 'DD-MM-YYYY');
   const endDate = moment(match.params.endDate, 'DD-MM-YYYY');
 
+  // Calculate booking details
   const totalDays = moment.duration(endDate.diff(startDate)).asDays();
-  let totalAmount = totalDays * room.price;
+  const totalAmount = totalDays * (room?.price || 0);
 
+  // Fetch room details
   useEffect(() => {
-    (async () => {
+    const fetchRoomDetails = async () => {
       try {
         setLoading(true);
-        const response = await roomApi.getRoomById(`${roomId}`);
+        const response = await roomApi.getRoomById(roomId);
         setRoom(response.data);
         setLoading(false);
         window.scrollTo(0, 0);
-      } catch (error) {
-        setError(error.response.data.message);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to fetch room details');
         setLoading(false);
       }
-    })();
+    };
+
+    fetchRoomDetails();
   }, [roomId]);
 
-  const handleBooking = async () => {
-    const bookingDetail = {
-      room,
-      userId: user._id,
-      startDate,
-      endDate,
-      totalAmount,
-      totalDays: Number(totalDays),
-    };
-    try {
-      await bookingApi.createBookingRoom(bookingDetail, {
-        headers: { Authorization: token },
-      });
-      setDisable(true);
-      Swal.fire('Congratulations', 'Booking successful', 'success').then(() => {
-        window.location.href = '/mybooking';
-      });
-    } catch (error) {
-      console.log(error);
-      Swal.fire('Oops', 'Something went wrong', 'error');
+  // Set initial user info from Redux state
+  useEffect(() => {
+    if (user) {
+      setBookingInfo((prevState) => ({
+        ...prevState,
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+      }));
     }
+  }, [user]);
+
+  // Handle input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setBookingInfo({
+      ...bookingInfo,
+      [name]: value,
+    });
+  };
+
+  const handleProceedToPayment = () => {
+    if (!bookingInfo.name || !bookingInfo.email || !bookingInfo.phone) {
+      Swal.fire('Error', 'Please fill in all required fields', 'error');
+      return;
+    }
+
+    setShowPayment(true);
   };
 
   const nextImage = () => {
     setCurrentImageIndex((prevIndex) =>
-      prevIndex === room.imageUrls.length - 1 ? 0 : prevIndex + 1
+      prevIndex === (room.imageUrls?.length - 1 || 0) ? 0 : prevIndex + 1
     );
   };
 
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? room.imageUrls.length - 1 : prevIndex - 1
+      prevIndex === 0 ? room.imageUrls?.length - 1 || 0 : prevIndex - 1
     );
   };
 
   return (
-    <Fragment>
-      <MetaData title="Booking" />
+    <>
+      <MetaData title="Book Your Room" />
+
       {loading ? (
         <Loader />
       ) : error ? (
         showErrMsg(error)
+      ) : showPayment ? (
+        <PaymentProcess
+          room={room}
+          bookingInfo={bookingInfo}
+          startDate={startDate}
+          endDate={endDate}
+          totalDays={totalDays}
+          totalAmount={totalAmount}
+          onBack={() => setShowPayment(false)}
+        />
       ) : (
-        <div className="container">
-          <div className="row bs mt-5" data-aos="flip-left">
-            <div className="col-md-5 mb-2">
-              <h4>{room.name}</h4>
+        <div className="container py-4">
+          <div className="row booking-container">
+            <div className="col-lg-7 mb-4">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h2 className="card-title">{room.name}</h2>
 
-              {/* Image Slider */}
-              <div className="image-slider-container">
-                {room.imageUrls && room.imageUrls.length > 0 ? (
-                  <>
-                    <div className="image-slider">
-                      <img
-                        src={room.imageUrls[currentImageIndex]}
-                        alt={`${room.name} - Image ${currentImageIndex + 1}`}
-                        className="booking-room-img"
-                      />
+                  {/* Image Slider */}
+                  <div className="image-slider-container mb-4">
+                    {room.imageUrls && room.imageUrls.length > 0 ? (
+                      <>
+                        <div className="image-slider">
+                          <img
+                            src={room.imageUrls[currentImageIndex]}
+                            alt={`${room.name} - ${currentImageIndex + 1}`}
+                            className="booking-room-img img-fluid rounded"
+                          />
 
-                      {room.imageUrls.length > 1 && (
-                        <>
-                          <button className="slider-btn prev-btn" onClick={prevImage}>
-                            &lt;
-                          </button>
-                          <button className="slider-btn next-btn" onClick={nextImage}>
-                            &gt;
-                          </button>
+                          {room.imageUrls.length > 1 && (
+                            <>
+                              <button className="slider-btn prev-btn" onClick={prevImage}>
+                                &lt;
+                              </button>
+                              <button className="slider-btn next-btn" onClick={nextImage}>
+                                &gt;
+                              </button>
 
-                          <div className="image-counter">
-                            {currentImageIndex + 1}/{room.imageUrls.length}
+                              <div className="image-counter">
+                                {currentImageIndex + 1}/{room.imageUrls.length}
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        {/* Thumbnail Preview */}
+                        {room.imageUrls.length > 1 && (
+                          <div className="image-thumbnails mt-2">
+                            {room.imageUrls.map((url, index) => (
+                              <div
+                                key={index}
+                                className={`thumbnail ${
+                                  index === currentImageIndex ? 'active' : ''
+                                }`}
+                                onClick={() => setCurrentImageIndex(index)}
+                              >
+                                <img src={url} alt={`Thumbnail ${index + 1}`} />
+                              </div>
+                            ))}
                           </div>
-                        </>
-                      )}
+                        )}
+                      </>
+                    ) : (
+                      <div className="no-image">No images available</div>
+                    )}
+                  </div>
+
+                  {/* Room Details */}
+                  <div className="room-details">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <span className="badge bg-info text-white p-2">{room.type}</span>
+                      <span className="price-tag">{formatter.format(room.price)}/night</span>
                     </div>
 
-                    {/* Thumbnail Preview */}
-                    {room.imageUrls.length > 1 && (
-                      <div className="image-thumbnails">
-                        {room.imageUrls.map((url, index) => (
-                          <div
-                            key={index}
-                            className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                            onClick={() => setCurrentImageIndex(index)}
-                          >
-                            <img src={url} alt={`Thumbnail ${index + 1}`} />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="no-image">No images available</div>
-                )}
-              </div>
+                    <h5>Room Features:</h5>
+                    <ul className="room-features">
+                      <li>Max Guests: {room.maxCount}</li>
+                      {room.features &&
+                        room.features.map((feature, index) => <li key={index}>{feature}</li>)}
+                    </ul>
 
-              {/* Room Type and Description */}
-              <div className="room-details mt-3">
-                <div className="room-type">
-                  <span className="badge bg-info text-white">{room.type}</span>
-                </div>
-                <div className="room-description mt-2">
-                  <h5>Description:</h5>
-                  <p>{room.description}</p>
+                    <h5>Description:</h5>
+                    <p>{room.description}</p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="col-md-7 booking-detail mb-2">
-              <h1>Booking Details</h1>
-              <hr />
-              <b>
-                <p>Name: {user.name} </p>
-                <p>Check-in Date: {match.params.startDate} </p>
-                <p>Check-out Date: {match.params.endDate} </p>
-                <p>Room Price: {formater.format(room.price)}/day</p>
-              </b>
+            <div className="col-lg-5">
+              <div className="card shadow-sm mb-4">
+                <div style={{ backgroundColor: '#e2ba76' }} className="card-header text-white">
+                  <h3 className="mb-0">Booking Details</h3>
+                </div>
+                <div className="card-body">
+                  <div className="booking-dates mb-4">
+                    <div className="row">
+                      <div className="col-6">
+                        <p className="text-muted mb-1">Check-in</p>
+                        <p className="fw-bold">{startDate.format('DD MMM YYYY')}</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-muted mb-1">Check-out</p>
+                        <p className="fw-bold">{endDate.format('DD MMM YYYY')}</p>
+                      </div>
+                    </div>
+                    <p className="fw-bold d-flex align-items-center text-center mt-2">
+                      <span
+                        style={{ backgroundColor: '#e2ba76', padding: '10px', borderRadius: '5px' }}
+                        className="badge fw-bold text-black"
+                      >
+                        {totalDays} {totalDays === 1 ? 'night' : 'nights'}
+                      </span>
+                      <div>
+                        <IconMoney width={100} height={100} style={{ marginLeft: '10px' }} />
+                      </div>
+                    </p>
+                  </div>
 
-              <h1>Total</h1>
-              <hr />
-              <b>
-                <p>Total Days: {totalDays} days</p>
-                <p>Room Rent: {formater.format(room.price)} </p>
-                <p>Total Amount: {formater.format(totalAmount)}</p>
-              </b>
+                  <div className="price-breakdown mb-4">
+                    <h5>Price Details</h5>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>
+                        {formatter.format(room.price)} x {totalDays}{' '}
+                        {totalDays === 1 ? 'night' : 'nights'}
+                      </span>
+                      <span>{formatter.format(totalAmount)}</span>
+                    </div>
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>Taxes & Fees</span>
+                      <span>Included</span>
+                    </div>
+                    <hr />
+                    <div className="d-flex justify-content-between fw-bold">
+                      <span>Total</span>
+                      <span>{formatter.format(totalAmount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-              <div className="booking-center">
-                <button className="button-booking" disabled={disable} onClick={handleBooking}>
-                  Pay Now
-                </button>
+              {/* Guest Information Form */}
+              <div className="card shadow-sm">
+                <div style={{ backgroundColor: '#e2ba76' }} className="card-header text-white">
+                  <h3 className="mb-0">Guest Information</h3>
+                </div>
+                <div className="card-body">
+                  <form>
+                    <div className="mb-3">
+                      <label htmlFor="name" className="form-label">
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        name="name"
+                        value={bookingInfo.name}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="email" className="form-label">
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        value={bookingInfo.email}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="phone" className="form-label">
+                        Phone Number *
+                      </label>
+                      <input
+                        type="tel"
+                        className="form-control"
+                        id="phone"
+                        name="phone"
+                        value={bookingInfo.phone}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="address" className="form-label">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="address"
+                        name="address"
+                        value={bookingInfo.address}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="specialRequests" className="form-label">
+                        Special Requests
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="specialRequests"
+                        name="specialRequests"
+                        rows="3"
+                        value={bookingInfo.specialRequests}
+                        onChange={handleInputChange}
+                      ></textarea>
+                    </div>
+
+                    <button
+                      style={{ backgroundColor: '#e2ba76' }}
+                      type="button"
+                      className="btn btn-lg w-100"
+                      onClick={handleProceedToPayment}
+                    >
+                      Continue to Payment
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
-    </Fragment>
+    </>
   );
 };
 

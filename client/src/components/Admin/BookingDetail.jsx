@@ -25,7 +25,7 @@ const BookingDetail = ({ match }) => {
     (async () => {
       try {
         const response = await getBooking();
-        setBooking(response.data);
+        setBooking(response.data.booking);
         setLoading(false);
         window.scrollTo(0, 0);
       } catch (error) {
