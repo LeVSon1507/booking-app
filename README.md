@@ -8,31 +8,31 @@ This repository contains sequence diagrams and architectural documentation for a
 
 ### Authentication & Authorization Flow
 
-<img src='./docs/diagrams/authentication-authorization-flow.svg' width="500">
+<img src='./sequence-diagram/authentication-authorization-flow.svg'  width="500">
 
 Illustrates the user authentication process and permission management within the system.
 
 ### Login Sequence
 
-<img src='./docs/diagrams/login-sequence.svg'width="500">
+<img src='./sequence-diagram/login-sequence.svg' width="500">
 
 Details the process flow when users log into the application, including token generation and session management.
 
 ### Registration and Verification Sequence
 
-<img src='./docs/diagrams/registration-and-verification-sequence.svg'width="500">
+<img src='./sequence-diagram/registration-and-verification-sequence.svg' width="500">
 
 Shows the complete user registration flow, including email verification steps.
 
 ### Room Booking Sequence
 
-<img src='./docs/diagrams/room-booking-sequence.svg'width="500">
+<img src='./sequence-diagram/room-booking-sequence.svg' width="500">
 
 Documents the process of searching for, selecting, and booking hotel rooms.
 
 ### Payment Processing
 
-<img src='./docs/diagrams/payment-processing-sequence.svg'width="500">
+<img src='./sequence-diagram/payment-processing-sequence.svg' width="500">
 
 Unified sequence diagram showing both PayPal and cash payment flows:
 
@@ -46,13 +46,13 @@ Unified sequence diagram showing both PayPal and cash payment flows:
 
 ### System Architecture
 
-<img src='./docs/architecture/system-architecture.svg'width="500">
+<img src='./docs/architecture/system-architecture.svg' width="500">
 
 Provides a high-level overview of the application's components, services, and their interactions.
 
 ### Frontend Structure
 
-<img src='./docs/architecture/frontend-structure.svg'width="500">
+<img src='./docs/architecture/frontend-structure.svg' width="500">
 
 Details the React component hierarchy, Redux store organization, and client-side routing.
 
