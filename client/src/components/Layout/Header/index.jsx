@@ -43,7 +43,7 @@ function Header() {
       <li className="drop-nav">
         <Link to="#" className="avatar">
           <img src={user.avatar} alt="" />
-          <span>
+          <span className="">
             {user.name}&nbsp;
             <i className="fas fa-angle-down"></i>
           </span>

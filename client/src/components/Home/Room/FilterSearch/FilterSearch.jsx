@@ -18,7 +18,6 @@ const FilterSearch = ({
 
     if (!onSubmit) return;
 
-    // debounce search
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }

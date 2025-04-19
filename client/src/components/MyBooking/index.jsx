@@ -132,7 +132,6 @@ const MyBooking = () => {
                 {bookings?.map((booking) => (
                   <div className="col-md-6 col-lg-4 mb-4" key={booking._id}>
                     <div className="booking-card">
-                      {/* Image Section */}
                       <div className="booking-image-container">
                         {booking.imageUrls && booking.imageUrls.length > 0 ? (
                           <img
@@ -148,7 +147,6 @@ const MyBooking = () => {
                         </span>
                       </div>
 
-                      {/* Details Section */}
                       <div className="booking-details">
                         <h4 className="room-name">{booking.room}</h4>
 

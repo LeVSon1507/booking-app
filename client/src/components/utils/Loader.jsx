@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import FadeLoader from 'react-spinners/FadeLoader';
 
-// Can be a string as well. Need to ensure each key-value pair ends with ;
 const override = css`
   display: block;
   margin-left: auto;

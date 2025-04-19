@@ -183,7 +183,6 @@
   margin-right: 5px;
 }
 
-/* Empty bookings styling */
 .empty-bookings {
   text-align: center;
   padding: 60px 20px;
@@ -210,7 +209,6 @@
   margin-bottom: 25px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 767px) {
   .booking-card {
     margin-bottom: 20px;

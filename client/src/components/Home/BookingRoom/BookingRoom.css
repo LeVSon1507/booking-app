@@ -1,6 +1,3 @@
-/* BookingRoom.css */
-
-/* Image Slider */
 .image-slider-container {
   position: relative;
   margin-bottom: 20px;
@@ -61,7 +58,6 @@
   font-size: 12px;
 }
 
-/* Thumbnails */
 .image-thumbnails {
   display: flex;
   gap: 10px;
@@ -101,7 +97,6 @@
   border-radius: 8px;
 }
 
-/* Room Details */
 .room-features {
   list-style-type: none;
   padding-left: 0;
@@ -126,23 +121,19 @@
   color: #28a745;
 }
 
-/* Booking Container */
 .booking-container {
   margin-top: 20px;
 }
 
-/* PayPal Button */
 .paypal-button-container {
   margin-top: 15px;
 }
 
-/* Credit Card Form */
 .credit-card-form {
   max-width: 500px;
   margin: 0 auto;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .image-slider {
     height: 250px;

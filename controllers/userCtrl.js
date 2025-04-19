@@ -1,7 +1,7 @@
 const Users = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const sendMail = require("./sendMail");
+const { sendMailSendgrid: sendMail } = require("./sendMailSendgrid");
 
 const { google } = require("googleapis");
 const { OAuth2 } = google.auth;
@@ -41,26 +41,19 @@ const userCtrl = {
         password: passwordHash,
       };
       const activation_token = createActivationToken(newUser);
+      console.log(activation_token);
+      console.log({ newUser });
 
-      const url = `${CLIENT_URL}/api/auth/activate/${activation_token}`;
-      const message = `<div style="max-width: 700px; margin:auto; border: 10px solid gray; padding: 50px 20px; font-size: 110%;">
-      <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to Booking App.</h2>
-      <p>Congratulations! You're about to start using BOOKING APP.
-       Just click the button below to verify your email address.
-      </p>
+      const verification_url = `${CLIENT_URL}/api/auth/activate/${activation_token}`;
 
-      <a href=${url} style="background: #333; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display: inline-block;">Verify Email Address</a>
-
-      <p>If the button doesn't work for any reason, you can also click on the link below:</p>
-
-      <div>${url}</div>
-      </div>`;
-
-      // send email via /api/auth/activate/${activation_token}
       await sendMail({
-        email: newUser.email,
-        subject: "Booking App Password Recovery",
-        message,
+        email: email ?? "appbooking6@gmail.com",
+        subject: "Booking App Email Verification",
+        templateId: process.env.SENDGRID_VERIFICATION_TEMPLATE_ID,
+        templateData: {
+          verification_url: verification_url,
+          name: newUser.name,
+        },
       });
 
       res.status(200).json({
@@ -70,10 +63,10 @@ const userCtrl = {
       next(err);
     }
   },
+
   activateEMail: async (req, res, next) => {
     try {
       const { activation_token } = req.body;
-      // Decode token to verify if it's valid
       const user = jwt.verify(
         activation_token,
         process.env.ACTIVATION_TOKEN_SECRET
@@ -113,12 +106,10 @@ const userCtrl = {
       if (!user)
         return res.status(400).json({ message: "Email does not exist 😢!" });
 
-      // compare password
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
         return res.status(400).json({ message: "Password is incorrect 😢!" });
 
-      // create access token
       const access_token = createAccessToken({ id: user._id });
 
       const refresh_token = createRefreshToken({ id: user._id });
@@ -394,7 +385,6 @@ const userCtrl = {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
-        // Return complete information for new user
         res.status(200).json({
           message: "Login success!",
           token: access_token,

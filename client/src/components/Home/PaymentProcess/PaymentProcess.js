@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { bookingApi } from 'api/bookingApi';
 import { ReactComponent as PaymentIcon } from '../../../images/payment-card.svg';
 
-// PayPal
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 const PaymentProcess = ({
@@ -24,20 +23,17 @@ const PaymentProcess = ({
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
 
-  // Format currency
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   });
 
-  // PayPal initial options
   const paypalOptions = {
     'client-id': 'AeLhcrJR5isasR4bmqKGOk0Z2Umpa4nChNSix_siHE_ovsZIbLnVI3Bw6lUsE98MqXyFKzHk2Mcc9d1N', // Replace with your actual client ID
     currency: 'USD',
     intent: 'capture',
   };
 
-  // Handle direct booking (without PayPal)
   const handleDirectBooking = async () => {
     try {
       setPaymentLoading(true);
@@ -74,16 +70,11 @@ const PaymentProcess = ({
     }
   };
 
-  // Process credit card payment
   const processCreditCardPayment = async (e) => {
     e.preventDefault();
 
     try {
       setPaymentLoading(true);
-
-      // Here you would typically integrate with a payment processor like Stripe
-      // For this example, we'll simulate a successful payment
-
       const bookingDetail = {
         room,
         userId: user._id,
@@ -203,7 +194,7 @@ const PaymentProcess = ({
               ) : (
                 <>
                   <div className="booking-summary mb-4">
-                    <h4>Booking Summary</h4>
+                    <h4 className="color-[#e2ba76]">Booking Summary</h4>
                     <div className="row">
                       <div className="col-md-6">
                         <p>

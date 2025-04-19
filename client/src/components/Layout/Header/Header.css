@@ -1,5 +1,4 @@
 header {
-  /* Đảm bảo header luôn có z-index cao */
   z-index: 1000;
 }
 
@@ -59,7 +58,6 @@ nav ul li img {
   margin-right: 5px;
 }
 
-/* --------- Dropdown ---------- */
 .drop-nav {
   position: relative;
   padding: 10px 0;

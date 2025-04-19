@@ -38,11 +38,9 @@ const BookingRoom = ({ match }) => {
   const startDate = moment(match.params.startDate, 'DD-MM-YYYY');
   const endDate = moment(match.params.endDate, 'DD-MM-YYYY');
 
-  // Calculate booking details
   const totalDays = moment.duration(endDate.diff(startDate)).asDays();
   const totalAmount = totalDays * (room?.price || 0);
 
-  // Fetch room details
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
@@ -60,7 +58,6 @@ const BookingRoom = ({ match }) => {
     fetchRoomDetails();
   }, [roomId]);
 
-  // Set initial user info from Redux state
   useEffect(() => {
     if (user) {
       setBookingInfo((prevState) => ({
@@ -72,7 +69,6 @@ const BookingRoom = ({ match }) => {
     }
   }, [user]);
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setBookingInfo({
@@ -128,7 +124,6 @@ const BookingRoom = ({ match }) => {
                 <div className="card-body">
                   <h2 className="card-title">{room.name}</h2>
 
-                  {/* Image Slider */}
                   <div className="image-slider-container mb-4">
                     {room.imageUrls && room.imageUrls.length > 0 ? (
                       <>
@@ -155,7 +150,6 @@ const BookingRoom = ({ match }) => {
                           )}
                         </div>
 
-                        {/* Thumbnail Preview */}
                         {room.imageUrls.length > 1 && (
                           <div className="image-thumbnails mt-2">
                             {room.imageUrls.map((url, index) => (
@@ -177,7 +171,6 @@ const BookingRoom = ({ match }) => {
                     )}
                   </div>
 
-                  {/* Room Details */}
                   <div className="room-details">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <span className="badge bg-info text-white p-2">{room.type}</span>
@@ -250,7 +243,6 @@ const BookingRoom = ({ match }) => {
                 </div>
               </div>
 
-              {/* Guest Information Form */}
               <div className="card shadow-sm">
                 <div style={{ backgroundColor: '#e2ba76' }} className="card-header text-white">
                   <h3 className="mb-0">Guest Information</h3>

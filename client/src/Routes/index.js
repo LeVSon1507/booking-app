@@ -22,7 +22,6 @@ const Routes = () => {
   return (
     <Switch>
       <Fragment>
-        {/* Authentication */}
         <Route path="/login" component={Login} exact />
         <Route path="/register" component={Register} exact />
         <Route path="/forgot_password" component={isLogged ? NotFound : ForgotPassword} exact />
@@ -30,7 +29,6 @@ const Routes = () => {
         <Route path="/api/auth/activate/:activation_token" component={ActivationEmail} exact />
         <Route path="/profile" component={isLogged ? Profile : NotFound} exact />
         <Route path="/edit_user/:id" component={isAdmin ? EditProfile : NotFound} exact />
-        {/* Home */}
         <Route path="/" component={Home} exact />
         <Route
           path="/book/:id/:startDate/:endDate"
@@ -40,7 +38,6 @@ const Routes = () => {
         <Route path="/mybooking" component={MyBooking} exact />
         <Route path="/booking-details/:id" component={BookingDetail} exact />
 
-        {/* Admin */}
         <Route path="/admin" component={isAdmin ? Admin : NotFound} exact />
         <Route
           path="/admin/booking-detail/:id"

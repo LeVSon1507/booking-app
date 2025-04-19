@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.25.1",
     "concurrently": "^6.2.2",
