@@ -1,0 +1,99 @@
+.hotel-detail-container {
+  padding: 20px 0;
+}
+
+.hotel-header {
+  margin-bottom: 20px;
+}
+
+.hotel-name {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.hotel-address {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.hotel-address i {
+  margin-right: 5px;
+}
+
+.hotel-carousel-image {
+  height: 500px;
+  object-fit: cover;
+}
+
+.hotel-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.rating-value {
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.stars {
+  display: flex;
+  margin-right: 10px;
+}
+
+.stars i {
+  color: #ddd;
+  margin-right: 2px;
+}
+
+.stars i.active {
+  color: #ffc107;
+}
+
+.reviews-count {
+  color: #666;
+}
+
+.hotel-description h3,
+.hotel-amenities h3,
+.rooms-section h2 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.amenity-badge {
+  background-color: #f0f0f0;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.date-filter-section {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.date-picker {
+  width: 100%;
+  max-width: 350px;
+}
+
+.no-rooms-message {
+  text-align: center;
+  padding: 50px 0;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.room-item {
+  margin-bottom: 20px;
+}

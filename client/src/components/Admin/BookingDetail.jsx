@@ -39,7 +39,9 @@ const BookingDetail = () => {
     <Fragment>
       <MetaData title="Booking Details" />
       {loading ? (
-        <Loader />
+        <div className="w-full h-full flex justify-center items-center">
+          <Loader />
+        </div>
       ) : (
         <Fragment>
           <h1 className="text-center mt-3 title">Booking Details</h1>

@@ -2,6 +2,7 @@ const Booking = require("../models/bookingModel");
 const moment = require("moment");
 const Room = require("../models/roomModel");
 const User = require("../models/userModel");
+const Hotel = require("../models/hotelModel");
 
 const { v4 } = require("uuid");
 const { sendBookingConfirmationEmail } = require("./sendMailSendgrid");
@@ -9,12 +10,24 @@ const { sendBookingConfirmationEmail } = require("./sendMailSendgrid");
 const bookingCtrl = {
   createBooking: async (req, res, next) => {
     try {
-      const { room, userId, startDate, endDate, totalAmount, totalDays } =
-        req.body;
+      const {
+        room,
+        hotelId,
+        userId,
+        startDate,
+        endDate,
+        totalAmount,
+        totalDays,
+      } = req.body;
 
       const roomDetails = await Room.findOne({ _id: room._id });
       if (!roomDetails) {
         return res.status(404).json({ message: "Room not found" });
+      }
+
+      const hotel = await Hotel.findOne({ _id: hotelId });
+      if (!hotel) {
+        return res.status(404).json({ message: "Hotel not found" });
       }
 
       const user = await User.findOne({ _id: userId });
@@ -23,6 +36,8 @@ const bookingCtrl = {
       }
 
       const newBooking = new Booking({
+        hotelId: hotel._id,
+        hotelName: hotel.name,
         room: room.name,
         roomId: room._id,
         userId,
@@ -32,6 +47,10 @@ const bookingCtrl = {
         totalDays,
         transactionId: v4(),
         imageUrls: roomDetails.imageUrls,
+        guestDetails: {
+          name: user.name,
+          email: user.email,
+        },
       });
 
       const booking = await newBooking.save();
@@ -47,7 +66,7 @@ const bookingCtrl = {
       await roomDetails.save();
 
       try {
-        await sendBookingConfirmationEmail(booking, roomDetails, user);
+        await sendBookingConfirmationEmail(booking, roomDetails, user, hotel);
       } catch (emailError) {
         console.error("Failed to send confirmation email:", emailError);
       }
@@ -70,11 +89,19 @@ const bookingCtrl = {
       }
 
       const room = await Room.findOne({ _id: booking.roomId });
-
+      const hotel = await Hotel.findOne({ _id: booking.hotelId });
       const user = await User.findOne({ _id: booking.userId });
 
       res.status(200).json({
         booking,
+        hotel: hotel
+          ? {
+              name: hotel.name,
+              address: hotel.address,
+              city: hotel.city,
+              imageUrls: hotel.imageUrls,
+            }
+          : null,
         room: room
           ? {
               name: room.name,
@@ -114,6 +141,15 @@ const bookingCtrl = {
     }
   },
 
+  getBookingsByHotelId: async (req, res, next) => {
+    try {
+      const bookings = await Booking.find({ hotelId: req.params.hotelId });
+      res.status(200).json(bookings);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   cancelBooking: async (req, res, next) => {
     try {
       const { bookedId, roomId } = req.body;
@@ -132,10 +168,16 @@ const bookingCtrl = {
       await roomItem.save();
 
       const user = await User.findOne({ _id: bookingItem.userId });
+      const hotel = await Hotel.findOne({ _id: bookingItem.hotelId });
 
-      if (user) {
+      if (user && hotel) {
         try {
-          await sendBookingConfirmationEmail(bookingItem, roomItem, user);
+          await sendBookingConfirmationEmail(
+            bookingItem,
+            roomItem,
+            user,
+            hotel
+          );
         } catch (emailError) {
           console.error("Failed to send cancellation email:", emailError);
         }

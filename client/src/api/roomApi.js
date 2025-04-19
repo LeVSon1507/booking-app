@@ -1,16 +1,16 @@
 import axiosClient from './axiosClient';
 
 export const roomApi = {
-  getAllRooms() {
-    const url = `/api/rooms`;
+  getManyRooms: (params) => {
+    const url = `/api/rooms${params}`;
     return axiosClient.get(url);
   },
-  getManyRooms(params) {
-    const url = `/api/rooms/${params}`;
+  getRoomById: (id) => {
+    const url = `/api/rooms/${id}`;
     return axiosClient.get(url);
   },
-  getRoomById(id) {
-    const url = `/api/room/${id}`;
+  getRoomsByHotelId: (hotelId) => {
+    const url = `/api/rooms/hotel/${hotelId}`;
     return axiosClient.get(url);
   },
 };

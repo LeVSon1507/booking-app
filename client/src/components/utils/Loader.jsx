@@ -1,23 +1,9 @@
-import { useState } from 'react';
-import { css } from '@emotion/react';
-import FadeLoader from 'react-spinners/FadeLoader';
+import Skeleton from 'react-loading-skeleton';
 
-const override = css`
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 20%;
-  padding-left: 0;
-`;
-
-const Loader = () => {
-  const [loading] = useState(true);
-
-  return (
-    <div className="sweet-loading text-center">
-      <FadeLoader color="#333" loading={loading} css={override} size={40} />
-    </div>
-  );
-};
+const Loader = () => (
+  <div>
+    <Skeleton />
+  </div>
+);
 
 export default Loader;

@@ -31,6 +31,7 @@ const Room = ({ room, startDate, endDate }) => {
       navigate(`/book/${room._id}/${startDate}/${endDate}`);
     }
   };
+
   return (
     <>
       <div className="row bs">
@@ -62,7 +63,7 @@ const Room = ({ room, startDate, endDate }) => {
                       <img
                         className="d-block w-100 room-image"
                         src={img}
-                        alt={`${room.name} - Image ${index + 1}`}
+                        alt={`${room.name}  ${index + 1}`}
                       />
                     </Carousel.Item>
                   ))}
@@ -88,7 +89,7 @@ const Room = ({ room, startDate, endDate }) => {
                           {formatter.format(room.price)}/day
                         </li>
                         <li>
-                          <span className="detail-label">Max people:</span> {room.maxCount}
+                          <span className="detail-label">Max people:</span> {room.capacity || 2}
                         </li>
                       </ul>
                     </div>
@@ -96,12 +97,11 @@ const Room = ({ room, startDate, endDate }) => {
                     <div className="col-md-6 mb-3">
                       <h5 className="section-title">Amenities:</h5>
                       <div className="amenities-list">
-                        {room.tv && <span className="amenity-badge">TV</span>}
-                        {room.ac && <span className="amenity-badge">Air Conditioner</span>}
-                        {room.wifi && <span className="amenity-badge">Wifi</span>}
-                        {room.breakfast && <span className="amenity-badge">Breakfast</span>}
-                        {room.parking && <span className="amenity-badge">Parking</span>}
-                        {room.restaurant && <span className="amenity-badge">Restaurant</span>}
+                        {room.amenities?.map((amenity, index) => (
+                          <span key={index} className="amenity-badge">
+                            {amenity}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>

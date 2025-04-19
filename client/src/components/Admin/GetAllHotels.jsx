@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { roomApi } from 'api/roomApi';
 import { hotelApi } from 'api/hotelApi';
 import { useNavigate } from 'react-router-dom';
 import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import Loader from 'components/utils/Loader';
 
-const GetAllRoom = () => {
-  const [rooms, setRooms] = useState([]);
-  const [hotels, setHotels] = useState({});
+const GetAllHotels = () => {
+  const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState('');
   const [success, setSuccess] = useState('');
@@ -16,24 +14,8 @@ const GetAllRoom = () => {
   useEffect(() => {
     (async () => {
       try {
-        const roomsResponse = await roomApi.getManyRooms('');
-        setRooms(roomsResponse.data);
-
-        const hotelIds = [...new Set(roomsResponse.data.map((room) => room.hotelId))];
-        const hotelDetailsObj = {};
-
-        await Promise.all(
-          hotelIds.map(async (hotelId) => {
-            try {
-              const hotelRes = await hotelApi.getHotelById(hotelId);
-              hotelDetailsObj[hotelId] = hotelRes.data.hotel;
-            } catch (error) {
-              console.log(`Error fetching hotel ${hotelId}:`, error);
-            }
-          })
-        );
-
-        setHotels(hotelDetailsObj);
+        const response = await hotelApi.getAllHotels('');
+        setHotels(response.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -43,15 +25,15 @@ const GetAllRoom = () => {
   }, []);
 
   const handleView = (id) => {
-    navigate(`/admin/room/${id}`);
+    navigate(`/admin/hotel/${id}`);
   };
 
   const handleDelete = async (id) => {
     try {
-      if (window.confirm('Are you sure you want to delete this room?')) {
+      if (window.confirm('Are you sure you want to delete this hotel?')) {
         setLoading(true);
-        await roomApi.deleteRoom(id);
-        setSuccess('Room deleted successfully');
+        await hotelApi.deleteHotel(id);
+        setSuccess('Hotel deleted successfully');
         setTimeout(() => {
           window.location.reload();
         }, 1500);
@@ -71,47 +53,51 @@ const GetAllRoom = () => {
         <Loader />
       ) : (
         <div className="container">
-          <h1 className="text-center">All Rooms</h1>
+          <h1 className="text-center">All Hotels</h1>
           <div className="table-responsive">
             <table className="table table-bordered table-hover">
               <thead className="thead-dark">
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
-                  <th>Hotel</th>
-                  <th>Type</th>
-                  <th>Price</th>
+                  <th>City</th>
+                  <th>Rating</th>
+                  <th>Rooms</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {rooms.map((room) => (
-                  <tr key={room._id}>
-                    <td>{room._id}</td>
-                    <td>{room.name}</td>
+                {hotels.map((hotel) => (
+                  <tr key={hotel._id}>
+                    <td>{hotel._id}</td>
+                    <td>{hotel.name}</td>
+                    <td>{hotel.city}</td>
                     <td>
-                      {hotels[room.hotelId] ? (
-                        <>
-                          {hotels[room.hotelId].name}
-                          <br />
-                          <small className="text-muted">{hotels[room.hotelId].city}</small>
-                        </>
-                      ) : (
-                        'Unknown Hotel'
-                      )}
+                      <div className="d-flex align-items-center">
+                        <span className="mr-2">{hotel.rating.toFixed(1)}</span>
+                        <div className="stars">
+                          {[...Array(5)].map((_, i) => (
+                            <i
+                              key={i}
+                              className={`fas fa-star ${
+                                i < Math.floor(hotel.rating) ? 'text-warning' : 'text-muted'
+                              }`}
+                            ></i>
+                          ))}
+                        </div>
+                      </div>
                     </td>
-                    <td>{room.type}</td>
-                    <td>${room.price}</td>
+                    <td>{hotel.roomCount || 0}</td>
                     <td>
                       <button
                         className="btn btn-info btn-sm mr-2"
-                        onClick={() => handleView(room._id)}
+                        onClick={() => handleView(hotel._id)}
                       >
                         View
                       </button>
                       <button
                         className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(room._id)}
+                        onClick={() => handleDelete(hotel._id)}
                       >
                         Delete
                       </button>
@@ -129,4 +115,4 @@ const GetAllRoom = () => {
   );
 };
 
-export default GetAllRoom;
+export default GetAllHotels;

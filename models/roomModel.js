@@ -6,25 +6,68 @@ const roomSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    hotelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Hotels",
+      required: true,
+    },
     price: {
       type: Number,
-      require: true,
+      required: true,
     },
-    imageUrls: [],
-    currentBookings: [],
+    imageUrls: {
+      type: Array,
+      default: [],
+    },
+    currentBookings: [
+      {
+        bookingId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Bookings",
+        },
+        startDate: {
+          type: String,
+          required: true,
+        },
+        endDate: {
+          type: String,
+          required: true,
+        },
+        userId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Users",
+        },
+        status: {
+          type: String,
+          default: "booked",
+        },
+      },
+    ],
     type: {
       type: String,
-      require: true,
+      required: true,
     },
     description: {
       type: String,
-      require: true,
+      required: true,
+    },
+    capacity: {
+      type: Number,
+      default: 2,
+    },
+    amenities: {
+      type: Array,
+      default: [],
+    },
+    isAvailable: {
+      type: Boolean,
+      default: true,
     },
   },
   {
     timestamps: true,
   }
 );
-const roomModel = mongoose.model("Rooms", roomSchema);
 
+const roomModel = mongoose.model("Rooms", roomSchema);
 module.exports = roomModel;

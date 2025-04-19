@@ -1,5 +1,5 @@
 import { DatePicker } from 'antd';
-import { roomApi } from 'api/roomApi';
+import { hotelApi } from 'api/hotelApi';
 import Banner from 'components/Layout/Banner';
 import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
@@ -8,20 +8,19 @@ import queryString from 'query-string';
 import React, { Fragment, useEffect, useState } from 'react';
 import LazyLoad from 'react-lazyload';
 import './Home.css';
-import Room from './Room';
+import Hotel from './Hotel/Hotel';
 import FilterSearch from './Room/FilterSearch/FilterSearch';
-import FilterType from './Room/FilterType/FilterType';
 import { ReactComponent as DateIcon } from '../../images/undraw_schedule-meeting_aklb.svg';
 
 const { RangePicker } = DatePicker;
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
-  const [rooms, setRooms] = useState([]);
-  const [duplicateRoom, setDuplicateRoom] = useState([]);
+  const [hotels, setHotels] = useState([]);
+  const [duplicateHotels, setDuplicateHotels] = useState([]);
   const [filters, setFilters] = useState({
     search: '',
-    type: '',
+    city: '',
   });
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -30,9 +29,9 @@ const Home = () => {
     (async () => {
       try {
         const paramsString = '?' + queryString.stringify(filters);
-        const response = await roomApi.getManyRooms(paramsString);
-        setRooms(response.data);
-        setDuplicateRoom(response.data);
+        const response = await hotelApi.getAllHotels(paramsString);
+        setHotels(response.data);
+        setDuplicateHotels(response.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -45,20 +44,6 @@ const Home = () => {
     if (!dates) return;
     setStartDate(dates[0].format('DD-MM-YYYY'));
     setEndDate(dates[1].format('DD-MM-YYYY'));
-
-    let tempRooms = [];
-    let availability = false;
-
-    for (const room of duplicateRoom) {
-      if (room.currentBookings.length > 0) {
-        for (const booking of room.currentBookings) {
-          console.log(booking);
-        }
-      }
-      if (availability === true || room.currentBookings.length === 0) {
-        tempRooms.push(room);
-      }
-    }
   };
 
   function disabledDate(current) {
@@ -68,20 +53,20 @@ const Home = () => {
   const handleSearchForm = (newFilter) => {
     setFilters({
       ...filters,
-      search: newFilter.searchRoom,
+      search: newFilter.searchHotel,
     });
   };
 
-  const handleOnChangeType = (newFilter) => {
+  const handleCityChange = (newFilter) => {
     setFilters({
       ...filters,
-      type: newFilter.filterRoom,
+      city: newFilter.city,
     });
   };
 
   return (
     <Fragment>
-      <MetaData title="Home" />
+      <MetaData title="Home - Find Hotels" />
       {loading ? (
         <Loader />
       ) : (
@@ -89,39 +74,54 @@ const Home = () => {
           <Banner />
           <div className="container" id="home">
             <div className="row justify-content-center">
-              <h1 className="text-center mt-5 title">BOOK NOW</h1>
+              <h1 className="text-center mt-5 title">FIND YOUR PERFECT STAY</h1>
               <DateIcon width={100} height={100} />
             </div>
             <div className="row bs" id="booking-fixed">
               <div className="col-md-4" id="datepicker">
                 <RangePicker
-                  placeholder={['Start date', 'End date']}
+                  placeholder={['Check-in', 'Check-out']}
                   format="DD-MM-YYYY"
                   disabledDate={disabledDate}
                   onChange={filterByDate}
-                  nextIcon={<DateIcon width={100} height={100} />}
                 />
               </div>
               <div className="col-md-4">
-                <FilterSearch onSubmit={handleSearchForm} rooms={duplicateRoom} />
+                <FilterSearch
+                  onSubmit={handleSearchForm}
+                  placeholder="Search hotels..."
+                  searchKey="searchHotel"
+                />
               </div>
               <div className="col-md-4">
-                <FilterType onChange={handleOnChangeType} rooms={duplicateRoom} />
+                <div className="form-group">
+                  <select
+                    className="form-control"
+                    onChange={(e) => handleCityChange({ city: e.target.value })}
+                  >
+                    <option value="">All Cities</option>
+                    {[...new Set(duplicateHotels.map((hotel) => hotel.city))].map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
             <div className="row justify-content-center mt-2">
-              {rooms.length === 0 ? (
+              {hotels.length === 0 ? (
                 <div className="no-result bs mt-3">
-                  <h2 className="mt-5">No results found</h2>
+                  <h2 className="mt-5">No hotels found</h2>
                 </div>
               ) : (
                 <Fragment>
-                  {rooms?.map((room) => {
+                  {hotels?.map((hotel) => {
                     return (
-                      <div key={room._id} className="col-md-9 mt-2">
+                      <div key={hotel._id} className="col-md-9 mt-2">
                         <LazyLoad height={200} offset={100} debounce={300} once>
-                          <Room room={room} startDate={startDate} endDate={endDate} />
+                          <Hotel hotel={hotel} />
                         </LazyLoad>
                       </div>
                     );

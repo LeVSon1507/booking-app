@@ -1,57 +1,34 @@
-import React, { useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import './FilterSearch.css';
 
-const FilterSearch = ({
-  onSubmit,
-  placeholder = 'Search...',
-  debounceTime = 300,
-  rooms = [],
-  className = '',
-}) => {
-  const [searchRoom, setSearchRoom] = useState('');
-  const typingTimeoutRef = useRef(null);
+const FilterSearch = ({ onSubmit, placeholder = 'Search hotels...' }) => {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchRoom(value);
+  const handleSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-    if (!onSubmit) return;
-
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
-    typingTimeoutRef.current = setTimeout(() => {
-      const formValues = {
-        searchRoom: value,
-      };
-
-      onSubmit(formValues);
-    }, debounceTime);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({ searchTerm });
   };
 
   return (
-    <div className="filter-search-wrapper">
-      <input
-        type="text"
-        style={{ padding: '8px' }}
-        className="form-control search-input"
-        placeholder={placeholder || 'Search...'}
-        value={searchRoom}
-        onChange={handleSearchChange}
-        aria-label="Search input"
-      />
+    <div className="search-container">
+      <div className="search-input-wrapper">
+        <input
+          type="text"
+          className="search-input"
+          placeholder={placeholder}
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+        />
+      </div>
+      <button type="button" className="search-button" onClick={handleSubmit}>
+        Search
+      </button>
     </div>
   );
-};
-
-FilterSearch.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
-  debounceTime: PropTypes.number,
-  rooms: PropTypes.array,
-  className: PropTypes.string,
 };
 
 export default FilterSearch;
