@@ -7,7 +7,8 @@ import moment from 'moment';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Carousel } from 'react-bootstrap';
 import LazyLoad from 'react-lazyload';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 import Room from '../Room';
 import './HotelDetail.css';
 
@@ -15,22 +16,38 @@ const { RangePicker } = DatePicker;
 
 const HotelDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const queryParams = queryString.parse(location.search);
+
   const [loading, setLoading] = useState(true);
   const [hotel, setHotel] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [startDate, setStartDate] = useState(queryParams.startDate || '');
+  const [endDate, setEndDate] = useState(queryParams.endDate || '');
+  const [dateInfo, setDateInfo] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
+
         const hotelResponse = await hotelApi.getHotelById(id);
         setHotel(hotelResponse.data.hotel);
 
-        const roomsResponse = await roomApi.getRoomsByHotelId(id);
-        setRooms(roomsResponse.data);
-        setFilteredRooms(roomsResponse.data);
+        let url = '';
+        if (startDate && endDate) {
+          url = `?startDate=${startDate}&endDate=${endDate}`;
+        }
+
+        const roomsResponse = await roomApi.getRoomsByHotelId(id, url);
+
+        if (roomsResponse.data.rooms) {
+          setRooms(roomsResponse.data.rooms);
+          setDateInfo(roomsResponse.data.dateInfo);
+        } else {
+          setRooms(roomsResponse.data);
+          setDateInfo(null);
+        }
 
         setLoading(false);
       } catch (error) {
@@ -38,48 +55,17 @@ const HotelDetail = () => {
         setLoading(false);
       }
     })();
-  }, [id]);
+  }, [id, startDate, endDate]);
 
   const filterByDate = (dates) => {
-    if (!dates) return;
+    if (!dates) {
+      setStartDate('');
+      setEndDate('');
+      return;
+    }
 
     setStartDate(dates[0].format('DD-MM-YYYY'));
     setEndDate(dates[1].format('DD-MM-YYYY'));
-
-    let tempRooms = [];
-    let availability = false;
-
-    for (const room of rooms) {
-      if (room.currentBookings.length > 0) {
-        for (const booking of room.currentBookings) {
-          // Check if room is available for selected dates
-          const startDateObj = moment(dates[0].format('DD-MM-YYYY'), 'DD-MM-YYYY');
-          const endDateObj = moment(dates[1].format('DD-MM-YYYY'), 'DD-MM-YYYY');
-          const bookingStartDate = moment(booking.startDate, 'DD-MM-YYYY');
-          const bookingEndDate = moment(booking.endDate, 'DD-MM-YYYY');
-
-          // Check if booking dates overlap with selected dates
-          if (
-            (startDateObj >= bookingStartDate && startDateObj <= bookingEndDate) ||
-            (endDateObj >= bookingStartDate && endDateObj <= bookingEndDate) ||
-            (startDateObj <= bookingStartDate && endDateObj >= bookingEndDate)
-          ) {
-            availability = false;
-            break;
-          } else {
-            availability = true;
-          }
-        }
-      } else {
-        availability = true;
-      }
-
-      if (availability || room.currentBookings.length === 0) {
-        tempRooms.push(room);
-      }
-    }
-
-    setFilteredRooms(tempRooms);
   };
 
   function disabledDate(current) {
@@ -161,17 +147,30 @@ const HotelDetail = () => {
                     disabledDate={disabledDate}
                     onChange={filterByDate}
                     className="date-picker"
+                    defaultValue={
+                      startDate && endDate
+                        ? [moment(startDate, 'DD-MM-YYYY'), moment(endDate, 'DD-MM-YYYY')]
+                        : null
+                    }
                   />
                 </div>
 
-                {filteredRooms.length === 0 ? (
+                {dateInfo && (
+                  <div className="alert alert-info mb-4">
+                    <i className="fas fa-info-circle me-2"></i>
+                    Showing {dateInfo.totalAvailable} available rooms from {dateInfo.startDate} to{' '}
+                    {dateInfo.endDate}
+                  </div>
+                )}
+
+                {rooms.length === 0 ? (
                   <div className="no-rooms-message">
                     <h3>No rooms available for the selected dates</h3>
                     <p>Please try different dates or contact the hotel directly.</p>
                   </div>
                 ) : (
                   <div className="rooms-list">
-                    {filteredRooms.map((room) => (
+                    {rooms.map((room) => (
                       <div key={room._id} className="room-item">
                         <LazyLoad height={200} offset={100} debounce={300} once>
                           <Room room={room} startDate={startDate} endDate={endDate} />

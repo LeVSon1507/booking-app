@@ -1,27 +1,29 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Home from 'components/Home';
+import Home from 'components/Pages/Home';
 import Login from 'components/Auth/Login';
 import Register from 'components/Auth/Register';
 import ActivationEmail from 'components/Auth/ActivationEmail';
 import NotFound from 'components/utils/NotFound';
 import ForgotPassword from 'components/Auth/ForgotPassword';
 import ResetPassword from 'components/Auth/ResetPassword';
-import Profile from 'components/Auth/Profile';
+import Profile from 'components/Pages/Profile/Profile';
 import EditProfile from 'components/Auth/EditProfile';
-import BookingRoom from 'components/Home/BookingRoom';
-import MyBooking from 'components/MyBooking';
+import BookingRoom from 'components/Pages/Home/BookingRoom';
 import Admin from 'components/Admin';
 import GetAllUser from 'components/Admin/GetAllUser';
 import GetAllRoom from 'components/Admin/GetAllRoom';
 import GetAllBooking from 'components/Admin/GetAllBooking';
 import BookingDetail from 'components/Admin/BookingDetail';
 import RoomDetail from 'components/Admin/RoomDetail';
-import HotelDetail from 'components/Home/HotelDetail';
+import HotelDetail from 'components/Pages/Home/HotelDetail';
 import GetAllHotels from 'components/Admin/GetAllHotels';
 import AdminHotelDetail from 'components/Admin/HotelDetail';
 import AddHotel from 'components/Admin/AddHotel';
 import AddRoomForm from 'components/Admin/AddRoomForm';
+import HotelReviewPage from 'components/Pages/Home/HotelReviewPage/HotelReviewPage';
+import EditReviewPage from 'components/Pages/Home/EditReviewPage/EditReviewPage';
+import MyBookings from 'components/Pages/MyBookingsAndReview';
 
 const Router = () => {
   return (
@@ -36,7 +38,9 @@ const Router = () => {
       <Route path="/edit-profile" element={<EditProfile />} />
       <Route path="/hotel/:id" element={<HotelDetail />} />
       <Route path="/book/:roomId/:startDate/:endDate" element={<BookingRoom />} />
-      <Route path="/my-booking" element={<MyBooking />} />
+      <Route path="/my-booking" element={<MyBookings />} />
+      <Route path="/hotels/:hotelId/review" element={<HotelReviewPage />} />
+      <Route path="/hotels/:hotelId/edit-review/:reviewId" element={<EditReviewPage />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/users" element={<GetAllUser />} />
       <Route path="/admin/rooms" element={<GetAllRoom />} />

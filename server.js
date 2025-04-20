@@ -6,7 +6,6 @@ const fileUpload = require("express-fileupload");
 const mongoose = require("mongoose");
 const { errorHandler } = require("./errorHandler");
 const path = require("path");
-const hotelRouter = require("./router/hotelRouter");
 
 const app = express();
 app.use(express.json());
@@ -35,7 +34,8 @@ app.use("/api/auth", require("./router/userRouter"));
 app.use("/api", require("./router/roomRouter"));
 app.use("/api", require("./router/bookingRouter"));
 app.use("/api", require("./router/upload"));
-app.use("/api", hotelRouter);
+app.use("/api", require("./router/hotelRouter"));
+app.use("/api", require("./router/reviewRouter"));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));

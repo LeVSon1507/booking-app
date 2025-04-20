@@ -39,6 +39,12 @@ const hotelSchema = mongoose.Schema(
       phone: String,
       email: String,
     },
+    rooms: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Rooms",
+      },
+    ],
   },
   {
     timestamps: true,

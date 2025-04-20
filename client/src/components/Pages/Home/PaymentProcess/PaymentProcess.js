@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { bookingApi } from 'api/bookingApi';
-import { ReactComponent as PaymentIcon } from '../../../images/payment-card.svg';
+import { ReactComponent as PaymentIcon } from '@images/payment-card.svg';
 
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 const PaymentProcess = ({

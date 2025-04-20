@@ -11,7 +11,7 @@ import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import { showErrMsg } from 'components/utils/Notification';
 import PaymentProcess from '../PaymentProcess/PaymentProcess';
-import { ReactComponent as IconMoney } from '../../../images/money3.svg';
+import { ReactComponent as IconMoney } from '@images/money3.svg';
 
 import './BookingRoom.css';
 

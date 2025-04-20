@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './NotFound.css';
-import { ReactComponent as NotFoundIcon } from '../../../images/404.svg';
+import { ReactComponent as NotFoundIcon } from '@images/404.svg';
 
 function NotFound() {
   return (

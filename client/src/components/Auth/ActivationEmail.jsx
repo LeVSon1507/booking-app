@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import userApi from 'api/userApi';
-import { ReactComponent as OkIcon } from '../../images/ok.svg';
-import { ReactComponent as NotOkIcon } from '../../images/not-ok.svg';
+import { ReactComponent as OkIcon } from '@images/ok.svg';
+import { ReactComponent as NotOkIcon } from '@images/not-ok.svg';
 import './ActivationEmail.css';
 
 function ActivationEmail() {

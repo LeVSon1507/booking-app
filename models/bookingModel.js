@@ -68,6 +68,8 @@ const bookingSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    hasReviewed: { type: Boolean, default: false },
+    reviewId: { type: mongoose.Schema.Types.ObjectId, ref: "Review" },
   },
   {
     timestamps: true,

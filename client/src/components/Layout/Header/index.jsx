@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { Navbar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { ReactComponent as ApartmentIcon } from '../../../images/welcome-icon.svg';
-import { ReactComponent as LoginIcon } from '../../../images/login-navbar.svg';
+import { ReactComponent as ApartmentIcon } from '@images/welcome-icon.svg';
+import { ReactComponent as LoginIcon } from '@images/login-navbar.svg';
 
 function Header() {
   const auth = useSelector((state) => state.auth);

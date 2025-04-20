@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { dispatchLogin } from 'redux/actions/authAction';
 import { showErrMsg, showSuccessMsg } from '../utils/Notification';
-import { ReactComponent as LoginIcon } from '../../images/login.svg';
+import { ReactComponent as LoginIcon } from '@images/login.svg';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);

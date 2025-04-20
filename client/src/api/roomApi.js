@@ -10,8 +10,8 @@ export const roomApi = {
     return axiosClient.get(url);
   },
 
-  getRoomsByHotelId: (hotelId) => {
-    const url = `/api/rooms/hotel/${hotelId}`;
+  getRoomsByHotelId: (hotelId, params = '') => {
+    const url = `/api/rooms/hotel/${hotelId}${params}`;
     return axiosClient.get(url);
   },
 

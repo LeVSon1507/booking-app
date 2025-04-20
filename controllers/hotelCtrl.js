@@ -1,11 +1,12 @@
 const Hotel = require("../models/hotelModel");
 const Room = require("../models/roomModel");
 const Booking = require("../models/bookingModel");
+const moment = require("moment");
 
 const hotelCtrl = {
   getAllHotels: async (req, res, next) => {
     try {
-      let { search = "", city = "" } = req.query;
+      let { search = "", city = "", startDate = "", endDate = "" } = req.query;
       let condition = {};
 
       if (search) {
@@ -17,12 +18,91 @@ const hotelCtrl = {
 
       const hotels = await Hotel.find(condition);
 
-      return res.status(200).json(hotels);
+      const hotelsWithReviewInfo = hotels.map((hotel) => {
+        const totalReviews = hotel.reviews.length;
+        const totalRating = hotel.reviews.reduce(
+          (acc, review) => acc + review.rating,
+          0
+        );
+        const averageRating = totalReviews > 0 ? totalRating / totalReviews : 0;
+        return {
+          ...hotel._doc,
+          totalReviews,
+          averageRating,
+        };
+      });
+      if (!startDate || !endDate) {
+        return res.status(200).json(hotels);
+      }
+
+      const start = moment(startDate, "DD-MM-YYYY").startOf("day").toDate();
+      const end = moment(endDate, "DD-MM-YYYY").endOf("day").toDate();
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        return res.status(400).json({
+          message: "Invalid date format. Please use DD-MM-YYYY format",
+        });
+      }
+
+      if (start >= end) {
+        return res.status(400).json({
+          message: "Start date must be before end date",
+        });
+      }
+
+      const bookings = await Booking.find({
+        $and: [
+          { status: { $ne: "cancelled" } },
+          {
+            $or: [
+              { fromDate: { $gte: start, $lt: end } },
+              { toDate: { $gt: start, $lte: end } },
+              { fromDate: { $lte: start }, toDate: { $gte: end } },
+            ],
+          },
+        ],
+      });
+
+      console.log(`Found ${bookings.length} bookings in the selected period`);
+
+      const bookedRoomIds = bookings.map((booking) =>
+        booking.roomId.toString()
+      );
+
+      const availableHotels = [];
+
+      for (const hotel of hotels) {
+        const hotelRooms = await Room.find({
+          hotelId: hotel._id,
+          isAvailable: true,
+        });
+
+        const availableRooms = hotelRooms.filter(
+          (room) => !bookedRoomIds.includes(room._id.toString())
+        );
+
+        console.log(
+          `Hotel ${hotel.name} has ${availableRooms.length} available rooms out of ${hotelRooms.length} total rooms`
+        );
+
+        if (availableRooms.length > 0) {
+          const hotelData = hotel.toObject();
+          hotelData.availableRoomsCount = availableRooms.length;
+          hotelData.availableRooms = availableRooms;
+          availableHotels.push(hotelData);
+        }
+      }
+
+      console.log(
+        `Found ${availableHotels.length} hotels with available rooms`
+      );
+
+      return res.status(200).json(availableHotels);
     } catch (error) {
+      console.error("Error in getAllHotels:", error);
       next(error);
     }
   },
-
   getHotelById: async (req, res, next) => {
     try {
       const hotel = await Hotel.findById(req.params.id);

@@ -1,5 +1,5 @@
-import { DatePicker } from 'antd';
 import { hotelApi } from 'api/hotelApi';
+import { DatePicker } from 'antd';
 import Banner from 'components/Layout/Banner';
 import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
@@ -10,28 +10,53 @@ import LazyLoad from 'react-lazyload';
 import './Home.css';
 import Hotel from './Hotel/Hotel';
 import FilterSearch from './Room/FilterSearch/FilterSearch';
-import { ReactComponent as DateIcon } from '../../images/undraw_schedule-meeting_aklb.svg';
+import { ReactComponent as DateIcon } from '@images/undraw_schedule-meeting_aklb.svg';
 
 const { RangePicker } = DatePicker;
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [hotels, setHotels] = useState([]);
-  const [duplicateHotels, setDuplicateHotels] = useState([]);
   const [filters, setFilters] = useState({
     search: '',
     city: '',
+    startDate: '',
+    endDate: '',
   });
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [cities, setCities] = useState([]);
+  const [dateSelected, setDateSelected] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
-        const paramsString = '?' + queryString.stringify(filters);
+        const response = await hotelApi.getAllHotels('');
+        const uniqueCities = [...new Set(response.data.map((hotel) => hotel.city))];
+        setCities(uniqueCities);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+
+        const params = {
+          search: filters.search,
+          city: filters.city,
+        };
+
+        if (filters.startDate && filters.endDate) {
+          params.startDate = filters.startDate;
+          params.endDate = filters.endDate;
+        }
+
+        const paramsString = '?' + queryString.stringify(params);
         const response = await hotelApi.getAllHotels(paramsString);
+
         setHotels(response.data);
-        setDuplicateHotels(response.data);
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -41,9 +66,22 @@ const Home = () => {
   }, [filters]);
 
   const filterByDate = (dates) => {
-    if (!dates) return;
-    setStartDate(dates[0].format('DD-MM-YYYY'));
-    setEndDate(dates[1].format('DD-MM-YYYY'));
+    if (!dates) {
+      setFilters({
+        ...filters,
+        startDate: '',
+        endDate: '',
+      });
+      setDateSelected(false);
+      return;
+    }
+
+    setFilters({
+      ...filters,
+      startDate: dates[0].format('DD-MM-YYYY'),
+      endDate: dates[1].format('DD-MM-YYYY'),
+    });
+    setDateSelected(true);
   };
 
   function disabledDate(current) {
@@ -53,7 +91,7 @@ const Home = () => {
   const handleSearchForm = (newFilter) => {
     setFilters({
       ...filters,
-      search: newFilter.searchHotel,
+      search: newFilter.searchTerm,
     });
   };
 
@@ -62,6 +100,11 @@ const Home = () => {
       ...filters,
       city: newFilter.city,
     });
+  };
+
+  const formatDisplayDate = (dateString) => {
+    if (!dateString) return '';
+    return dateString;
   };
 
   return (
@@ -84,23 +127,27 @@ const Home = () => {
                   format="DD-MM-YYYY"
                   disabledDate={disabledDate}
                   onChange={filterByDate}
+                  allowClear={true}
+                  nextIcon={<DateIcon width={100} height={100} />}
                 />
               </div>
               <div className="col-md-4">
                 <FilterSearch
                   onSubmit={handleSearchForm}
-                  placeholder="Search hotels..."
+                  placeholder="Search by hotel name..."
                   searchKey="searchHotel"
                 />
               </div>
               <div className="col-md-4">
                 <div className="form-group">
                   <select
+                    id="citySelect"
                     className="form-control"
                     onChange={(e) => handleCityChange({ city: e.target.value })}
+                    value={filters.city}
                   >
                     <option value="">All Cities</option>
-                    {[...new Set(duplicateHotels.map((hotel) => hotel.city))].map((city) => (
+                    {cities.map((city) => (
                       <option key={city} value={city}>
                         {city}
                       </option>
@@ -110,10 +157,27 @@ const Home = () => {
               </div>
             </div>
 
+            {dateSelected && filters.startDate && filters.endDate && (
+              <div className="row justify-content-center mt-3">
+                <div className="col-md-9">
+                  <div className="alert alert-info">
+                    Showing hotels with available rooms from {formatDisplayDate(filters.startDate)}{' '}
+                    to {formatDisplayDate(filters.endDate)}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="row justify-content-center mt-2">
               {hotels.length === 0 ? (
                 <div className="no-result bs mt-3">
-                  <h2 className="mt-5">No hotels found</h2>
+                  <h2 className="mt-5">
+                    {dateSelected
+                      ? `No hotels available from ${formatDisplayDate(
+                          filters.startDate
+                        )} to ${formatDisplayDate(filters.endDate)}`
+                      : 'No hotels found'}
+                  </h2>
                 </div>
               ) : (
                 <Fragment>
@@ -121,7 +185,11 @@ const Home = () => {
                     return (
                       <div key={hotel._id} className="col-md-9 mt-2">
                         <LazyLoad height={200} offset={100} debounce={300} once>
-                          <Hotel hotel={hotel} />
+                          <Hotel
+                            hotel={hotel}
+                            startDate={filters.startDate}
+                            endDate={filters.endDate}
+                          />
                         </LazyLoad>
                       </div>
                     );

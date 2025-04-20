@@ -5,10 +5,10 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { dispatchGetBookingUser, fetchBookingUser } from 'redux/actions/bookingAction';
 import Swal from 'sweetalert2';
-import './MyBooking.css';
-import { ReactComponent as Icon } from '../../images/my-booking-icon.svg';
+import './MyBookingsList.css';
+import { ReactComponent as Icon } from '@images/my-booking-icon.svg';
 
-const MyBooking = () => {
+const MyBookingsList = () => {
   const token = useSelector((state) => state.token);
   const { bookings, loading } = useSelector((state) => state.booking);
   const [cancellingId, setCancellingId] = useState(null);
@@ -113,7 +113,7 @@ const MyBooking = () => {
       ) : (
         <div className="my-bookings-container">
           <div className="d-flex flex-column align-items-center">
-            <Icon width={'8rem'} height={'8rem'} />
+            <Icon width={'4rem'} height={'3rem'} />
             <h2 className="my-bookings-title">My Bookings</h2>
           </div>
 
@@ -226,4 +226,4 @@ const MyBooking = () => {
   );
 };
 
-export default MyBooking;
+export default MyBookingsList;

@@ -5,9 +5,9 @@ import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
-import { showErrMsg, showSuccessMsg } from '../utils/Notification';
-import { isLength, isMatch } from '../utils/Validation';
-import { ReactComponent as ProfileIcon } from '../../images/my-profile.svg';
+import { showErrMsg, showSuccessMsg } from '../../utils/Notification';
+import { isLength, isMatch } from '../../utils/Validation';
+import { ReactComponent as ProfileIcon } from '@images/my-profile.svg';
 
 const Profile = () => {
   const { user, isAdmin, isLoading } = useSelector((state) => state.auth);

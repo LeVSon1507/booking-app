@@ -1,6 +1,6 @@
 import React from 'react';
-import { ReactComponent as WelcomeIcon } from '../../../images/welcome-icon.svg';
-import { ReactComponent as WelcomeIcon2 } from '../../../images/welcome-icon-2.svg';
+import { ReactComponent as WelcomeIcon } from '@images/welcome-icon.svg';
+import { ReactComponent as WelcomeIcon2 } from '@images/welcome-icon-2.svg';
 
 const Banner = () => {
   return (
