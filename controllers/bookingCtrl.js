@@ -85,6 +85,72 @@ const bookingCtrl = {
     }
   },
 
+  uploadBookingEvidence: async (req, res) => {
+    try {
+      const bookingId = req.params.id;
+
+      const booking = await Booking.findOne({
+        _id: bookingId,
+        userId: req.user.id,
+      });
+
+      if (!booking) {
+        return res
+          .status(404)
+          .json({ message: "Booking not found or you don't have permission" });
+      }
+
+      if (!req.files || !req.files.evidence) {
+        return res.status(400).json({ message: "No files were uploaded." });
+      }
+
+      const files = req.files.evidence;
+      const fileArray = Array.isArray(files) ? files : [files];
+
+      if (fileArray.length > 3) {
+        return res.status(400).json({ message: "Maximum 3 files allowed" });
+      }
+
+      const uploadPromises = fileArray.map((file) => {
+        return new Promise((resolve, reject) => {
+          if (!file.mimetype.match(/image.*/)) {
+            return reject("Only images are allowed");
+          }
+
+          if (file.size > 5 * 1024 * 1024) {
+            return reject("File size too large (max 5MB)");
+          }
+
+          cloudinary.v2.uploader.upload(
+            file.tempFilePath,
+            {
+              folder: `evidence/${bookingId}`,
+              width: 1024,
+              crop: "limit",
+            },
+            (err, result) => {
+              if (err) return reject(err);
+
+              removeTmp(file.tempFilePath);
+              resolve(result.secure_url);
+            }
+          );
+        });
+      });
+
+      const evidenceUrls = await Promise.all(uploadPromises).catch((err) => {
+        throw new Error(err);
+      });
+
+      res.json({
+        message: "Evidence uploaded successfully",
+        evidenceUrls,
+      });
+    } catch (err) {
+      console.error("Error uploading evidence:", err);
+      return res.status(500).json({ message: err.message });
+    }
+  },
   getBookingById: async (req, res, next) => {
     try {
       const booking = await Booking.findById(req.params.id);

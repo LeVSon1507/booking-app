@@ -30,7 +30,7 @@ const EditReviewPage = () => {
           setComment(userReview.comment);
         } else {
           toast.error('Review not found');
-          navigate('/my-bookings');
+          navigate('/my-booking');
         }
       } catch (error) {
         toast.error('An error occurred while loading data');
@@ -68,7 +68,7 @@ const EditReviewPage = () => {
       });
 
       toast.success('Review updated successfully');
-      navigate('/my-bookings');
+      navigate('/my-booking');
     } catch (error) {
       toast.error('An error occurred while updating your review');
     } finally {
@@ -129,7 +129,7 @@ const EditReviewPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn-cancel" onClick={() => navigate('/my-bookings')}>
+          <button type="button" className="btn-cancel" onClick={() => navigate('/my-booking')}>
             Cancel
           </button>
           <button type="submit" className="btn-submit" disabled={submitting}>

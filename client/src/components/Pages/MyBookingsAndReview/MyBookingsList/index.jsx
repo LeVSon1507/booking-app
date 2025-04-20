@@ -7,6 +7,7 @@ import { dispatchGetBookingUser, fetchBookingUser } from 'redux/actions/bookingA
 import Swal from 'sweetalert2';
 import './MyBookingsList.css';
 import { ReactComponent as Icon } from '@images/my-booking-icon.svg';
+import moment from 'moment';
 
 const MyBookingsList = () => {
   const token = useSelector((state) => state.token);
@@ -184,11 +185,30 @@ const MyBookingsList = () => {
                               </span>
                             </div>
                           </div>
+
+                          {booking?.specialRequests && (
+                            <div className="info-item">
+                              <i className="fas fa-info-circle"></i>
+                              <div>
+                                <span className="label">Special Requests:</span>
+                                <span className="value font-bold text-uppercase">
+                                  {booking?.specialRequests}
+                                </span>
+                              </div>
+                            </div>
+                          )}
                         </div>
 
-                        <div className="booking-id">
-                          <small>Booking ID: {booking._id}</small>
+                        <div className="booking-id ">
+                          <strong style={{ color: '#e2ba76' }}>Booked on:</strong>{' '}
+                          {moment(booking.createdAt).format('MMM DD, YYYY, HH:mm')}
                         </div>
+                        {booking.status === 'cancelled' && (
+                          <div className="booking-id ">
+                            <strong className="text-danger">Cancel on:</strong>{' '}
+                            {moment(booking.updatedAt).format('MMM DD, YYYY, HH:mm')}
+                          </div>
+                        )}
 
                         {booking.status !== 'cancelled' && (
                           <div className="booking-actions">

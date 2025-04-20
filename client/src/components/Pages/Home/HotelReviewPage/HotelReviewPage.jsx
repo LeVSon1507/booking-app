@@ -54,7 +54,7 @@ const HotelReviewPage = () => {
       });
 
       toast.success('Your review has been submitted successfully');
-      navigate('/my-bookings');
+      navigate('/my-booking');
     } catch (error) {
       if (error.response && error.response.status === 403) {
         toast.error('You can only review hotels you have stayed at');
@@ -128,7 +128,7 @@ const HotelReviewPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn-cancel" onClick={() => navigate('/my-bookings')}>
+          <button type="button" className="btn-cancel" onClick={() => navigate('/my-booking')}>
             Cancel
           </button>
           <button type="submit" className="btn-submit" disabled={submitting}>

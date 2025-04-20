@@ -1,184 +1,205 @@
-const Hotel = require("../models/hotelModel");
+const Review = require("../models/reviewModel");
 const Booking = require("../models/bookingModel");
+const Hotel = require("../models/hotelModel");
+const User = require("../models/userModel");
 
 const reviewCtrl = {
-  addReview: async (req, res, next) => {
+  addReview: async (req, res) => {
     try {
       const { hotelId } = req.params;
-      const userId = req.user.id;
-      const { rating, comment } = req.body;
+      const { bookingId, roomId, rating, title, comment, evidenceUrls } =
+        req.body;
 
-      const bookings = await Booking.find({
-        userId,
-        hotelId,
-        status: "completed",
-        hasReviewed: false,
+      if (!bookingId || !rating || !title || !comment) {
+        return res
+          .status(400)
+          .json({ message: "Please provide all required fields" });
+      }
+
+      const booking = await Booking.findOne({
+        _id: bookingId,
+        userId: req.user.id,
       });
 
-      if (bookings.length === 0) {
-        return res.status(403).json({
-          message: "You can only review hotels you have stayed at",
-        });
+      if (!booking) {
+        return res
+          .status(404)
+          .json({ message: "Booking not found or you don't have permission" });
       }
 
-      const hotel = await Hotel.findById(hotelId);
-      if (!hotel) {
-        return res.status(404).json({
-          message: "Hotel not found",
-        });
+      if (booking.hasReviewed) {
+        return res
+          .status(400)
+          .json({ message: "You have already reviewed this booking" });
       }
 
-      const review = {
-        userId,
-        userName: req.user.name,
+      const newReview = new Review({
+        user: req.user.id,
+        booking: bookingId,
+        hotel: hotelId,
+        room: roomId || booking.roomId,
         rating,
+        title,
         comment,
-        createdAt: new Date(),
+        evidenceUrls: evidenceUrls || [],
+      });
+
+      const savedReview = await newReview.save();
+
+      booking.hasReviewed = true;
+      booking.reviewId = savedReview._id;
+      await booking.save();
+
+      const hotelReviews = await Review.find({ hotel: hotelId });
+      const totalRating = hotelReviews.reduce(
+        (sum, review) => sum + review.rating,
+        0
+      );
+      const averageRating = totalRating / hotelReviews.length;
+
+      const user = await User.findById(req.user.id).select("name avatar");
+
+      const reviewForHotel = {
+        _id: savedReview._id,
+        user: {
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+        },
+        rating: rating,
+        title: title,
+        comment: comment,
+        createdAt: savedReview.createdAt,
       };
 
-      hotel.reviews.push(review);
+      await Hotel.findByIdAndUpdate(hotelId, {
+        $set: { rating: averageRating },
+        $push: { reviews: reviewForHotel },
+      });
 
-      const totalRating = hotel.reviews.reduce(
-        (sum, item) => sum + item.rating,
-        0
-      );
-      hotel.rating = totalRating / hotel.reviews.length;
-
-      await hotel.save();
-
-      await Booking.updateMany(
-        { userId, hotelId, status: "completed" },
-        { hasReviewed: true }
-      );
-
-      return res.status(201).json({
+      res.status(201).json({
         message: "Review added successfully",
-        review,
+        review: savedReview,
       });
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      console.error("Error adding review:", err);
+      return res.status(500).json({ message: err.message });
     }
   },
 
-  getUserReviews: async (req, res, next) => {
+  getUserReviews: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const reviews = await Review.find({ user: req.user.id })
+        .populate("hotel", "name address city imageUrls")
+        .populate("booking", "startDate endDate totalDays")
+        .populate("room", "name type")
+        .sort("-createdAt");
 
-      const hotels = await Hotel.find({
-        "reviews.userId": userId,
-      });
-
-      const reviews = [];
-
-      hotels.forEach((hotel) => {
-        const userReviews = hotel.reviews.filter(
-          (review) => review.userId.toString() === userId.toString()
-        );
-
-        userReviews.forEach((review) => {
-          reviews.push({
-            reviewId: review._id,
-            hotelId: hotel._id,
-            hotelName: hotel.name,
-            rating: review.rating,
-            comment: review.comment,
-            createdAt: review.createdAt,
-          });
-        });
-      });
-
-      return res.status(200).json(reviews);
-    } catch (error) {
-      next(error);
+      res.json(reviews);
+    } catch (err) {
+      console.error("Error getting user reviews:", err);
+      return res.status(500).json({ message: err.message });
     }
   },
 
-  updateReview: async (req, res, next) => {
+  updateReview: async (req, res) => {
     try {
       const { reviewId } = req.params;
-      const userId = req.user.id;
-      const { rating, comment } = req.body;
+      const { rating, title, comment, evidenceUrls } = req.body;
 
-      const hotel = await Hotel.findOne({
-        "reviews._id": reviewId,
-        "reviews.userId": userId,
+      const review = await Review.findOne({
+        _id: reviewId,
+        user: req.user.id,
       });
 
-      if (!hotel) {
-        return res.status(404).json({
-          message: "Review not found or you don't have permission to update it",
-        });
+      if (!review) {
+        return res
+          .status(404)
+          .json({ message: "Review not found or you don't have permission" });
       }
 
-      const reviewIndex = hotel.reviews.findIndex(
-        (review) => review._id.toString() === reviewId
-      );
+      if (rating) review.rating = rating;
+      if (title) review.title = title;
+      if (comment) review.comment = comment;
+      if (evidenceUrls) review.evidenceUrls = evidenceUrls;
 
-      hotel.reviews[reviewIndex].rating = rating;
-      hotel.reviews[reviewIndex].comment = comment;
-      hotel.reviews[reviewIndex].updatedAt = new Date();
+      const updatedReview = await review.save();
 
-      const totalRating = hotel.reviews.reduce(
-        (sum, item) => sum + item.rating,
+      const hotelReviews = await Review.find({ hotel: review.hotel });
+      const totalRating = hotelReviews.reduce(
+        (sum, review) => sum + review.rating,
         0
       );
-      hotel.rating = totalRating / hotel.reviews.length;
+      const averageRating = totalRating / hotelReviews.length;
 
-      await hotel.save();
+      const hotel = await Hotel.findById(review.hotel);
+      const reviewIndex = hotel.reviews.findIndex(
+        (r) => r._id.toString() === reviewId
+      );
 
-      return res.status(200).json({
+      if (reviewIndex !== -1) {
+        hotel.reviews[reviewIndex].rating = rating || review.rating;
+        hotel.reviews[reviewIndex].title = title || review.title;
+        hotel.reviews[reviewIndex].comment = comment || review.comment;
+        hotel.rating = averageRating;
+
+        await hotel.save();
+      }
+
+      res.json({
         message: "Review updated successfully",
-        review: hotel.reviews[reviewIndex],
+        review: updatedReview,
       });
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      console.error("Error updating review:", err);
+      return res.status(500).json({ message: err.message });
     }
   },
 
-  deleteReview: async (req, res, next) => {
+  deleteReview: async (req, res) => {
     try {
       const { reviewId } = req.params;
-      const userId = req.user.id;
 
-      const hotel = await Hotel.findOne({
-        "reviews._id": reviewId,
-        "reviews.userId": userId,
+      const review = await Review.findOne({
+        _id: reviewId,
+        user: req.user.id,
       });
 
-      if (!hotel) {
-        return res.status(404).json({
-          message: "Review not found or you don't have permission to delete it",
-        });
+      if (!review) {
+        return res
+          .status(404)
+          .json({ message: "Review not found or you don't have permission" });
       }
 
-      const reviewIndex = hotel.reviews.findIndex(
-        (review) => review._id.toString() === reviewId
-      );
+      await Review.findByIdAndDelete(reviewId);
 
-      hotel.reviews.splice(reviewIndex, 1);
+      await Booking.findByIdAndUpdate(review.booking, {
+        hasReviewed: false,
+        reviewId: null,
+      });
 
-      if (hotel.reviews.length > 0) {
-        const totalRating = hotel.reviews.reduce(
-          (sum, item) => sum + item.rating,
+      await Hotel.findByIdAndUpdate(review.hotel, {
+        $pull: { reviews: { _id: reviewId } },
+      });
+
+      const hotelReviews = await Review.find({ hotel: review.hotel });
+
+      if (hotelReviews.length > 0) {
+        const totalRating = hotelReviews.reduce(
+          (sum, review) => sum + review.rating,
           0
         );
-        hotel.rating = totalRating / hotel.reviews.length;
+        const averageRating = totalRating / hotelReviews.length;
+
+        await Hotel.findByIdAndUpdate(review.hotel, { rating: averageRating });
       } else {
-        hotel.rating = 0;
+        await Hotel.findByIdAndUpdate(review.hotel, { rating: 0 });
       }
 
-      await hotel.save();
-
-      await Booking.updateOne(
-        { userId, hotelId: hotel._id, hasReviewed: true },
-        { hasReviewed: false }
-      );
-
-      return res.status(200).json({
-        message: "Review deleted successfully",
-      });
-    } catch (error) {
-      next(error);
+      res.json({ message: "Review deleted successfully" });
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      return res.status(500).json({ message: err.message });
     }
   },
 };

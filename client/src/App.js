@@ -3,7 +3,7 @@ import Footer from 'components/Layout/Footer';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import Routes from 'Routes';
+import Routes from 'Routes/route';
 import './App.css';
 import Header from './components/Layout/Header';
 import { dispatchGetUser, dispatchLogin, fetchUser } from './redux/actions/authAction';

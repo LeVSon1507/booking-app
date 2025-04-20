@@ -11,7 +11,7 @@ const Hotel = ({ hotel }) => {
   const handleShow = () => setShow(true);
 
   const handleViewRooms = () => {
-    navigate(`/hotel/${hotel._id}`);
+    navigate(`/hotels/${hotel._id}`);
   };
 
   return (

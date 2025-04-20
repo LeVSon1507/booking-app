@@ -1,15 +1,34 @@
-import { GET_TOKEN } from 'redux/contants'
+import { GET_TOKEN, CLEAR_TOKEN } from 'redux/contants';
 
-const token = ''
+const getInitialToken = () => {
+  const storedToken = localStorage.getItem('token');
 
-const tokenReducer = ( state = token,action) =>{
-    switch(action.type){
-        case GET_TOKEN:
-            return action.payload
-        default:
-            return state
-    }
-}
+  if (!storedToken) return null;
 
+  try {
+    return storedToken;
+  } catch (error) {
+    console.error('Invalid token in localStorage:', error);
+    localStorage.removeItem('token');
+    return null;
+  }
+};
 
-export default tokenReducer
+const tokenReducer = (state = getInitialToken(), action) => {
+  switch (action.type) {
+    case GET_TOKEN:
+      if (action.payload) {
+        localStorage.setItem('token', action.payload);
+      }
+      return action.payload;
+
+    case CLEAR_TOKEN:
+      localStorage.removeItem('token');
+      return null;
+
+    default:
+      return state;
+  }
+};
+
+export default tokenReducer;

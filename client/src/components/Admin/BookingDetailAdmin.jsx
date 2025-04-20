@@ -5,7 +5,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-const BookingDetail = () => {
+const BookingDetailAdmin = () => {
   const { id } = useParams();
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -86,4 +86,4 @@ const BookingDetail = () => {
   );
 };
 
-export default BookingDetail;
+export default BookingDetailAdmin;

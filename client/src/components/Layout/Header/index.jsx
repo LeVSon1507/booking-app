@@ -39,6 +39,7 @@ function Header() {
     try {
       await userApi.logout();
       localStorage.removeItem('userCurrent');
+      localStorage.removeItem('token');
       window.location.href = '/';
     } catch (err) {
       window.location.href = '/';

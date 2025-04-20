@@ -1,6 +1,9 @@
 import axiosClient from './axiosClient';
 
 export const bookingApi = {
+  uploadBookingEvidence: (bookingId, formData, config) => {
+    return axiosClient.post(`/api/bookings/${bookingId}/evidence`, formData, config);
+  },
   createBookingRoom(data, token) {
     const url = '/api/booking';
     return axiosClient.post(url, data, token);
