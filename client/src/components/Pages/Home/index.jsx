@@ -30,7 +30,7 @@ const Home = () => {
     (async () => {
       try {
         const response = await hotelApi.getAllHotels('');
-        const uniqueCities = [...new Set(response.data.map((hotel) => hotel.city))];
+        const uniqueCities = [...new Set(response?.data?.map((hotel) => hotel.city))];
         setCities(uniqueCities);
       } catch (error) {
         console.log(error);
