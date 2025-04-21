@@ -30,7 +30,7 @@ const Home = () => {
     (async () => {
       try {
         const response = await hotelApi.getAllHotels('');
-        const uniqueCities = [...new Set(response?.data?.map((hotel) => hotel.city))];
+        const uniqueCities = [...new Set((response?.data || []).map((hotel) => hotel.city))];
         setCities(uniqueCities);
       } catch (error) {
         console.log(error);
@@ -42,6 +42,7 @@ const Home = () => {
     (async () => {
       try {
         setLoading(true);
+        console.log('Fetching with params:', filters); // Debug
 
         const params = {
           search: filters.search,
@@ -54,12 +55,16 @@ const Home = () => {
         }
 
         const paramsString = '?' + queryString.stringify(params);
-        const response = await hotelApi.getAllHotels(paramsString);
+        console.log('API call:', paramsString); // Debug
 
-        setHotels(response.data);
+        const response = await hotelApi.getAllHotels(paramsString);
+        console.log('API response:', response); // Debug
+
+        setHotels(Array.isArray(response.data) ? response.data : []);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching hotels:', error);
+        setHotels([]);
         setLoading(false);
       }
     })();
@@ -169,7 +174,19 @@ const Home = () => {
             )}
 
             <div className="row justify-content-center mt-2">
-              {hotels.length === 0 ? (
+              {Array.isArray(hotels) && hotels.length > 0 ? (
+                hotels.map((hotel) => (
+                  <div key={hotel._id} className="col-md-9 mt-2">
+                    <LazyLoad height={200} offset={100} debounce={300} once>
+                      <Hotel
+                        hotel={hotel}
+                        startDate={filters.startDate}
+                        endDate={filters.endDate}
+                      />
+                    </LazyLoad>
+                  </div>
+                ))
+              ) : (
                 <div className="no-result bs mt-3">
                   <h2 className="mt-5">
                     {dateSelected
@@ -179,22 +196,6 @@ const Home = () => {
                       : 'No hotels found'}
                   </h2>
                 </div>
-              ) : (
-                <Fragment>
-                  {hotels?.map((hotel) => {
-                    return (
-                      <div key={hotel._id} className="col-md-9 mt-2">
-                        <LazyLoad height={200} offset={100} debounce={300} once>
-                          <Hotel
-                            hotel={hotel}
-                            startDate={filters.startDate}
-                            endDate={filters.endDate}
-                          />
-                        </LazyLoad>
-                      </div>
-                    );
-                  })}
-                </Fragment>
               )}
             </div>
           </div>

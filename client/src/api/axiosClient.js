@@ -2,7 +2,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.BACKEND_API_URI ?? 'https://booking-app-11111.up.railway.app',
   headers: {
     'content-type': 'application/json',
   },
