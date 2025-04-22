@@ -17,7 +17,7 @@ axiosClient.interceptors.request.use(
     return res;
   },
   (err) => {
-    throw err;
+    console.log(err);
   }
 );
 

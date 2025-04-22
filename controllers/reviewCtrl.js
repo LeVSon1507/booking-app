@@ -7,8 +7,25 @@ const reviewCtrl = {
   addReview: async (req, res) => {
     try {
       const { hotelId } = req.params;
-      const { bookingId, roomId, rating, title, comment, evidenceUrls } =
-        req.body;
+      const {
+        userId,
+        bookingId,
+        roomId,
+        rating,
+        title,
+        comment,
+        evidenceUrls,
+      } = req.body;
+
+      console.log("Review request data:", {
+        hotelId,
+        userId,
+        bookingId,
+        roomId,
+        rating,
+        title,
+        comment,
+      });
 
       if (!bookingId || !rating || !title || !comment) {
         return res
@@ -18,7 +35,7 @@ const reviewCtrl = {
 
       const booking = await Booking.findOne({
         _id: bookingId,
-        userId: req.user.id,
+        userId,
       });
 
       if (!booking) {
@@ -33,63 +50,101 @@ const reviewCtrl = {
           .json({ message: "You have already reviewed this booking" });
       }
 
+      const hotel = await Hotel.findById(hotelId);
+      if (!hotel) {
+        return res.status(404).json({ message: "Hotel not found" });
+      }
+
+      const user = await User.findById(userId).select("name avatar");
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
       const newReview = new Review({
-        user: req.user.id,
+        user: userId,
         booking: bookingId,
         hotel: hotelId,
         room: roomId || booking.roomId,
-        rating,
+        rating: Number(rating),
         title,
         comment,
         evidenceUrls: evidenceUrls || [],
       });
 
-      const savedReview = await newReview.save();
+      console.log("New review object:", newReview);
 
-      booking.hasReviewed = true;
-      booking.reviewId = savedReview._id;
-      await booking.save();
+      try {
+        const savedReview = await newReview.save();
+        console.log("Review saved successfully:", savedReview);
 
-      const hotelReviews = await Review.find({ hotel: hotelId });
-      const totalRating = hotelReviews.reduce(
-        (sum, review) => sum + review.rating,
-        0
-      );
-      const averageRating = totalRating / hotelReviews.length;
+        booking.hasReviewed = true;
+        booking.reviewId = savedReview._id;
+        await booking.save();
+        console.log("Booking updated with review info");
 
-      const user = await User.findById(req.user.id).select("name avatar");
+        const hotelReviews = await Review.find({ hotel: hotelId });
+        const totalRating = hotelReviews.reduce(
+          (sum, review) => sum + review.rating,
+          0
+        );
+        const averageRating = totalRating / hotelReviews.length;
+        console.log("New average rating:", averageRating);
 
-      const reviewForHotel = {
-        _id: savedReview._id,
-        user: {
-          _id: user._id,
-          name: user.name,
-          avatar: user.avatar,
-        },
-        rating: rating,
-        title: title,
-        comment: comment,
-        createdAt: savedReview.createdAt,
-      };
+        const reviewForHotel = {
+          userId: user._id,
+          userName: user.name,
+          rating: Number(rating),
+          comment: comment,
+          createdAt: savedReview.createdAt,
+        };
 
-      await Hotel.findByIdAndUpdate(hotelId, {
-        $set: { rating: averageRating },
-        $push: { reviews: reviewForHotel },
-      });
+        if (title) {
+          reviewForHotel.title = title;
+        }
 
-      res.status(201).json({
-        message: "Review added successfully",
-        review: savedReview,
-      });
+        await Hotel.findByIdAndUpdate(hotelId, {
+          $set: { rating: averageRating },
+          $push: { reviews: reviewForHotel },
+        });
+        console.log("Hotel updated with new review");
+
+        res.status(201).json({
+          message: "Review added successfully",
+          review: savedReview,
+        });
+      } catch (saveError) {
+        console.error("Error saving review:", saveError);
+        if (saveError.code === 11000) {
+          return res.status(400).json({
+            message: "You have already submitted a review for this booking",
+            error: saveError.message,
+          });
+        }
+
+        console.log("Error saving review:", saveError);
+        return res.status(500).json({
+          message: "Failed to add review",
+          error: saveError.message,
+          stack:
+            process.env.NODE_ENV === "development"
+              ? saveError.stack
+              : undefined,
+        });
+      }
     } catch (err) {
-      console.error("Error adding review:", err);
-      return res.status(500).json({ message: err.message });
+      console.error("Error in addReview:", err);
+      return res.status(500).json({
+        message: "Failed to add review",
+        error: err.message,
+        stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+      });
     }
   },
-
   getUserReviews: async (req, res) => {
+    const { userId } = req.headers;
+
     try {
-      const reviews = await Review.find({ user: req.user.id })
+      const reviews = await Review.find({ user: userId })
         .populate("hotel", "name address city imageUrls")
         .populate("booking", "startDate endDate totalDays")
         .populate("room", "name type")
@@ -133,16 +188,33 @@ const reviewCtrl = {
       const averageRating = totalRating / hotelReviews.length;
 
       const hotel = await Hotel.findById(review.hotel);
-      const reviewIndex = hotel.reviews.findIndex(
-        (r) => r._id.toString() === reviewId
-      );
+
+      let reviewIndex = -1;
+
+      if (hotel.reviews.length > 0 && hotel.reviews[0].userId) {
+        reviewIndex = hotel.reviews.findIndex(
+          (r) => r.userId.toString() === req.user.id
+        );
+      } else {
+        reviewIndex = hotel.reviews.findIndex(
+          (r) => r._id && r._id.toString() === reviewId
+        );
+      }
 
       if (reviewIndex !== -1) {
-        hotel.reviews[reviewIndex].rating = rating || review.rating;
-        hotel.reviews[reviewIndex].title = title || review.title;
-        hotel.reviews[reviewIndex].comment = comment || review.comment;
-        hotel.rating = averageRating;
+        if (hotel.reviews[reviewIndex].userId) {
+          if (rating) hotel.reviews[reviewIndex].rating = rating;
+          if (comment) hotel.reviews[reviewIndex].comment = comment;
+          if (title && "title" in hotel.reviews[reviewIndex]) {
+            hotel.reviews[reviewIndex].title = title;
+          }
+        } else {
+          if (rating) hotel.reviews[reviewIndex].rating = rating;
+          if (title) hotel.reviews[reviewIndex].title = title;
+          if (comment) hotel.reviews[reviewIndex].comment = comment;
+        }
 
+        hotel.rating = averageRating;
         await hotel.save();
       }
 
@@ -178,9 +250,17 @@ const reviewCtrl = {
         reviewId: null,
       });
 
-      await Hotel.findByIdAndUpdate(review.hotel, {
-        $pull: { reviews: { _id: reviewId } },
-      });
+      const hotel = await Hotel.findById(review.hotel);
+
+      if (hotel.reviews.length > 0 && hotel.reviews[0].userId) {
+        await Hotel.findByIdAndUpdate(review.hotel, {
+          $pull: { reviews: { userId: req.user.id } },
+        });
+      } else {
+        await Hotel.findByIdAndUpdate(review.hotel, {
+          $pull: { reviews: { _id: reviewId } },
+        });
+      }
 
       const hotelReviews = await Review.find({ hotel: review.hotel });
 

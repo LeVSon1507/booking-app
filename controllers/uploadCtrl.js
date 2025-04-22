@@ -21,7 +21,7 @@ const uploadCtrl = {
           crop: "fill",
         },
         async (err, result) => {
-          if (err) throw err;
+          console.log("Error  :", err);
 
           removeTmp(file.tempFilePath);
 
@@ -42,6 +42,7 @@ const uploadCtrl = {
 
       const files = req.files.evidence;
       const fileArray = Array.isArray(files) ? files : [files];
+      console.log("Files to process:", fileArray.length);
 
       if (fileArray.length > 3) {
         return res.status(400).json({ message: "Maximum 3 files allowed" });
@@ -49,12 +50,20 @@ const uploadCtrl = {
 
       const uploadPromises = fileArray.map((file) => {
         return new Promise((resolve, reject) => {
-          if (!file.mimetype.match(/image.*/)) {
+          if (!file) {
+            return reject("Invalid file");
+          }
+
+          if (!file.mimetype || !file.mimetype.match(/image.*/)) {
             return reject("Only images are allowed");
           }
 
           if (file.size > 5 * 1024 * 1024) {
             return reject("File size too large (max 5MB)");
+          }
+
+          if (!file.tempFilePath) {
+            return reject("Missing temp file path");
           }
 
           cloudinary.v2.uploader.upload(
@@ -65,7 +74,10 @@ const uploadCtrl = {
               crop: "limit",
             },
             (err, result) => {
-              if (err) return reject(err);
+              if (err) {
+                console.error("Cloudinary upload error:", err);
+                return reject(err);
+              }
 
               removeTmp(file.tempFilePath);
               resolve(result.secure_url);
@@ -75,11 +87,13 @@ const uploadCtrl = {
       });
 
       const evidenceUrls = await Promise.all(uploadPromises).catch((err) => {
+        console.error("Upload promise error:", err);
         throw new Error(err);
       });
 
       res.json({ evidenceUrls });
     } catch (err) {
+      console.error("Upload evidence error:", err);
       return res.status(500).json({ message: err.message });
     }
   },

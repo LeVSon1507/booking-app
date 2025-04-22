@@ -5,13 +5,8 @@ const auth = require("../middleware/auth");
 
 router.post("/upload_avatar", uploadImage, auth, uploadCtrl.uploadAvatar);
 
-router.post("/upload_evidence", uploadImage, auth, uploadCtrl.uploadEvidence);
+router.post("/upload_evidence", auth, uploadCtrl.uploadEvidence);
 
-router.post(
-  "/upload_review_images",
-  uploadImage,
-  auth,
-  uploadCtrl.uploadReviewImages
-);
+router.post("/upload_review_images", auth, uploadCtrl.uploadReviewImages);
 
 module.exports = router;

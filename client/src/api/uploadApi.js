@@ -1,3 +1,4 @@
+import axios from 'axios';
 import axiosClient from './axiosClient';
 
 export const uploadApi = {
@@ -7,10 +8,10 @@ export const uploadApi = {
   },
 
   uploadEvidence: (formData, config) => {
-    return axiosClient.post('/api/upload/upload_evidence', formData, config);
+    return axios.post('/api/upload_evidence', formData, config);
   },
 
   uploadReviewImages: (formData, config) => {
-    return axiosClient.post('/api/upload/upload_review_images', formData, config);
+    return axiosClient.post('/api/upload_review_images', formData, config);
   },
 };

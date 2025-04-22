@@ -36,12 +36,18 @@ const Room = ({ room, startDate, endDate }) => {
     <>
       <div className="row bs">
         <div className="col-md-4 mb-1">
-          <img src={room.imageUrls[0]} alt={room.name} className="room_image" />
+          <img src={room.imageUrls[0]} alt={room?.name} className="room_image" />
         </div>
         <div className="col-md-8 mb-1">
-          <h5>{room.name}</h5>
-          <p>Room price: {formatter.format(room.price)}/day</p>
-          <p>Room type: {room.type}</p>
+          <h4 className="font-bold mb-3">
+            <strong>{room?.name}</strong>
+          </h4>
+          <p className="text-black">
+            <strong>Room price:</strong> {formatter?.format(room?.price)}/day
+          </p>
+          <p className="text-black">
+            <strong>Room type:</strong> {room?.type}
+          </p>
           <a href="#/" onClick={handleShow}>
             View Detail {'>>'}
           </a>

@@ -85,7 +85,7 @@ const sendBookingConfirmationEmail = async (booking, room, user, hotel) => {
       console.error("Error details:", error.response.body);
     }
 
-    throw error;
+    console.log("Error  :", error);
   }
 };
 
@@ -123,7 +123,7 @@ const sendMailSendgrid = async ({
       console.error("Error details:", error.response.body);
     }
 
-    throw error;
+    console.log("Error  :", error);
   }
 };
 

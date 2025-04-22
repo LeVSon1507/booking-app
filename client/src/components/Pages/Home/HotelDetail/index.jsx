@@ -122,7 +122,7 @@ const HotelDetail = () => {
 
               <div className="hotel-description mt-4">
                 <h3>About this hotel</h3>
-                <p>{hotel.description}</p>
+                <p className="text-black">{hotel.description}</p>
               </div>
 
               <div className="hotel-amenities mt-4">

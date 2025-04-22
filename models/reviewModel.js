@@ -51,5 +51,6 @@ const reviewSchema = new mongoose.Schema(
 );
 
 reviewSchema.index({ booking: 1 }, { unique: true });
+const reviewModel = mongoose.model("Reviews", reviewSchema);
 
-module.exports = mongoose.model("Reviews", reviewSchema);
+module.exports = reviewModel;

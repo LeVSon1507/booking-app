@@ -1,4 +1,3 @@
-// src/components/Admin/AddHotel.jsx
 import React, { useState } from 'react';
 import { hotelApi } from 'api/hotelApi';
 import { uploadApi } from 'api/uploadApi';
@@ -57,7 +56,6 @@ const AddHotel = () => {
     const files = Array.from(e.target.files);
     setImages([...images, ...files]);
 
-    // Preview images
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -77,7 +75,6 @@ const AddHotel = () => {
     setLoading(true);
 
     try {
-      // Upload images first
       let uploadedImageUrls = [];
       if (images.length > 0) {
         const formData = new FormData();
@@ -89,7 +86,6 @@ const AddHotel = () => {
         uploadedImageUrls = uploadResponse.data;
       }
 
-      // Create hotel with uploaded image URLs
       const hotelData = {
         ...formData,
         imageUrls: uploadedImageUrls,
@@ -98,7 +94,6 @@ const AddHotel = () => {
       const response = await hotelApi.createHotel(hotelData);
       setSuccess('Hotel created successfully');
 
-      // Redirect to hotel detail page after a short delay
       setTimeout(() => {
         navigate(`/admin/hotel/${response.data.hotel._id}`);
       }, 2000);

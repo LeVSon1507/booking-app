@@ -16,11 +16,9 @@ const EditReviewPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get hotel information
         const hotelResponse = await axios.get(`/api/hotels/${hotelId}`);
         setHotel(hotelResponse.data.hotel);
 
-        // Get user's review
         const reviewsResponse = await axios.get('/api/user/reviews');
         const userReview = reviewsResponse.data.find((r) => r.reviewId === reviewId);
 

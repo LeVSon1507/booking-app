@@ -49,12 +49,10 @@ const BookingRoom = () => {
       try {
         setLoading(true);
 
-        // Fetch room details
         const roomResponse = await roomApi.getRoomById(roomId);
         const roomData = roomResponse.data.room || roomResponse.data;
         setRoom(roomData);
 
-        // Fetch hotel details if hotelId exists in room data
         if (roomData && roomData.hotelId) {
           const hotelResponse = await hotelApi.getHotelById(roomData.hotelId);
           setHotel(hotelResponse.data.hotel || hotelResponse.data);

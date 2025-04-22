@@ -9,7 +9,6 @@ const MyBookings = () => {
   const [activeTab, setActiveTab] = useState('bookings');
 
   useEffect(() => {
-    // Check if we should activate the reviews tab
     if (location.state && location.state.activeTab === 'reviews') {
       setActiveTab('reviews');
     }

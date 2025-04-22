@@ -4,16 +4,22 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import './ReviewSection.css';
 import { ReactComponent as IconReview } from '@images/review-icon.svg';
+import { reviewApi } from 'api/reviewApi';
+import { useSelector } from 'react-redux';
 
 const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const token = useSelector((state) => state.token);
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const fetchUserReviews = async () => {
       try {
-        const response = await axios.get('/api/user/reviews');
+        const response = await reviewApi.getUserReviews({
+          headers: { Authorization: token, userId: user._id },
+        });
         setReviews(response.data);
       } catch (error) {
         toast.error('Failed to load your reviews');
@@ -23,7 +29,7 @@ const ReviewSection = () => {
     };
 
     fetchUserReviews();
-  }, []);
+  }, [token, user._id]);
 
   const handleEditReview = (reviewId, hotelId) => {
     navigate(`/hotels/${hotelId}/edit-review/${reviewId}`);

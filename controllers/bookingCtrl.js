@@ -139,7 +139,7 @@ const bookingCtrl = {
       });
 
       const evidenceUrls = await Promise.all(uploadPromises).catch((err) => {
-        throw new Error(err);
+        console.log("Error  :", err);
       });
 
       res.json({
