@@ -3,29 +3,45 @@ const Booking = require("../models/bookingModel");
 const Hotel = require("../models/hotelModel");
 const User = require("../models/userModel");
 
+const updateHotelRating = async (hotelId) => {
+  const hotelReviews = await Review.find({ hotel: hotelId });
+
+  if (hotelReviews.length === 0) {
+    return await Hotel.findByIdAndUpdate(hotelId, { rating: 0 });
+  }
+
+  const totalRating = hotelReviews.reduce(
+    (sum, review) => sum + review.rating,
+    0
+  );
+  const averageRating = totalRating / hotelReviews.length;
+
+  return await Hotel.findByIdAndUpdate(hotelId, { rating: averageRating });
+};
+
+const handleError = (res, statusCode, message, err = null) => {
+  const response = { message };
+  if (err && process.env.NODE_ENV === "development") {
+    response.error = err.message;
+    response.stack = err.stack;
+  }
+  return res.status(statusCode).json(response);
+};
+
 const reviewCtrl = {
   addReview: async (req, res) => {
     try {
       const { hotelId } = req.params;
       const {
-        userId,
         bookingId,
         roomId,
         rating,
         title,
+        userId,
         comment,
         evidenceUrls,
+        imageUrls,
       } = req.body;
-
-      console.log("Review request data:", {
-        hotelId,
-        userId,
-        bookingId,
-        roomId,
-        rating,
-        title,
-        comment,
-      });
 
       if (!bookingId || !rating || !title || !comment) {
         return res
@@ -69,18 +85,15 @@ const reviewCtrl = {
         title,
         comment,
         evidenceUrls: evidenceUrls || [],
+        imageUrls: imageUrls || [],
       });
-
-      console.log("New review object:", newReview);
 
       try {
         const savedReview = await newReview.save();
-        console.log("Review saved successfully:", savedReview);
 
         booking.hasReviewed = true;
         booking.reviewId = savedReview._id;
         await booking.save();
-        console.log("Booking updated with review info");
 
         const hotelReviews = await Review.find({ hotel: hotelId });
         const totalRating = hotelReviews.reduce(
@@ -88,9 +101,9 @@ const reviewCtrl = {
           0
         );
         const averageRating = totalRating / hotelReviews.length;
-        console.log("New average rating:", averageRating);
 
         const reviewForHotel = {
+          reviewId: savedReview._id,
           userId: user._id,
           userName: user.name,
           rating: Number(rating),
@@ -106,25 +119,24 @@ const reviewCtrl = {
           $set: { rating: averageRating },
           $push: { reviews: reviewForHotel },
         });
-        console.log("Hotel updated with new review");
 
         res.status(201).json({
           message: "Review added successfully",
           review: savedReview,
         });
       } catch (saveError) {
-        console.error("Error saving review:", saveError);
         if (saveError.code === 11000) {
           return res.status(400).json({
             message: "You have already submitted a review for this booking",
-            error: saveError.message,
           });
         }
 
-        console.log("Error saving review:", saveError);
         return res.status(500).json({
           message: "Failed to add review",
-          error: saveError.message,
+          error:
+            process.env.NODE_ENV === "development"
+              ? saveError.message
+              : undefined,
           stack:
             process.env.NODE_ENV === "development"
               ? saveError.stack
@@ -132,18 +144,18 @@ const reviewCtrl = {
         });
       }
     } catch (err) {
-      console.error("Error in addReview:", err);
       return res.status(500).json({
         message: "Failed to add review",
-        error: err.message,
+        error: process.env.NODE_ENV === "development" ? err.message : undefined,
         stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
       });
     }
   },
-  getUserReviews: async (req, res) => {
-    const { userId } = req.headers;
 
+  getUserReviews: async (req, res) => {
     try {
+      const userId = req.headers.userId;
+
       const reviews = await Review.find({ user: userId })
         .populate("hotel", "name address city imageUrls")
         .populate("booking", "startDate endDate totalDays")
@@ -152,7 +164,6 @@ const reviewCtrl = {
 
       res.json(reviews);
     } catch (err) {
-      console.error("Error getting user reviews:", err);
       return res.status(500).json({ message: err.message });
     }
   },
@@ -160,7 +171,7 @@ const reviewCtrl = {
   updateReview: async (req, res) => {
     try {
       const { reviewId } = req.params;
-      const { rating, title, comment, evidenceUrls } = req.body;
+      const { rating, title, comment, evidenceUrls, imageUrls } = req.body;
 
       const review = await Review.findOne({
         _id: reviewId,
@@ -177,6 +188,7 @@ const reviewCtrl = {
       if (title) review.title = title;
       if (comment) review.comment = comment;
       if (evidenceUrls) review.evidenceUrls = evidenceUrls;
+      if (imageUrls) review.imageUrls = imageUrls;
 
       const updatedReview = await review.save();
 
@@ -223,7 +235,6 @@ const reviewCtrl = {
         review: updatedReview,
       });
     } catch (err) {
-      console.error("Error updating review:", err);
       return res.status(500).json({ message: err.message });
     }
   },
@@ -262,23 +273,10 @@ const reviewCtrl = {
         });
       }
 
-      const hotelReviews = await Review.find({ hotel: review.hotel });
-
-      if (hotelReviews.length > 0) {
-        const totalRating = hotelReviews.reduce(
-          (sum, review) => sum + review.rating,
-          0
-        );
-        const averageRating = totalRating / hotelReviews.length;
-
-        await Hotel.findByIdAndUpdate(review.hotel, { rating: averageRating });
-      } else {
-        await Hotel.findByIdAndUpdate(review.hotel, { rating: 0 });
-      }
+      await updateHotelRating(review.hotel);
 
       res.json({ message: "Review deleted successfully" });
     } catch (err) {
-      console.error("Error deleting review:", err);
       return res.status(500).json({ message: err.message });
     }
   },
