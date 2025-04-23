@@ -233,7 +233,6 @@ const Hotel = ({ hotel }) => {
                             </span>
                           </div>
 
-                          {/* Review Images if available */}
                           {review.imageUrls && review.imageUrls.length > 0 && (
                             <div className="review-images mt-2">
                               <div className="row">
@@ -241,7 +240,7 @@ const Hotel = ({ hotel }) => {
                                   <div key={imgIndex} className="col-3">
                                     <img
                                       src={img}
-                                      alt={`Review ${index + 1} image ${imgIndex + 1}`}
+                                      alt={`Review ${index + 1} ${imgIndex + 1}`}
                                       className="img-thumbnail"
                                     />
                                   </div>
