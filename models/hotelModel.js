@@ -31,10 +31,6 @@ const hotelSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    reviews: {
-      type: Array,
-      default: [],
-    },
     contactInfo: {
       phone: String,
       email: String,
@@ -50,6 +46,12 @@ const hotelSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Add indexes for common query patterns
+hotelSchema.index({ city: 1 });
+hotelSchema.index({ name: 1 });
+// For sorting by rating
+hotelSchema.index({ rating: -1 });
 
 const hotelModel = mongoose.model("Hotels", hotelSchema);
 module.exports = hotelModel;

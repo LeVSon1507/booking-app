@@ -1,38 +1,20 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeftOutlined, StarOutlined, MessageOutlined } from '@ant-design/icons';
 import {
-  CalendarOutlined,
-  ClockCircleOutlined,
-  CreditCardOutlined,
-  EnvironmentOutlined,
-  MailOutlined,
-  StarOutlined,
-  MessageOutlined,
-  ArrowLeftOutlined,
-  PictureOutlined,
-} from '@ant-design/icons';
-import {
-  Card,
   Typography,
-  Descriptions,
   Tag,
   Button,
   Row,
   Col,
   Image,
-  Carousel,
-  Divider,
   Space,
-  Statistic,
   Modal,
-  Avatar,
-  Rate,
   Form,
-  Input,
   message,
   Result,
   Spin,
-  Upload,
+  Card,
 } from 'antd';
 import moment from 'moment';
 import MetaData from 'components/utils/MetaData';
@@ -41,108 +23,13 @@ import { reviewApi } from 'api/reviewApi';
 import { uploadApi } from 'api/uploadApi';
 import { useSelector } from 'react-redux';
 
-const { Title, Text, Paragraph } = Typography;
-const { TextArea } = Input;
+import HotelInfo from './HotelInfo';
+import BookingSummary from './BookingSummary';
+import GuestInfo from './GuestInfo';
+import ReviewInfo from './ReviewInfo';
+import ReviewForm from './ReviewForm';
 
-const ReviewForm = ({ form, onFinish, booking, uploading, fileList, setFileList }) => {
-  console.log(booking.paymentMethod);
-
-  const beforeUpload = (file) => {
-    if (!file) return false;
-
-    const isImage = file.type && file.type.startsWith('image/');
-    if (!isImage) {
-      message.error('You can only upload image files!');
-      return false;
-    }
-
-    if (file.size) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error('Image must be smaller than 2MB!');
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handleRemove = (file) => {
-    const index = fileList.indexOf(file);
-    const newFileList = fileList.slice();
-    newFileList.splice(index, 1);
-    setFileList(newFileList);
-  };
-
-  const uploadButton = (
-    <div>
-      <PictureOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
-  return (
-    <Form form={form} layout="vertical" onFinish={onFinish}>
-      <Form.Item
-        name="rating"
-        label="Rating"
-        rules={[{ required: true, message: 'Please rate your stay' }]}
-      >
-        <Rate allowHalf />
-      </Form.Item>
-
-      <Form.Item
-        name="title"
-        label="Review Title"
-        rules={[{ required: true, message: 'Please enter a title for your review' }]}
-      >
-        <Input placeholder="Summarize your experience" />
-      </Form.Item>
-
-      <Form.Item
-        name="comment"
-        label="Your Review"
-        rules={[{ required: true, message: 'Please share your experience' }]}
-      >
-        <TextArea rows={4} placeholder="Tell us about your stay..." />
-      </Form.Item>
-
-      {booking.paymentMethod === 'CASH' && (
-        <Form.Item
-          name="evidence"
-          required
-          label="Upload Payment Evidence"
-          extra="Please upload images of your payment receipt"
-        >
-          <Upload
-            listType="picture-card"
-            fileList={fileList}
-            beforeUpload={beforeUpload}
-            onRemove={handleRemove}
-            customRequest={({ file, onSuccess }) => {
-              setFileList([...fileList, file]);
-              if (onSuccess) onSuccess();
-            }}
-          >
-            {fileList.length >= 3 ? null : uploadButton}
-          </Upload>
-        </Form.Item>
-      )}
-
-      <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          block
-          loading={uploading}
-          disabled={booking.paymentMethod === 'CASH' && fileList.length === 0}
-        >
-          Submit Review
-        </Button>
-      </Form.Item>
-    </Form>
-  );
-};
+const { Title, Text } = Typography;
 
 const BookingDetail = () => {
   const { id } = useParams();
@@ -153,8 +40,10 @@ const BookingDetail = () => {
   const [error, setError] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const [reviewData, setReviewData] = useState(null);
 
   const token = useSelector((state) => state.token);
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [reviewModalVisible, setReviewModalVisible] = useState(false);
@@ -163,9 +52,23 @@ const BookingDetail = () => {
   const [currentImage, setCurrentImage] = useState('');
 
   const getBooking = useCallback(async () => {
-    return await bookingApi.getBookingById(`${id}`, {
+    const bookingResponse = await bookingApi.getBookingById(`${id}`, {
       headers: { Authorization: token },
     });
+
+    if (bookingResponse.data.booking.hasReviewed && bookingResponse.data.booking.reviewId) {
+      try {
+        const reviewResponse = await reviewApi.getReviewById(
+          bookingResponse.data.booking.reviewId,
+          { headers: { Authorization: token } }
+        );
+        setReviewData(reviewResponse.data);
+      } catch (error) {
+        console.log('Error fetching review:', error);
+      }
+    }
+
+    return bookingResponse;
   }, [token, id]);
 
   useEffect(() => {
@@ -187,16 +90,18 @@ const BookingDetail = () => {
     setCancelModalVisible(false);
     message.info('This feature is under development!');
   };
-  const { user: currentUser } = useSelector((state) => state.auth);
 
   const handleReviewSubmit = async (values) => {
     try {
       setUploading(true);
-      const { booking, room } = bookingDetail;
+      const { booking, room, hotel } = bookingDetail;
 
+      if (booking.hasReviewed) {
+        message.error('You have already submitted a review for this booking');
+        return;
+      }
       const reviewData = {
         userId: currentUser._id,
-        userName: currentUser.name,
         bookingId: booking._id,
         roomId: room._id,
         rating: values.rating,
@@ -220,6 +125,22 @@ const BookingDetail = () => {
         reviewData.evidenceUrls = uploadResponse.data.evidenceUrls;
       }
 
+      if (fileList.length > 0) {
+        const imageFormData = new FormData();
+        fileList.forEach((file) => {
+          imageFormData.append('images', file);
+        });
+
+        const imageUploadResponse = await uploadApi.uploadReviewImages(imageFormData, {
+          headers: {
+            Authorization: token,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        reviewData.imageUrls = imageUploadResponse.data.imageUrls;
+      }
+
       await reviewApi.addReview(booking.hotelId, reviewData, {
         headers: { Authorization: token },
       });
@@ -234,7 +155,6 @@ const BookingDetail = () => {
       setFileList([]);
     } catch (error) {
       console.error('Error submitting review:', error);
-      message.error('Failed to submit review. Please try again.');
     } finally {
       setUploading(false);
     }
@@ -253,20 +173,20 @@ const BookingDetail = () => {
     );
   }
 
-  // if (error) {
-  //   return (
-  //     <Result
-  //       status="error"
-  //       title="Failed to load booking"
-  //       subTitle={error}
-  //       extra={[
-  //         <Button type="primary" key="back" onClick={() => navigate('/')}>
-  //           Back to Bookings
-  //         </Button>,
-  //       ]}
-  //     />
-  //   );
-  // }
+  if (error) {
+    return (
+      <Result
+        status="error"
+        title="Failed to load booking"
+        subTitle={error}
+        extra={[
+          <Button type="primary" key="back" onClick={() => navigate('/my-booking')}>
+            Back to Bookings
+          </Button>,
+        ]}
+      />
+    );
+  }
 
   const { booking, hotel, room, user } = bookingDetail || {};
 
@@ -277,159 +197,13 @@ const BookingDetail = () => {
         title="Incomplete booking data"
         subTitle="Some booking information is missing. Please try again later."
         extra={[
-          <Button type="primary" key="back" onClick={() => navigate('/bookings')}>
+          <Button type="primary" key="back" onClick={() => navigate('/my-booking')}>
             Back to Bookings
           </Button>,
         ]}
       />
     );
   }
-
-  const HotelInfo = () => (
-    <Card
-      style={{ marginBottom: '24px' }}
-      cover={
-        <Carousel autoplay>
-          {hotel.imageUrls.map((url, index) => (
-            <div key={index}>
-              <div style={{ height: '300px', overflow: 'hidden', position: 'relative' }}>
-                <Image
-                  src={url}
-                  alt={`${hotel.name} - Image ${index + 1}`}
-                  style={{ width: '100%', objectFit: 'cover', cursor: 'pointer' }}
-                  preview={false}
-                  onClick={() => handleImagePreview(url)}
-                />
-              </div>
-            </div>
-          ))}
-        </Carousel>
-      }
-    >
-      <Title level={3}>{hotel.name}</Title>
-      <Paragraph>
-        <EnvironmentOutlined /> {hotel.address}, {hotel.city}
-      </Paragraph>
-
-      <Divider />
-
-      <Title level={4}>Room: {room.name}</Title>
-      <Tag color="blue">{room.type}</Tag>
-      <Paragraph style={{ marginTop: '12px' }}>{room.description}</Paragraph>
-
-      <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
-        {room.imageUrls.map((url, index) => (
-          <Col span={12} key={index}>
-            <Image
-              src={url}
-              alt={`Room Image ${index + 1}`}
-              style={{
-                width: '100%',
-                height: '150px',
-                objectFit: 'cover',
-                borderRadius: '8px',
-                cursor: 'pointer',
-              }}
-              preview={false}
-              onClick={() => handleImagePreview(url)}
-            />
-          </Col>
-        ))}
-      </Row>
-    </Card>
-  );
-
-  const BookingSummary = () => {
-    const formatDate = (dateString) => {
-      return moment(dateString).format('MMM DD, YYYY');
-    };
-
-    return (
-      <Card title="Reservation Summary" style={{ marginBottom: '24px' }}>
-        <Descriptions column={1} bordered size="small">
-          <Descriptions.Item
-            label={
-              <>
-                <CalendarOutlined /> Check-in
-              </>
-            }
-            labelStyle={{ fontWeight: 'bold' }}
-          >
-            {formatDate(booking.startDate)}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={
-              <>
-                <CalendarOutlined /> Check-out
-              </>
-            }
-            labelStyle={{ fontWeight: 'bold' }}
-          >
-            {formatDate(booking.endDate)}
-          </Descriptions.Item>
-          <Descriptions.Item
-            label={
-              <>
-                <ClockCircleOutlined /> Duration
-              </>
-            }
-            labelStyle={{ fontWeight: 'bold' }}
-          >
-            {booking.totalDays} {booking.totalDays === 1 ? 'night' : 'nights'}
-          </Descriptions.Item>
-        </Descriptions>
-
-        <Divider />
-
-        <Statistic
-          title="Total Amount"
-          value={booking.totalAmount}
-          precision={2}
-          prefix="$"
-          style={{ marginBottom: '16px' }}
-        />
-
-        <Descriptions column={1} size="small">
-          <Descriptions.Item
-            label={
-              <>
-                <CreditCardOutlined /> Payment Method
-              </>
-            }
-            labelStyle={{ fontWeight: 'bold' }}
-          >
-            {booking.paymentMethod}
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
-    );
-  };
-
-  const GuestInfo = () => (
-    <Card title="Guest Information" style={{ marginBottom: '24px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-        <Avatar src={user.avatar} size={64} style={{ marginRight: '16px' }} />
-        <div>
-          <Text strong style={{ fontSize: '16px' }}>
-            {booking.guestDetails.name}
-          </Text>
-          <br />
-          <Text type="secondary">
-            <MailOutlined style={{ marginRight: '8px' }} />
-            {booking.guestDetails.email}
-          </Text>
-        </div>
-      </div>
-
-      {booking.specialRequests && (
-        <>
-          <Divider style={{ margin: '12px 0' }} />
-          <Title level={5}>Special Requests:</Title>
-          <Paragraph>{booking.specialRequests}</Paragraph>
-        </>
-      )}
-    </Card>
-  );
 
   return (
     <Fragment>
@@ -462,12 +236,15 @@ const BookingDetail = () => {
 
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={16}>
-            <HotelInfo />
+            <HotelInfo hotel={hotel} room={room} handleImagePreview={handleImagePreview} />
+            {booking.hasReviewed && (
+              <ReviewInfo reviewData={reviewData} handleImagePreview={handleImagePreview} />
+            )}
           </Col>
 
           <Col xs={24} lg={8}>
-            <BookingSummary />
-            <GuestInfo />
+            <BookingSummary booking={booking} />
+            <GuestInfo booking={booking} user={user} />
 
             <Space direction="vertical" style={{ width: '100%' }}>
               {booking.status === 'booked' && !booking.hasReviewed && (
@@ -481,16 +258,20 @@ const BookingDetail = () => {
                 </Button>
               )}
 
-              {booking.status === 'booked' && (
+              {booking.status === 'booked' && !booking.hasReviewed ? (
                 <Button
-                  danger
-                  icon={<MessageOutlined />}
+                  type="primary"
+                  icon={<StarOutlined />}
                   block
-                  onClick={() => setCancelModalVisible(true)}
+                  onClick={() => setReviewModalVisible(true)}
                 >
-                  Cancel Booking
+                  Leave a Review
                 </Button>
-              )}
+              ) : booking.hasReviewed ? (
+                <Button type="default" icon={<StarOutlined />} block disabled>
+                  Review Submitted
+                </Button>
+              ) : null}
             </Space>
           </Col>
         </Row>
@@ -519,10 +300,10 @@ const BookingDetail = () => {
           <Title level={4} style={{ color: '#ff4d4f' }}>
             Are you sure you want to cancel this booking?
           </Title>
-          <Paragraph>
+          <Text>
             This action cannot be undone. Please check the hotel's cancellation policy for any
             applicable fees.
-          </Paragraph>
+          </Text>
         </div>
       </Modal>
 

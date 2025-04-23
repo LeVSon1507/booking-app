@@ -50,7 +50,11 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-reviewSchema.index({ booking: 1 }, { unique: true });
+// Add indexes for efficient querying
+reviewSchema.index({ hotel: 1 });
+reviewSchema.index({ user: 1 });
+reviewSchema.index({ booking: 1 });
+
 const reviewModel = mongoose.model("Reviews", reviewSchema);
 
 module.exports = reviewModel;

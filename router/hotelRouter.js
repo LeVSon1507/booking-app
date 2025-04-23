@@ -13,6 +13,4 @@ router.put("/hotels/:id", hotelCtrl.updateHotel);
 
 router.delete("/hotels/:id", hotelCtrl.deleteHotel);
 
-router.post("/hotels/:id/reviews", hotelCtrl.addReview);
-
 module.exports = router;

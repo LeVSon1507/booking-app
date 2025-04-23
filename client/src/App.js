@@ -12,6 +12,7 @@ function App() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const { isLogged } = useSelector((state) => state.auth);
+
   useEffect(() => {
     const firstLogin = localStorage.getItem('userCurrent');
     if (firstLogin) {

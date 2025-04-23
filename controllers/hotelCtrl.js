@@ -1,6 +1,7 @@
 const Hotel = require("../models/hotelModel");
 const Room = require("../models/roomModel");
 const Booking = require("../models/bookingModel");
+const Review = require("../models/reviewModel");
 const moment = require("moment");
 
 const hotelCtrl = {
@@ -18,21 +19,27 @@ const hotelCtrl = {
 
       const hotels = await Hotel.find(condition);
 
-      const hotelsWithReviewInfo = hotels.map((hotel) => {
-        const totalReviews = hotel.reviews.length;
-        const totalRating = hotel.reviews.reduce(
-          (acc, review) => acc + review.rating,
-          0
-        );
-        const averageRating = totalReviews > 0 ? totalRating / totalReviews : 0;
-        return {
-          ...hotel._doc,
-          totalReviews,
-          averageRating,
-        };
-      });
+      const hotelsWithReviewInfo = await Promise.all(
+        hotels.map(async (hotel) => {
+          const reviews = await Review.find({ hotel: hotel._id });
+          const totalReviews = reviews.length;
+          const totalRating = reviews.reduce(
+            (acc, review) => acc + review.rating,
+            0
+          );
+          const averageRating =
+            totalReviews > 0 ? totalRating / totalReviews : 0;
+
+          return {
+            ...hotel._doc,
+            totalReviews,
+            averageRating,
+          };
+        })
+      );
+
       if (!startDate || !endDate) {
-        return res.status(200).json(hotels);
+        return res.status(200).json(hotelsWithReviewInfo);
       }
 
       const start = moment(startDate, "DD-MM-YYYY").startOf("day").toDate();
@@ -71,7 +78,7 @@ const hotelCtrl = {
 
       const availableHotels = [];
 
-      for (const hotel of hotels) {
+      for (const hotel of hotelsWithReviewInfo) {
         const hotelRooms = await Room.find({
           hotelId: hotel._id,
           isAvailable: true,
@@ -86,7 +93,8 @@ const hotelCtrl = {
         );
 
         if (availableRooms.length > 0) {
-          const hotelData = hotel.toObject();
+          const hotelData =
+            typeof hotel.toObject === "function" ? hotel.toObject() : hotel;
           hotelData.availableRoomsCount = availableRooms.length;
           hotelData.availableRooms = availableRooms;
           availableHotels.push(hotelData);
@@ -103,6 +111,7 @@ const hotelCtrl = {
       next(error);
     }
   },
+
   getHotelById: async (req, res, next) => {
     try {
       const hotel = await Hotel.findById(req.params.id);
@@ -113,11 +122,16 @@ const hotelCtrl = {
         });
       }
 
+      const reviews = await Review.find({ hotel: hotel._id })
+        .populate("user", "name avatar")
+        .sort("-createdAt");
+
       const rooms = await Room.find({ hotelId: hotel._id });
 
       return res.status(200).json({
         hotel,
         rooms,
+        reviews,
       });
     } catch (error) {
       next(error);
@@ -209,6 +223,8 @@ const hotelCtrl = {
         });
       }
 
+      await Review.deleteMany({ hotel: id });
+
       await Hotel.findByIdAndDelete(id);
 
       return res.status(200).json({
@@ -225,46 +241,17 @@ const hotelCtrl = {
 
       const hotels = await Hotel.find({ city: new RegExp(city, "i") });
 
-      return res.status(200).json(hotels);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  addReview: async (req, res, next) => {
-    try {
-      const { id } = req.params;
-      const { userId, userName, rating, comment } = req.body;
-
-      const hotel = await Hotel.findById(id);
-      if (!hotel) {
-        return res.status(404).json({
-          message: "Hotel not found",
-        });
-      }
-
-      const review = {
-        userId,
-        userName,
-        rating,
-        comment,
-        createdAt: new Date(),
-      };
-
-      hotel.reviews.push(review);
-
-      const totalRating = hotel.reviews.reduce(
-        (sum, item) => sum + item.rating,
-        0
+      const hotelsWithReviewInfo = await Promise.all(
+        hotels.map(async (hotel) => {
+          const reviews = await Review.find({ hotel: hotel._id });
+          return {
+            ...hotel._doc,
+            totalReviews: reviews.length,
+          };
+        })
       );
-      hotel.rating = totalRating / hotel.reviews.length;
 
-      await hotel.save();
-
-      return res.status(200).json({
-        message: "Review added successfully",
-        hotel,
-      });
+      return res.status(200).json(hotelsWithReviewInfo);
     } catch (error) {
       next(error);
     }
