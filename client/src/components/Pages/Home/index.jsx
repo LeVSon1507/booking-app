@@ -42,7 +42,7 @@ const Home = () => {
     (async () => {
       try {
         setLoading(true);
-        console.log('Fetching with params:', filters); // Debug
+        console.log('Fetching with params:', filters);
 
         const params = {
           search: filters.search,
@@ -55,10 +55,10 @@ const Home = () => {
         }
 
         const paramsString = '?' + queryString.stringify(params);
-        console.log('API call:', paramsString); // Debug
+        console.log('API call:', paramsString);
 
         const response = await hotelApi.getAllHotels(paramsString);
-        console.log('API response:', response); // Debug
+        console.log('API response:', response);
 
         setHotels(Array.isArray(response.data) ? response.data : []);
         setLoading(false);
