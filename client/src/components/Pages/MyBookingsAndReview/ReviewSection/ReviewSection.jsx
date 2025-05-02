@@ -6,6 +6,7 @@ import './ReviewSection.css';
 import { ReactComponent as IconReview } from '@images/review-icon.svg';
 import { reviewApi } from 'api/reviewApi';
 import { useSelector } from 'react-redux';
+import { isEmpty } from 'components/utils/Validation';
 
 const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
@@ -71,37 +72,43 @@ const ReviewSection = () => {
         </div>
       ) : (
         <div className="reviews-list">
-          {reviews.map((review) => (
-            <div key={review.reviewId} className="review-card">
-              <div className="review-header">
-                <h4>{review.hotelName}</h4>
-                <div className="review-date">{new Date(review.createdAt).toLocaleDateString()}</div>
-              </div>
+          {!isEmpty(reviews) &&
+            reviews?.map((review) => (
+              <div key={review.reviewId} className="review-card">
+                <div className="review-header">
+                  <h4>{review.hotelName}</h4>
+                  <div className="review-date">
+                    {new Date(review.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
 
-              <div className="review-rating">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <i
-                    key={star}
-                    className={`fas fa-star ${review.rating >= star ? 'filled' : ''}`}
-                  ></i>
-                ))}
-              </div>
+                <div className="review-rating">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <i
+                      key={star}
+                      className={`fas fa-star ${review.rating >= star ? 'filled' : ''}`}
+                    ></i>
+                  ))}
+                </div>
 
-              <div className="review-comment">{review.comment}</div>
+                <div className="review-comment">{review.comment}</div>
 
-              <div className="review-actions">
-                <button
-                  className="btn-edit"
-                  onClick={() => handleEditReview(review.reviewId, review.hotelId)}
-                >
-                  <i className="fas fa-edit"></i> Edit
-                </button>
-                <button className="btn-delete" onClick={() => handleDeleteReview(review.reviewId)}>
-                  <i className="fas fa-trash"></i> Delete
-                </button>
+                <div className="review-actions">
+                  <button
+                    className="btn-edit"
+                    onClick={() => handleEditReview(review.reviewId, review.hotelId)}
+                  >
+                    <i className="fas fa-edit"></i> Edit
+                  </button>
+                  <button
+                    className="btn-delete"
+                    onClick={() => handleDeleteReview(review.reviewId)}
+                  >
+                    <i className="fas fa-trash"></i> Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
