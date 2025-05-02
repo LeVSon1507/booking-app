@@ -47,10 +47,8 @@ const hotelSchema = mongoose.Schema(
   }
 );
 
-// Add indexes for common query patterns
 hotelSchema.index({ city: 1 });
 hotelSchema.index({ name: 1 });
-// For sorting by rating
 hotelSchema.index({ rating: -1 });
 
 const hotelModel = mongoose.model("Hotels", hotelSchema);

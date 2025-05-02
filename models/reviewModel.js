@@ -50,7 +50,6 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-// Add indexes for efficient querying
 reviewSchema.index({ hotel: 1 });
 reviewSchema.index({ user: 1 });
 reviewSchema.index({ booking: 1 });
