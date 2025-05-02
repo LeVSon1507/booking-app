@@ -2,7 +2,6 @@ import { GET_TOKEN, CLEAR_TOKEN } from 'redux/contants';
 
 const getInitialToken = () => {
   const storedToken = localStorage.getItem('token');
-
   if (!storedToken) return null;
 
   try {
@@ -21,11 +20,9 @@ const tokenReducer = (state = getInitialToken(), action) => {
         localStorage.setItem('token', action.payload);
       }
       return action.payload;
-
     case CLEAR_TOKEN:
       localStorage.removeItem('token');
       return null;
-
     default:
       return state;
   }

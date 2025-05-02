@@ -1,6 +1,6 @@
 import userApi from 'api/userApi';
 import Footer from 'components/Layout/Footer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from 'Routes/route';
@@ -12,25 +12,51 @@ function App() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const { isLogged } = useSelector((state) => state.auth);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const firstLogin = localStorage.getItem('userCurrent');
-    if (firstLogin) {
-      const getToken = async () => {
-        const res = await userApi.getAccessToken();
-        dispatch({ type: 'GET_TOKEN', payload: res.data.access_token });
-      };
-      getToken();
+    const storedToken = localStorage.getItem('token');
+    const userCurrent = localStorage.getItem('userCurrent');
+
+    if (storedToken && userCurrent) {
+      dispatch({ type: 'GET_TOKEN', payload: storedToken });
     }
-  }, [isLogged, dispatch]);
+
+    setIsInitialized(true);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isInitialized && !token) {
+      const userCurrent = localStorage.getItem('userCurrent');
+
+      if (userCurrent) {
+        const refreshToken = async () => {
+          try {
+            const res = await userApi.getAccessToken();
+            dispatch({ type: 'GET_TOKEN', payload: res.data.access_token });
+            localStorage.setItem('token', res.data.access_token);
+          } catch (error) {
+            console.log('Refresh token failed');
+            localStorage.removeItem('userCurrent');
+            localStorage.removeItem('token');
+          }
+        };
+
+        refreshToken();
+      }
+    }
+  }, [isInitialized, token, dispatch]);
 
   useEffect(() => {
     if (token) {
-      const getUser = () => {
-        dispatch(dispatchLogin());
-        return fetchUser(token).then((res) => {
+      const getUser = async () => {
+        try {
+          dispatch(dispatchLogin());
+          const res = await fetchUser(token);
           dispatch(dispatchGetUser(res));
-        });
+        } catch (error) {
+          console.log('Failed to fetch user data');
+        }
       };
 
       getUser();
@@ -44,7 +70,6 @@ function App() {
         <div className="booking-app-main-container">
           <Routes />
         </div>
-
         <Footer />
       </div>
     </Router>

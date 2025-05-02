@@ -3,7 +3,6 @@ import Loader from 'components/utils/Loader';
 import MetaData from 'components/utils/MetaData';
 import React, { Fragment, useState } from 'react';
 import FacebookLogin from 'react-facebook-login';
-// import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { dispatchLogin } from 'redux/actions/authAction';
@@ -35,52 +34,29 @@ const Login = () => {
       const res = await userApi.login({ email, password });
       localStorage.setItem('token', res.data?.token || '');
       localStorage.setItem('userCurrent', true);
-
+      if (res.data?.refreshToken) {
+        localStorage.setItem('refreshToken', res.data.refreshToken);
+      }
       setUser({ ...user, err: '', success: res.data?.message });
-      setLoading(false);
-
       dispatch(dispatchLogin());
       navigate('/');
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || 'Login failed';
-      setUser({ ...user, err: errorMessage, success: '' });
-      setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
+      window.location.reload();
+    } finally {
       setLoading(false);
-    }
-  };
-
-  const responseGoogle = async (response) => {
-    try {
-      const res = await userApi.loginGoogle({
-        tokenId: response.tokenId,
-      });
-
-      setUser({ ...user, error: '', success: res.data.message });
-      localStorage.setItem('userCurrent', true);
-
-      dispatch(dispatchLogin());
-      navigate('/');
-    } catch (err) {
-      err.response.data.message &&
-        setUser({ ...user, err: err.response.data.message, success: '' });
     }
   };
 
   const responseFacebook = async (response) => {
     try {
       const { accessToken, userID } = response;
-      const res = await userApi.loginFacebook({
-        accessToken,
-        userID,
-      });
+      const res = await userApi.loginFacebook({ accessToken, userID });
 
       setUser({ ...user, error: '', success: res.data.message });
       localStorage.setItem('userCurrent', true);
-
       dispatch(dispatchLogin());
       navigate('/');
     } catch (err) {
-      err.response.data.message &&
+      err.response?.data?.message &&
         setUser({ ...user, err: err.response.data.message, success: '' });
     }
   };
@@ -98,6 +74,7 @@ const Login = () => {
             </h2>
             <LoginIcon width={100} height={100} />
           </div>
+
           {err && showErrMsg(err)}
           {success && showSuccessMsg(success)}
 
@@ -145,13 +122,6 @@ const Login = () => {
           </div>
 
           <div className="social">
-            {/* <GoogleLogin
-              clientId="97287736977-qnt2i1j8hf2tqok4dj0fb86hrpfnglim.apps.googleusercontent.com"
-              buttonText="Login with Google"
-              onSuccess={responseGoogle}
-              cookiePolicy={'single_host_origin'}
-            /> */}
-
             <FacebookLogin
               appId="685178710652906"
               autoLoad={false}

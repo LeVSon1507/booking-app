@@ -10,15 +10,9 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN:
-      return {
-        ...state,
-        isLogged: true,
-      };
+      return { ...state, isLogged: true };
     case GET_USER_REQUEST:
-      return {
-        ...state,
-        isLoading: true,
-      };
+      return { ...state, isLoading: true };
     case GET_USER_SUCCESS:
       return {
         ...state,
@@ -26,7 +20,6 @@ const authReducer = (state = initialState, action) => {
         isAdmin: action.payload.isAdmin,
         isLoading: false,
       };
-
     default:
       return state;
   }
