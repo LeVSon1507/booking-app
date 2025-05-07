@@ -1,7 +1,7 @@
 import axiosClient from './axiosClient';
 export const roomApi = {
   getAllRooms: (params) => {
-    const url = '/rooms';
+    const url = '/api/rooms';
     return axiosClient.get(url, { params });
   },
 

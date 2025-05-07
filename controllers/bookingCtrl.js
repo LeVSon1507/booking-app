@@ -70,11 +70,11 @@ const bookingCtrl = {
 
       await roomDetails.save();
 
-      try {
-        await sendBookingConfirmationEmail(booking, roomDetails, user, hotel);
-      } catch (emailError) {
-        console.error("Failed to send confirmation email:", emailError);
-      }
+      // try {
+      // await sendBookingConfirmationEmail(booking, roomDetails, user, hotel);
+      // } catch (emailError) {
+      //   console.error("Failed to send confirmation email:", emailError);
+      // }
 
       res.status(201).json({
         message: "Booking successful",

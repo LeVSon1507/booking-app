@@ -28,9 +28,8 @@ const PaymentProcess = ({
   });
 
   const paypalOptions = {
-    'client-id':
-      process.env.PAYPAL_CLIENT_ID ??
-      'AeLhcrJR5isasR4bmqKGOk0Z2Umpa4nChNSix_siHE_ovsZIbLnVI3Bw6lUsE98MqXyFKzHk2Mcc9d1N',
+    'client-id': process.env.PAYPAL_CLIENT_ID,
+    // 'AeLhcrJR5isasR4bmqKGOk0Z2Umpa4nChNSix_siHE_ovsZIbLnVI3Bw6lUsE98MqXyFKzHk2Mcc9d1N',
     currency: 'USD',
     intent: 'capture',
   };

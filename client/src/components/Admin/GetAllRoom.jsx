@@ -14,9 +14,9 @@ const GetAllRoom = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    const fetchRoomsAndHotels = async () => {
       try {
-        const roomsResponse = await roomApi.getManyRooms('');
+        const roomsResponse = await roomApi.getAllRooms();
         setRooms(roomsResponse.data);
 
         const hotelIds = [...new Set(roomsResponse.data.map((room) => room.hotelId))];
@@ -28,7 +28,7 @@ const GetAllRoom = () => {
               const hotelRes = await hotelApi.getHotelById(hotelId);
               hotelDetailsObj[hotelId] = hotelRes.data.hotel;
             } catch (error) {
-              console.log(`Error fetching hotel ${hotelId}:`, error);
+              console.error(`Error fetching hotel ${hotelId}:`, error);
             }
           })
         );
@@ -36,10 +36,12 @@ const GetAllRoom = () => {
         setHotels(hotelDetailsObj);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching data:', error);
         setLoading(false);
       }
-    })();
+    };
+
+    fetchRoomsAndHotels();
   }, []);
 
   const handleView = (id) => {
@@ -52,15 +54,18 @@ const GetAllRoom = () => {
         setLoading(true);
         await roomApi.deleteRoom(id);
         setSuccess('Room deleted successfully');
+        // Simple reload after a short delay to show success message
         setTimeout(() => {
           window.location.reload();
         }, 1500);
       }
     } catch (error) {
-      setAlert(error.response.data.message);
+      const errorMessage = error.response?.data?.message || error.message;
+      setAlert(errorMessage);
+      // Clear alert after a short delay
       setTimeout(() => {
         setAlert('');
-      }, 1500);
+      }, 3000);
       setLoading(false);
     }
   };
