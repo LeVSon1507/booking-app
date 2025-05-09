@@ -34,7 +34,8 @@ const Router = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/user/reset/:token" element={<ResetPassword />} />
-      <Route path="/user/activate/:activation_token" element={<ActivationEmail />} />
+      <Route path="/api/auth/activate/:activation_token" element={<ActivationEmail />} />
+
       <Route path="/profile" element={<Profile />} />
       <Route path="/edit-profile" element={<EditProfile />} />
       <Route path="/hotels/:id" element={<HotelDetail />} />
