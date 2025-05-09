@@ -12,7 +12,7 @@ const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {

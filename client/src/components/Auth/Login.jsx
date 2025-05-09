@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { dispatchLogin } from 'redux/actions/authAction';
 import { showErrMsg, showSuccessMsg } from '../utils/Notification';
 import { ReactComponent as LoginIcon } from '@images/login.svg';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -33,14 +34,18 @@ const Login = () => {
       setLoading(true);
       const res = await userApi.login({ email, password });
       localStorage.setItem('token', res.data?.token || '');
-      localStorage.setItem('userCurrent', true);
+      localStorage.setItem('currentUser', JSON.stringify(res.data?.user));
+      localStorage.setItem('isUserLogged', true);
       if (res.data?.refreshToken) {
         localStorage.setItem('refreshToken', res.data.refreshToken);
       }
       setUser({ ...user, err: '', success: res.data?.message });
       dispatch(dispatchLogin());
       navigate('/');
-      window.location.reload();
+    } catch {
+      toast.error('Account not active or wrong credentials.');
+      err.response?.data?.message &&
+        setUser({ ...user, err: err.response.data.message, success: '' });
     } finally {
       setLoading(false);
     }
@@ -52,7 +57,7 @@ const Login = () => {
       const res = await userApi.loginFacebook({ accessToken, userID });
 
       setUser({ ...user, error: '', success: res.data.message });
-      localStorage.setItem('userCurrent', true);
+      localStorage.setItem('isUserLogged', true);
       dispatch(dispatchLogin());
       navigate('/');
     } catch (err) {
@@ -60,6 +65,8 @@ const Login = () => {
         setUser({ ...user, err: err.response.data.message, success: '' });
     }
   };
+
+  const isEmptyCre = !email || !password;
 
   return (
     <Fragment>
@@ -104,7 +111,19 @@ const Login = () => {
             </div>
 
             <div className="row">
-              <button type="submit">
+              <button
+                type="submit"
+                style={
+                  isEmptyCre
+                    ? {
+                        backgroundColor: 'gray',
+                        border: 'none',
+                      }
+                    : {}
+                }
+                className={isEmptyCre ? 'disabled' : ''}
+                disabled={isEmptyCre}
+              >
                 <b>Login</b>
               </button>
               <Link

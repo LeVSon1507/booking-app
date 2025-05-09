@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button, Carousel, Modal } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './Room.css';
+import { toast } from 'react-toastify';
 
 const Room = ({ room, startDate, endDate }) => {
   const formatter = new Intl.NumberFormat('en-US', {
@@ -17,16 +18,14 @@ const Room = ({ room, startDate, endDate }) => {
   const handleShow = () => setShow(true);
 
   const handleClick = () => {
+    if (!localStorage.getItem('token')) {
+      toast.error('Please login to book!');
+      return;
+    }
     if (!startDate || !endDate) {
-      setAlert('Please select dates!');
-      setTimeout(() => {
-        setAlert(null);
-      }, 1500);
+      toast.error('Please select dates!');
     } else if (startDate === endDate) {
-      setAlert('Cannot select the same date!');
-      setTimeout(() => {
-        setAlert(null);
-      }, 1500);
+      toast.error('Cannot select the same date!');
     } else {
       navigate(`/book/${room._id}/${startDate}/${endDate}`);
     }

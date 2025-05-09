@@ -17,7 +17,7 @@ const PaymentProcess = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
 
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');

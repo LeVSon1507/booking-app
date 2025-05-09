@@ -2,13 +2,20 @@ import userApi from 'api/userApi';
 import React, { useEffect } from 'react';
 import { Navbar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as ApartmentIcon } from '@images/welcome-icon.svg';
 import { ReactComponent as LoginIcon } from '@images/login-navbar.svg';
 
 function Header() {
   const auth = useSelector((state) => state.auth);
   const { user, isLogged } = auth;
+
+  useEffect(() => {
+    if (localStorage.getItem('isUserLogged') !== 'true' || !localStorage.getItem('token')) {
+      localStorage.removeItem('isUserLogged');
+      localStorage.removeItem('token');
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,7 +45,7 @@ function Header() {
   const handleLogout = async () => {
     try {
       await userApi.logout();
-      localStorage.removeItem('userCurrent');
+      localStorage.removeItem('isUserLogged');
       localStorage.removeItem('token');
       window.location.href = '/';
     } catch (err) {

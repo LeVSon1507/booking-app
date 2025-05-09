@@ -13,7 +13,7 @@ const BookingDetailAdmin = () => {
   });
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState([]);
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
 
   const getBooking = useCallback(async () => {
     return await bookingApi.getBookingById(`${id}`, {

@@ -5,6 +5,7 @@ import React, { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { showErrMsg, showSuccessMsg } from '../utils/Notification';
 import { isEmail, isEmpty, isLength, isMatch } from '../utils/Validation';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,7 @@ const Register = () => {
       });
 
       setUser({ ...user, err: '', success: res.data.message });
+      toast.success('Registration successful! Please check your email to activate your account.');
       setLoading(false);
     } catch (err) {
       err.response.data.message &&

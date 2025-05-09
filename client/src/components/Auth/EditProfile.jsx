@@ -11,7 +11,7 @@ function EditProfile(props) {
   const [editUser, setEditUser] = useState([]);
 
   const users = useSelector((state) => state.users);
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
 
   const [checkAdmin, setCheckAdmin] = useState(false);
   const [num, setNum] = useState(0);

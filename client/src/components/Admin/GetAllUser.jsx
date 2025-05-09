@@ -8,7 +8,7 @@ import './Admin.css';
 
 const GetAllUser = () => {
   const { user, isAdmin } = useSelector((state) => state.auth);
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const users = useSelector((state) => state.users);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();

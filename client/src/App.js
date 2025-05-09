@@ -7,18 +7,19 @@ import Routes from 'Routes/route';
 import './App.css';
 import Header from './components/Layout/Header';
 import { dispatchGetUser, dispatchLogin, fetchUser } from './redux/actions/authAction';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const { isLogged } = useSelector((state) => state.auth);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const userCurrent = localStorage.getItem('userCurrent');
+    const isUserLogged = localStorage.getItem('isUserLogged');
 
-    if (storedToken && userCurrent) {
+    if (storedToken && isUserLogged) {
       dispatch({ type: 'GET_TOKEN', payload: storedToken });
     }
 
@@ -27,9 +28,9 @@ function App() {
 
   useEffect(() => {
     if (isInitialized && !token) {
-      const userCurrent = localStorage.getItem('userCurrent');
+      const isUserLogged = localStorage.getItem('isUserLogged');
 
-      if (userCurrent) {
+      if (isUserLogged) {
         const refreshToken = async () => {
           try {
             const res = await userApi.getAccessToken();
@@ -37,7 +38,7 @@ function App() {
             localStorage.setItem('token', res.data.access_token);
           } catch (error) {
             console.log('Refresh token failed');
-            localStorage.removeItem('userCurrent');
+            localStorage.removeItem('isUserLogged');
             localStorage.removeItem('token');
           }
         };
@@ -72,6 +73,7 @@ function App() {
         </div>
         <Footer />
       </div>
+      <ToastContainer />
     </Router>
   );
 }

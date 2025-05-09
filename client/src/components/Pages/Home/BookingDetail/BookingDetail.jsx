@@ -42,7 +42,7 @@ const BookingDetail = () => {
   const [fileList, setFileList] = useState([]);
   const [reviewData, setReviewData] = useState(null);
 
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const { user: currentUser } = useSelector((state) => state.auth);
 
   const [cancelModalVisible, setCancelModalVisible] = useState(false);

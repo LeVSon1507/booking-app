@@ -10,7 +10,7 @@ import { ReactComponent as Icon } from '@images/my-booking-icon.svg';
 import moment from 'moment';
 
 const MyBookingsList = () => {
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const { bookings, loading } = useSelector((state) => state.booking);
   const [cancellingId, setCancellingId] = useState(null);
 

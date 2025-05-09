@@ -11,7 +11,7 @@ import { ReactComponent as ProfileIcon } from '@images/my-profile.svg';
 
 const Profile = () => {
   const { user, isAdmin, isLoading } = useSelector((state) => state.auth);
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
 
   const [data, setData] = useState({
     name: '',

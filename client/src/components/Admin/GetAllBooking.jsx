@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import './Admin.css';
 
 const GetAllBooking = () => {
-  const token = useSelector((state) => state.token);
+  const token = localStorage.getItem('token');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
