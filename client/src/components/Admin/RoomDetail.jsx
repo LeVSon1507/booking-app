@@ -46,9 +46,16 @@ const RoomDetail = () => {
           <h1 className="text-center mt-3 title">Room Details</h1>
           <div className="container">
             <div className="bs">
-              <h5>{room.name}</h5>
+              <h5>{room?.name}</h5>
               <p>
-                <b>Hotel: {data.hotel.name} </b>
+                <b>
+                  Hotel:{' '}
+                  {!!data?.hotel?.name ? (
+                    data?.hotel?.name
+                  ) : (
+                    <p className="text-danger">No Hotel (Please delete room)</p>
+                  )}{' '}
+                </b>
               </p>
               <p>
                 <b>RoomId: {room._id} </b>
@@ -57,7 +64,7 @@ const RoomDetail = () => {
                 <b>Price: {formatter.format(room.price)} </b>
               </p>
               <p>
-                <b>Room Type: {room.type} </b>
+                <b>Room Type: {room?.type} </b>
               </p>
               <p>
                 <b>Capacity: {room.capacity} persons</b>

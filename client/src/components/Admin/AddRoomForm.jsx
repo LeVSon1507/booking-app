@@ -33,7 +33,6 @@ const AddRoomForm = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const [images, setImages] = useState([]);
   const token = localStorage.getItem('token');
-  console.log('🚀 ~ AddRoomForm ~ token:', token);
   const roomTypes = ['Standard', 'Deluxe', 'Suite', 'Family', 'Executive'];
 
   const handleAddAmenity = () => {

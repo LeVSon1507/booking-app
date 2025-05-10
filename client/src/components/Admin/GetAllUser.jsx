@@ -13,8 +13,6 @@ const GetAllUser = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
-  console.log(users);
-
   useEffect(() => {
     if (isAdmin) {
       fetchAllUsers(token).then((res) => {

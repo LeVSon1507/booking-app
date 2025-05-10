@@ -149,7 +149,6 @@ const hotelCtrl = {
         amenities,
         contactInfo,
       } = req.body;
-      console.log("🚀 ~ createHotel: ~ imageUrls:", imageUrls);
 
       const newHotel = new Hotel({
         name,

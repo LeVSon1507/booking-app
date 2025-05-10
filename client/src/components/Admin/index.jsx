@@ -77,18 +77,6 @@ const Admin = () => {
             </div>
           </div>
         </div>
-
-        <div className="col-md-4 mb-4">
-          <div className="card admin-card">
-            <div className="card-body">
-              <h5 className="card-title">Reports</h5>
-              <p className="card-text">View booking reports, revenue statistics and more.</p>
-              <Link to="/admin/reports" className="btn btn-primary">
-                View Reports
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
