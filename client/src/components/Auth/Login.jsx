@@ -36,6 +36,7 @@ const Login = () => {
       localStorage.setItem('token', res.data?.token || '');
       localStorage.setItem('currentUser', JSON.stringify(res.data?.user));
       localStorage.setItem('isUserLogged', true);
+      localStorage.setItem('isAdmin', res.data?.user?.role === 1 ? true : false);
       if (res.data?.refreshToken) {
         localStorage.setItem('refreshToken', res.data.refreshToken);
       }

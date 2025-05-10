@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section about">
-          <h3 className="footer-title">Booking App</h3>
+          <h3 className="footer-title">Booking Web</h3>
           <p>
             Leading online booking platform providing hotel, resort, and other accommodation booking
             services quickly and conveniently.
@@ -70,7 +70,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p className="text-center">Booking App &copy; 2025 by Thanh Mai. All rights reserved.</p>
+        <p className="text-center">Booking Web &copy; 2025 by Thanh Mai. All rights reserved.</p>
       </div>
     </footer>
   );

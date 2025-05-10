@@ -77,7 +77,7 @@ const userCtrl = {
 
       await sendMail({
         email: email ?? "appbooking6@gmail.com",
-        subject: "Booking App Email Verification",
+        subject: "Booking Web Email Verification",
         templateId: process.env.SENDGRID_VERIFICATION_TEMPLATE_ID,
         templateData: {
           verification_url,
@@ -190,7 +190,7 @@ const userCtrl = {
       const url = `${CLIENT_URL}/api/auth/reset-password/${access_token}`;
 
       const message = `<div style="max-width: 700px; margin:auto; border: 10px solid gray; padding: 50px 20px; font-size: 110%;">
-      <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to Booking App.</h2>
+      <h2 style="text-align: center; text-transform: uppercase;color: teal;">Welcome to Booking Web.</h2>
       <p>Congratulations! You're about to start using SHOPPING APP.
       Just click the button below to change your password.
       </p>
@@ -203,7 +203,7 @@ const userCtrl = {
 
       await sendMail({
         email: user.email,
-        subject: "Booking App Password Recovery",
+        subject: "Booking Web Password Recovery",
         message,
       });
 

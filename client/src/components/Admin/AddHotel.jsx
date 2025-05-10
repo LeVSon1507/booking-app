@@ -79,16 +79,21 @@ const AddHotel = () => {
       if (images.length > 0) {
         const formData = new FormData();
         images.forEach((image) => {
-          formData.append('file', image);
+          formData.append('images', image);
         });
 
-        const uploadResponse = await uploadApi.uploadImages(formData);
+        const uploadResponse = await uploadApi.uploadReviewImages(formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: localStorage.getItem('token'),
+          },
+        });
         uploadedImageUrls = uploadResponse.data;
       }
 
       const hotelData = {
         ...formData,
-        imageUrls: uploadedImageUrls,
+        imageUrls: uploadedImageUrls?.imageUrls,
       };
 
       const response = await hotelApi.createHotel(hotelData);

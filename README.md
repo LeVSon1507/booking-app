@@ -1,4 +1,4 @@
-# Booking App Documentation
+# Booking Web Documentation
 
 ## Overview
 

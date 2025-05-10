@@ -4,6 +4,7 @@ import { hotelApi } from 'api/hotelApi';
 import { useNavigate } from 'react-router-dom';
 import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import Loader from 'components/utils/Loader';
+import { toast } from 'react-toastify';
 
 const GetAllRoom = () => {
   const [rooms, setRooms] = useState([]);
@@ -53,7 +54,7 @@ const GetAllRoom = () => {
       if (window.confirm('Are you sure you want to delete this room?')) {
         setLoading(true);
         await roomApi.deleteRoom(id);
-        setSuccess('Room deleted successfully');
+        toast.success('Room deleted successfully');
         // Simple reload after a short delay to show success message
         setTimeout(() => {
           window.location.reload();
@@ -61,7 +62,7 @@ const GetAllRoom = () => {
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
-      setAlert(errorMessage);
+      toast.error(errorMessage);
       // Clear alert after a short delay
       setTimeout(() => {
         setAlert('');

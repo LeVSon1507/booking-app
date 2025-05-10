@@ -12,7 +12,6 @@ import { ToastContainer } from 'react-toastify';
 function App() {
   const dispatch = useDispatch();
   const token = localStorage.getItem('token');
-  const { isLogged } = useSelector((state) => state.auth);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {

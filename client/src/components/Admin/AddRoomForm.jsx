@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { roomApi } from 'api/roomApi';
+import { uploadApi } from 'api/uploadApi';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -27,12 +28,12 @@ const AddRoomForm = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  // States for amenities and images
   const [amenity, setAmenity] = useState('');
   const [amenities, setAmenities] = useState([]);
-  const [imageUrl, setImageUrl] = useState('');
   const [imageUrls, setImageUrls] = useState([]);
-
+  const [images, setImages] = useState([]);
+  const token = localStorage.getItem('token');
+  console.log('🚀 ~ AddRoomForm ~ token:', token);
   const roomTypes = ['Standard', 'Deluxe', 'Suite', 'Family', 'Executive'];
 
   const handleAddAmenity = () => {
@@ -46,19 +47,25 @@ const AddRoomForm = () => {
     setAmenities(amenities.filter((item) => item !== amenityToRemove));
   };
 
-  const handleAddImageUrl = () => {
-    if (imageUrl && !imageUrls.includes(imageUrl)) {
-      setImageUrls([...imageUrls, imageUrl]);
-      setImageUrl('');
-    }
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages([...images, ...files]);
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageUrls((prev) => [...prev, e.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
-  const handleRemoveImageUrl = (urlToRemove) => {
-    setImageUrls(imageUrls.filter((url) => url !== urlToRemove));
+  const handleRemoveImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
+    setImageUrls(imageUrls.filter((_, i) => i !== index));
   };
 
   const onFinish = async (values) => {
-    // Combine form values with amenities and imageUrls
     const roomData = {
       ...values,
       amenities,
@@ -67,8 +74,27 @@ const AddRoomForm = () => {
     };
 
     try {
+      let uploadedImageUrls = [];
+      if (images.length > 0) {
+        const formData = new FormData();
+        images.forEach((image) => {
+          formData.append('images', image);
+        });
+
+        const uploadResponse = await uploadApi.uploadReviewImages(formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: token,
+          },
+        });
+        uploadedImageUrls = uploadResponse.data;
+      }
       setLoading(true);
-      await roomApi.createRoom(roomData);
+
+      await roomApi.createRoom({
+        ...roomData,
+        imageUrls: uploadedImageUrls?.imageUrls,
+      });
       message.success('Room added successfully!');
     } catch (error) {
       console.error('Error adding room:', error);
@@ -173,37 +199,44 @@ const AddRoomForm = () => {
             </div>
 
             <Divider orientation="left">Images</Divider>
-            <Space style={{ marginBottom: 16 }}>
+            <Space
+              style={{
+                marginBottom: 16,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'start',
+              }}
+            >
               <Input
                 placeholder="Image URL"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                onPressEnter={handleAddImageUrl}
+                multiple
+                type="file"
+                accept="image/*"
+                onPressEnter={handleImageChange}
+                onChange={handleImageChange}
               />
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleAddImageUrl}>
-                Add
-              </Button>
+              <small className="form-text text-muted">
+                You can select multiple images. Recommended size: 1200x800 pixels.
+              </small>
             </Space>
 
-            <div style={{ marginBottom: 16 }}>
-              {imageUrls.map((url) => (
-                <div key={url} style={{ marginBottom: 8, display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src={url}
-                    alt="Room preview"
-                    style={{ width: 100, height: 60, objectFit: 'cover', marginRight: 8 }}
-                  />
-                  <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {url}
-                  </span>
-                  <Button
-                    type="text"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => handleRemoveImageUrl(url)}
-                  />
-                </div>
-              ))}
+            <div className="image-previews mt-3">
+              <div className="row">
+                {imageUrls.map((url, index) => (
+                  <div key={index} className="col-md-4 mb-3">
+                    <div className="image-preview-container">
+                      <img src={url} alt={`Preview ${index + 1}`} className="img-thumbnail" />
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger remove-image"
+                        onClick={() => handleRemoveImage(index)}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <Form.Item>

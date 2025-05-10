@@ -270,16 +270,33 @@ const HotelDetail = () => {
               <h4>Hotel Images</h4>
               {hotel.imageUrls && hotel.imageUrls.length > 0 ? (
                 <Carousel>
-                  {hotel.imageUrls.map((img, index) => (
-                    <Carousel.Item key={index}>
-                      <img
-                        className="d-block w-100"
-                        src={img}
-                        alt={`${hotel.name} - ${index + 1}`}
-                        style={{ height: '300px', objectFit: 'cover' }}
-                      />
-                    </Carousel.Item>
-                  ))}
+                  {hotel.imageUrls.map((img, index) => {
+                    if (Array.isArray(img?.imageUrls) && img.imageUrls) {
+                      return (
+                        <Carousel.Item key={index}>
+                          {img?.imageUrls?.map((image, imgIndex) => (
+                            <img
+                              key={imgIndex}
+                              className="d-block w-100"
+                              src={image}
+                              alt={`${hotel.name} - ${index + 1}`}
+                              style={{ height: '300px', objectFit: 'cover' }}
+                            />
+                          ))}
+                        </Carousel.Item>
+                      );
+                    }
+                    return (
+                      <Carousel.Item key={index}>
+                        <img
+                          className="d-block w-100"
+                          src={img}
+                          alt={`${hotel.name} - ${index + 1}`}
+                          style={{ height: '300px', objectFit: 'cover' }}
+                        />
+                      </Carousel.Item>
+                    );
+                  })}
                 </Carousel>
               ) : (
                 <p>No images available</p>

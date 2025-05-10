@@ -21,12 +21,12 @@ export const roomApi = {
   },
 
   updateRoom: (id, data) => {
-    const url = `/api/room/${id}`;
+    const url = `/api/rooms/${id}`;
     return axiosClient.put(url, data);
   },
 
   deleteRoom: (id) => {
-    const url = `/api/room/${id}`;
+    const url = `/api/rooms/${id}`;
     return axiosClient.delete(url);
   },
 };

@@ -1,17 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Admin.css';
-import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const auth = useSelector((state) => state.auth);
-  const { isAdmin } = auth;
-
-  useEffect(() => {}, [isAdmin, navigate]);
-
-  if (auth.isLoading) {
-    return <div>Loading...</div>;
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  if (!isAdmin) {
+    toast.error('Access denied. Admins only.');
+    navigate('/');
   }
 
   return (

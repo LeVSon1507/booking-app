@@ -2,13 +2,17 @@ import userApi from 'api/userApi';
 import React, { useEffect } from 'react';
 import { Navbar } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ReactComponent as ApartmentIcon } from '@images/welcome-icon.svg';
 import { ReactComponent as LoginIcon } from '@images/login-navbar.svg';
 
 function Header() {
   const auth = useSelector((state) => state.auth);
-  const { user, isLogged } = auth;
+  const { user: userStore, isLogged: isLoggedStore } = auth;
+  const isLogged = isLoggedStore ?? localStorage.getItem('isUserLogged') === 'true';
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+  const user = userStore ?? JSON.parse(localStorage.getItem('currentUser')) ?? {};
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) ?? {};
 
   useEffect(() => {
     if (localStorage.getItem('isUserLogged') !== 'true' || !localStorage.getItem('token')) {
@@ -57,22 +61,21 @@ function Header() {
     return (
       <li className="drop-nav">
         <Link to="#" className="avatar">
-          <img src={user.avatar} alt="" />
+          <img src={user.avatar ?? currentUser.avatar} alt="" />
           <span className="">
-            {user.name}&nbsp;
+            {user.name ?? currentUser.name}&nbsp;
             <i className="fas fa-angle-down"></i>
           </span>
         </Link>
         <ul className="dropdown">
-          {user && user.role !== 1 ? (
+          {isAdmin && (
             <li>
-              <Link to="/my-booking">Booking</Link>
-            </li>
-          ) : (
-            <li>
-              <Link to="/admin">Admin</Link>
+              <Link to="/admin">Admin Dashboard</Link>
             </li>
           )}
+          <li>
+            <Link to="/my-booking">My Booking</Link>
+          </li>
           <li>
             <Link to="/profile">Profile</Link>
           </li>
@@ -93,7 +96,7 @@ function Header() {
           <Navbar.Brand href="/">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <ApartmentIcon className="header-icon" />
-              <h5 className="title">Booking App</h5>
+              <h5 className="title">Booking Web</h5>
             </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />

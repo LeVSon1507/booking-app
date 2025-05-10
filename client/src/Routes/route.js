@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from 'components/Pages/Home';
 import Login from 'components/Auth/Login';
 import Register from 'components/Auth/Register';
@@ -25,6 +25,27 @@ import EditReviewPage from 'components/Pages/Home/EditReviewPage/EditReviewPage'
 import MyBookings from 'components/Pages/MyBookingsAndReview';
 import BookingDetailAdmin from 'components/Admin/BookingDetailAdmin';
 import BookingDetail from 'components/Pages/Home/BookingDetail/BookingDetail';
+import { toast } from 'react-toastify';
+import { isEmpty } from 'components/utils/Validation';
+
+export const ProtectedRoute = ({ children, adminOnly = false }) => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) ?? {};
+  const isUserLogged = localStorage.getItem('isUserLogged') ?? false;
+  const isAdmin = !!JSON.parse(localStorage.getItem('isAdmin'));
+
+  if (!isUserLogged) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (adminOnly) {
+    if (isEmpty(currentUser) || !isAdmin) {
+      toast.error('Access denied. Admins only.');
+      return <Navigate to="/" replace />;
+    }
+  }
+
+  return children;
+};
 
 const Router = () => {
   return (
@@ -45,7 +66,7 @@ const Router = () => {
       <Route path="/hotels/:hotelId/edit-review/:reviewId" element={<EditReviewPage />} />
       <Route path="/booking-details/:id" element={<BookingDetail />} />
 
-      <Route path="/admin" element={<Admin />} />
+      {/* <Route path="/admin" element={<Admin />} />
       <Route path="/admin/users" element={<GetAllUser />} />
       <Route path="/admin/rooms" element={<GetAllRoom />} />
       <Route path="/admin/add-room/:hotelId" element={<AddRoomForm />} />
@@ -54,7 +75,89 @@ const Router = () => {
       <Route path="/admin/room/:id" element={<RoomDetail />} />
       <Route path="/admin/hotels" element={<GetAllHotels />} />
       <Route path="/admin/hotel/:id" element={<AdminHotelDetail />} />
-      <Route path="/admin/add-hotel" element={<AddHotel />} />
+      <Route path="/admin/add-hotel" element={<AddHotel />} /> */}
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <GetAllUser />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/rooms"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <GetAllRoom />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/add-room/:hotelId"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AddRoomForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/bookings"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <GetAllBooking />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/booking/:id"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <BookingDetailAdmin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/room/:id"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <RoomDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/hotels"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <GetAllHotels />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/hotel/:id"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AdminHotelDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/add-hotel"
+        element={
+          <ProtectedRoute adminOnly={true}>
+            <AddHotel />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

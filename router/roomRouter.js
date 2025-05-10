@@ -9,4 +9,8 @@ router.post("/rooms", roomCtrl.createRoom);
 
 router.get("/rooms/hotel/:hotelId", roomCtrl.getRoomsByHotelId);
 
+router.put("/rooms/:id", roomCtrl.updateRoom);
+
+router.delete("/rooms/:id", roomCtrl.deleteRoom);
+
 module.exports = router;

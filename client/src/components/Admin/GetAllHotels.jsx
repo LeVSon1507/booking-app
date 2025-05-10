@@ -3,6 +3,7 @@ import { hotelApi } from 'api/hotelApi';
 import { useNavigate } from 'react-router-dom';
 import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import Loader from 'components/utils/Loader';
+import { toast } from 'react-toastify';
 
 const GetAllHotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -33,7 +34,7 @@ const GetAllHotels = () => {
       if (window.confirm('Are you sure you want to delete this hotel?')) {
         setLoading(true);
         await hotelApi.deleteHotel(id);
-        setSuccess('Hotel deleted successfully');
+        toast.success('Hotel deleted successfully');
         setTimeout(() => {
           window.location.reload();
         }, 1500);
