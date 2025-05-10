@@ -42,7 +42,11 @@ const Login = () => {
       }
       setUser({ ...user, err: '', success: res.data?.message });
       dispatch(dispatchLogin());
-      navigate('/');
+      if (res.data?.user?.role === 1) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch {
       toast.error('Account not active or wrong credentials.');
       err.response?.data?.message &&
