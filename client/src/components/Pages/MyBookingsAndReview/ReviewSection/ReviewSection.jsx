@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import './ReviewSection.css';
 import { ReactComponent as IconReview } from '@images/review-icon.svg';
 import { reviewApi } from 'api/reviewApi';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'components/utils/Validation';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
 
 const ReviewSection = () => {
   const [reviews, setReviews] = useState([]);
@@ -19,7 +19,7 @@ const ReviewSection = () => {
     const fetchUserReviews = async () => {
       try {
         const response = await reviewApi.getUserReviews({
-          headers: { Authorization: token, userId: user._id },
+          headers: { Authorization: token, userid: user._id },
         });
         setReviews(response.data);
       } catch (error) {
@@ -42,9 +42,9 @@ const ReviewSection = () => {
     }
 
     try {
-      await axios.delete(`/api/reviews/${reviewId}`);
+      await reviewApi.deleteReview(reviewId);
       toast.success('Review deleted successfully');
-      setReviews(reviews.filter((review) => review.reviewId !== reviewId));
+      setReviews(reviews.filter((review) => review._id !== reviewId));
     } catch (error) {
       toast.error('Failed to delete review');
     }
@@ -61,54 +61,113 @@ const ReviewSection = () => {
 
   return (
     <div className="reviews-section">
-      <div className="d-flex flex-column align-items-center">
+      <div className="reviews-header">
         <IconReview width={'4rem'} height={'4rem'} />
         <h2>My Reviews</h2>
       </div>
-      {reviews.length === 0 ? (
+
+      {isEmpty(reviews) ? (
         <div className="no-reviews">
-          <p>You haven't written any reviews yet.</p>
+          <i className="fas fa-comment-slash empty-icon"></i>
+          <h3>You haven't written any reviews yet</h3>
           <p>After completing your stay, you can review hotels from the "My Bookings" page.</p>
         </div>
       ) : (
-        <div className="reviews-list">
-          {!isEmpty(reviews) &&
-            reviews?.map((review) => (
-              <div key={review.reviewId} className="review-card">
-                <div className="review-header">
-                  <h4>{review.hotelName}</h4>
-                  <div className="review-date">
-                    {new Date(review.createdAt).toLocaleDateString()}
+        <div className="container">
+          <div className="row">
+            {reviews.map((review = {}) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={review._id}>
+                <div className="review-card">
+                  {/* Hotel Info Section */}
+                  <div className="review-hotel-info">
+                    <div className="hotel-images">
+                      {review.hotel.imageUrls && review.hotel.imageUrls.length > 0 && (
+                        <img
+                          src={review.hotel.imageUrls[0]}
+                          alt={review.hotel.name}
+                          className="hotel-image"
+                        />
+                      )}
+                    </div>
+                    <div className="hotel-details">
+                      <h4 className="hotel-name">{review.hotel.name}</h4>
+                      <p className="hotel-address">
+                        <i className="fas fa-map-marker-alt"></i> {review.hotel.address},{' '}
+                        {review.hotel.city}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="review-rating">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <i
-                      key={star}
-                      className={`fas fa-star ${review.rating >= star ? 'filled' : ''}`}
-                    ></i>
-                  ))}
-                </div>
+                  {/* Review Content Section */}
+                  <div className="review-content">
+                    <div className="review-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <i
+                          key={star}
+                          className={`fas fa-star ${review.rating >= star ? 'filled' : ''}`}
+                        ></i>
+                      ))}
+                      <span className="rating-value">({review.rating})</span>
+                    </div>
 
-                <div className="review-comment">{review.comment}</div>
+                    <div className="review-text">
+                      <h5 className="review-title">{review.title}</h5>
+                      <p className="review-comment">{review.comment}</p>
+                    </div>
 
-                <div className="review-actions">
-                  <button
-                    className="btn-edit"
-                    onClick={() => handleEditReview(review.reviewId, review.hotelId)}
-                  >
-                    <i className="fas fa-edit"></i> Edit
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => handleDeleteReview(review.reviewId)}
-                  >
-                    <i className="fas fa-trash"></i> Delete
-                  </button>
+                    <div className="review-images">
+                      {/* Review Images */}
+                      {review.imageUrls && review.imageUrls.length > 0 && (
+                        <>
+                          {review?.imageUrls.map((url, index) => (
+                            <img
+                              key={index}
+                              src={url}
+                              alt={`Review ${index + 1}`}
+                              className="review-image"
+                            />
+                          ))}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Stay Details */}
+                    <div className="stay-details">
+                      <p className="room-info">
+                        <i className="fas fa-bed"></i> {review.room.name}
+                      </p>
+                      <p className="stay-dates">
+                        <i className="fas fa-calendar"></i> Stayed:{' '}
+                        {moment(review.booking.startDate).format('MMM DD')} -{' '}
+                        {moment(review.booking.endDate).format('MMM DD, YYYY')}
+                      </p>
+                    </div>
+
+                    {/* Review Meta */}
+                    <div className="review-meta">
+                      <span className="review-date">
+                        <i className="far fa-clock"></i> Posted{' '}
+                        {moment(review.createdAt).format('MMM DD, YYYY')}
+                      </span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="review-actions">
+                      <button
+                        className="btn-edit"
+                        onClick={() => handleEditReview(review._id, review.hotel._id)}
+                      >
+                        <i className="fas fa-edit"></i> Edit
+                      </button>
+                      <button className="btn-delete" onClick={() => handleDeleteReview(review._id)}>
+                        <i className="fas fa-trash"></i> Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
+          </div>
         </div>
       )}
     </div>

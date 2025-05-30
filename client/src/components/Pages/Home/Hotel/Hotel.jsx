@@ -102,13 +102,13 @@ const Hotel = ({ hotel }) => {
             </span>
           </div>
 
-          {/* {recentReviews.length > 0 && (
+          {recentReviews.length > 0 && (
             <div className="recent-review-preview">
               <p className="review-title">"{recentReviews[0].title}"</p>
               <p className="review-excerpt">{recentReviews[0].comment.substring(0, 100)}...</p>
               <small>- {recentReviews[0].user?.name || 'Anonymous'}</small>
             </div>
-          )} */}
+          )}
 
           <a href="#/" onClick={handleShow}>
             View Details {'>>'}
@@ -177,90 +177,89 @@ const Hotel = ({ hotel }) => {
 
                 {/* Reviews Section */}
                 {hotel.reviews && hotel.reviews.length > 0 && (
-                  <></>
-                  // <div className="hotel-reviews mt-4">
-                  //   <div className="d-flex justify-content-between align-items-center">
-                  //     <h5 className="section-title">Guest Reviews ({hotel.reviews.length})</h5>
-                  //     <button
-                  //       className="btn btn-sm btn-outline-secondary"
-                  //       onClick={handleToggleReviews}
-                  //     >
-                  //       {showAllReviews ? 'Show Less' : 'Show All'}
-                  //     </button>
-                  //   </div>
+                  <div className="hotel-reviews mt-4">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="section-title">Guest Reviews ({hotel.reviews.length})</h5>
+                      <button
+                        className="btn btn-sm btn-outline-secondary"
+                        onClick={handleToggleReviews}
+                      >
+                        {showAllReviews ? 'Show Less' : 'Show All'}
+                      </button>
+                    </div>
 
-                  //   <div className="category-ratings mb-3">
-                  //     <div className="row">
-                  //       {Object.keys(categoryRatings).map((category) => (
-                  //         <div key={category} className="col-md-4 col-6 mb-2">
-                  //           <div className="d-flex justify-content-between">
-                  //             <span className="category-name text-capitalize">{category}:</span>
-                  //             <span className="category-score">
-                  //               {categoryRatings[category].toFixed(1)}
-                  //               <i className="fas fa-star ms-1 text-warning"></i>
-                  //             </span>
-                  //           </div>
-                  //           <div className="progress" style={{ height: '6px' }}>
-                  //             <div
-                  //               className="progress-bar bg-warning"
-                  //               style={{ width: `${(categoryRatings[category] / 5) * 100}%` }}
-                  //             ></div>
-                  //           </div>
-                  //         </div>
-                  //       ))}
-                  //     </div>
-                  //   </div>
+                    <div className="category-ratings mb-3">
+                      <div className="row">
+                        {Object.keys(categoryRatings).map((category) => (
+                          <div key={category} className="col-md-4 col-6 mb-2">
+                            <div className="d-flex justify-content-between">
+                              <span className="category-name text-capitalize">{category}:</span>
+                              <span className="category-score">
+                                {categoryRatings[category].toFixed(1)}
+                                <i className="fas fa-star ms-1 text-warning"></i>
+                              </span>
+                            </div>
+                            <div className="progress" style={{ height: '6px' }}>
+                              <div
+                                className="progress-bar bg-warning"
+                                style={{ width: `${(categoryRatings[category] / 5) * 100}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-                  //   {/* Review List */}
-                  //   <div className="review-list">
-                  //     {(showAllReviews ? hotel.reviews : recentReviews).map((review, index) => (
-                  //       <div key={index} className="review-item p-3 mb-3 border rounded">
-                  //         <div className="d-flex justify-content-between">
-                  //           <h6 className="review-title fw-bold">{review.title}</h6>
-                  //           <div className="review-rating">
-                  //             {review.rating.toFixed(1)}
-                  //             <i className="fas fa-star ms-1 text-warning"></i>
-                  //           </div>
-                  //         </div>
-                  //         <p className="review-text">{review.comment}</p>
-                  //         <div className="review-footer d-flex justify-content-between">
-                  //           <span className="reviewer-name">
-                  //             <i className="fas fa-user me-1"></i>
-                  //             {review.user?.name || 'Anonymous'}
-                  //           </span>
-                  //           <span className="review-date text-muted">
-                  //             <i className="far fa-calendar-alt me-1"></i>
-                  //             {new Date(review.createdAt).toLocaleDateString()}
-                  //           </span>
-                  //         </div>
+                    {/* Review List */}
+                    <div className="review-list">
+                      {(showAllReviews ? hotel.reviews : recentReviews).map((review, index) => (
+                        <div key={index} className="review-item p-3 mb-3 border rounded">
+                          <div className="d-flex justify-content-between">
+                            <h6 className="review-title fw-bold">{review.title}</h6>
+                            <div className="review-rating">
+                              {review.rating.toFixed(1)}
+                              <i className="fas fa-star ms-1 text-warning"></i>
+                            </div>
+                          </div>
+                          <p className="review-text">{review.comment}</p>
+                          <div className="review-footer d-flex justify-content-between">
+                            <span className="reviewer-name">
+                              <i className="fas fa-user me-1"></i>
+                              {review.user?.name || 'Anonymous'}
+                            </span>
+                            <span className="review-date text-muted">
+                              <i className="far fa-calendar-alt me-1"></i>
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
 
-                  //         {review.imageUrls && review.imageUrls.length > 0 && (
-                  //           <div className="review-images mt-2">
-                  //             <div className="row">
-                  //               {review.imageUrls.map((img, imgIndex) => (
-                  //                 <div key={imgIndex} className="col-3">
-                  //                   <img
-                  //                     src={img}
-                  //                     alt={`Review ${index + 1} ${imgIndex + 1}`}
-                  //                     className="img-thumbnail"
-                  //                   />
-                  //                 </div>
-                  //               ))}
-                  //             </div>
-                  //           </div>
-                  //         )}
-                  //       </div>
-                  //     ))}
+                          {review.imageUrls && review.imageUrls.length > 0 && (
+                            <div className="review-images mt-2">
+                              <div className="row">
+                                {review.imageUrls.map((img, imgIndex) => (
+                                  <div key={imgIndex} className="col-3">
+                                    <img
+                                      src={img}
+                                      alt={`Review ${index + 1} ${imgIndex + 1}`}
+                                      className="img-thumbnail"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
 
-                  //     {!showAllReviews && hotel.reviews.length > 3 && (
-                  //       <div className="text-center">
-                  //         <button className="btn btn-link" onClick={handleToggleReviews}>
-                  //           View all {hotel.reviews.length} reviews
-                  //         </button>
-                  //       </div>
-                  //     )}
-                  //   </div>
-                  // </div>
+                      {!showAllReviews && hotel.reviews.length > 3 && (
+                        <div className="text-center">
+                          <button className="btn btn-link" onClick={handleToggleReviews}>
+                            View all {hotel.reviews.length} reviews
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
             </Modal.Body>

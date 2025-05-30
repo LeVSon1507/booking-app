@@ -5,10 +5,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import Loader from 'components/utils/Loader';
 import { Carousel } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 
 const HotelDetail = () => {
   const { id } = useParams();
   const [hotel, setHotel] = useState(null);
+  console.log('🚀 ~ HotelDetail ~ hotel:', hotel);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState('');
@@ -114,6 +116,24 @@ const HotelDetail = () => {
     navigate(`/admin/add-room/${id}`);
   };
 
+  const handleDeleteRoom = async (roomId) => {
+    try {
+      if (window.confirm('Are you sure you want to delete this room?')) {
+        setLoading(true);
+        await roomApi.deleteRoom(roomId);
+        setSuccess('Room deleted successfully');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+        navigate(`/admin/hotel/${id}`);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete room');
+      setAlert(error.response?.data?.message || 'Failed to delete room');
+      setLoading(false);
+    }
+  };
+
   const handleViewRoom = (roomId) => {
     navigate(`/admin/room/${roomId}`);
   };
@@ -127,10 +147,18 @@ const HotelDetail = () => {
           <div className="d-flex justify-content-between align-items-center">
             <h2>Hotel Details</h2>
             <div>
-              <button className="btn btn-primary mr-2" onClick={() => setIsEditing(!isEditing)}>
+              <button
+                className="btn btn-primary"
+                style={{ marginRight: '10px' }}
+                onClick={() => setIsEditing(!isEditing)}
+              >
                 {isEditing ? 'Cancel Edit' : 'Edit Hotel'}
               </button>
-              <button className="btn btn-success" onClick={handleAddRoom}>
+              <button
+                className="btn btn-success"
+                style={{ marginRight: '10px' }}
+                onClick={handleAddRoom}
+              >
                 Add Room
               </button>
             </div>
@@ -343,9 +371,16 @@ const HotelDetail = () => {
                       <td>
                         <button
                           className="btn btn-info btn-sm"
+                          style={{ marginRight: '10px' }}
                           onClick={() => handleViewRoom(room._id)}
                         >
                           View/Edit
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDeleteRoom(room._id)}
+                        >
+                          Delete
                         </button>
                       </td>
                     </tr>

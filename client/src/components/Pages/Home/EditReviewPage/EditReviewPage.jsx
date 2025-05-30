@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const EditReviewPage = () => {
   const { hotelId, reviewId } = useParams();
   const navigate = useNavigate();
-  const [hotel, setHotel] = useState(null);
+  const [hotel, setHotel] = useState({});
   const [review, setReview] = useState(null);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -91,7 +91,7 @@ const EditReviewPage = () => {
 
       <div className="hotel-info-card">
         <div className="hotel-image">
-          <img src={hotel.imageUrls[0]} alt={hotel.name} />
+          <img src={hotel?.imageUrls?.[0]} alt={hotel.name} />
         </div>
         <div className="hotel-details">
           <h3>{hotel.name}</h3>

@@ -122,7 +122,7 @@ const reviewCtrl = {
 
   getUserReviews: async (req, res) => {
     try {
-      const userId = req.headers.userId;
+      const userId = req.headers.userid;
 
       const reviews = await Review.find({ user: userId })
         .populate("hotel", "name address city imageUrls")

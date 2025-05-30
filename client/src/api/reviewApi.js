@@ -6,7 +6,7 @@ export const reviewApi = {
   },
 
   getUserReviews: (config) => {
-    return axiosClient.get('/api/reviews/user', config);
+    return axiosClient.get('/api/user/reviews', config);
   },
 
   updateReview: (reviewId, reviewData, config) => {

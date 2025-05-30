@@ -41,6 +41,7 @@ const GetAllHotels = () => {
       }
     } catch (error) {
       setAlert(error.response.data.message);
+      toast.error(error.response.data.message);
       setTimeout(() => {
         setAlert('');
       }, 1500);
