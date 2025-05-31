@@ -56,11 +56,10 @@ const Register = () => {
 
       setUser({ ...user, err: '', success: res.data.message });
       toast.success('Registration successful! Please check your email to activate your account.');
-      setLoading(false);
     } catch (err) {
-      err.response.data.message &&
+      err.response?.data?.message &&
         setUser({ ...user, err: err.response.data.message, success: '' });
-      setTimeout(() => setUser({ ...user, err: null, success: '' }), 2000);
+    } finally {
       setLoading(false);
     }
   };

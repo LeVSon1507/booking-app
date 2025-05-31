@@ -15,7 +15,13 @@ const userApi = {
   },
   login(data) {
     const url = '/api/auth/login';
-    return axiosClient.post(url, data);
+  return axiosClient.post(url, data)
+    .then(res => {
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
+      return res;
+    });
   },
   logout() {
     const url = '/api/auth/logout';

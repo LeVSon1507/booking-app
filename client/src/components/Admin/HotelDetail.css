@@ -1,0 +1,142 @@
+.hotel-info {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.hotel-info h3 {
+  color: #333;
+  border-bottom: 2px solid #e2ba76;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.hotel-details-grid {
+  display: grid;
+  gap: 15px;
+}
+
+.detail-item {
+  margin-bottom: 15px;
+}
+
+.detail-item strong {
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.detail-item span {
+  margin-left: 10px;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.rating-value {
+  color: #e2ba76;
+  font-weight: bold;
+}
+
+.reviews-count {
+  margin-left: 5px;
+  color: #666;
+}
+
+.description-text {
+  margin-top: 10px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.amenities-container {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.amenity-badge {
+  background-color: #f8f9fa;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #555;
+  border: 1px solid #e2ba76;
+}
+
+.contact-info {
+  margin-top: 10px;
+}
+
+.contact-item {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.contact-icon {
+  margin-right: 10px;
+  color: #e2ba76;
+}
+
+/* Reviews Section */
+.reviews-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.reviews-section h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.review-card {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 3px solid #e2ba76;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #ddd;
+}
+
+.star.active {
+  color: #ffc107;
+}
+
+.review-content {
+  color: #555;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: #888;
+} 

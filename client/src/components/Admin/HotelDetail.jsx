@@ -6,11 +6,11 @@ import { showErrMsg, showSuccessMsg } from 'components/utils/Notification';
 import Loader from 'components/utils/Loader';
 import { Carousel } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import './HotelDetail.css';
 
 const HotelDetail = () => {
   const { id } = useParams();
   const [hotel, setHotel] = useState(null);
-  console.log('🚀 ~ HotelDetail ~ hotel:', hotel);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState('');
@@ -32,6 +32,7 @@ const HotelDetail = () => {
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const hotelResponse = await hotelApi.getHotelById(id);
         setHotel(hotelResponse.data.hotel);
         setFormData({
@@ -48,8 +49,6 @@ const HotelDetail = () => {
 
         const roomsResponse = await roomApi.getRoomsByHotelId(id);
         setRooms(roomsResponse.data);
-
-        setLoading(false);
       } catch (error) {
         console.error('Error loading hotel:', error);
         if (error.response && error.response.status === 404) {
@@ -60,6 +59,7 @@ const HotelDetail = () => {
             `Failed to load hotel details: ${error.response?.data?.message || error.message}`
           );
         }
+      } finally {
         setLoading(false);
       }
     })();
@@ -104,10 +104,9 @@ const HotelDetail = () => {
 
       const hotelResponse = await hotelApi.getHotelById(id);
       setHotel(hotelResponse.data.hotel);
-
-      setLoading(false);
     } catch (error) {
       setAlert(error.response?.data?.message || 'Failed to update hotel');
+    } finally {
       setLoading(false);
     }
   };
@@ -130,6 +129,7 @@ const HotelDetail = () => {
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to delete room');
       setAlert(error.response?.data?.message || 'Failed to delete room');
+    } finally {
       setLoading(false);
     }
   };
@@ -261,33 +261,52 @@ const HotelDetail = () => {
             ) : (
               <div className="hotel-info">
                 <h3>{hotel.name}</h3>
-                <p>
-                  <strong>Address:</strong> {hotel.address}, {hotel.city}
-                </p>
-                <p>
-                  <strong>Rating:</strong> {hotel.rating.toFixed(1)}/5 ({hotel.reviews?.length || 0}{' '}
-                  reviews)
-                </p>
-                <div className="mb-3">
-                  <strong>Description:</strong>
-                  <p>{hotel.description}</p>
-                </div>
 
-                <div className="mb-3">
-                  <strong>Amenities:</strong>
-                  <div className="d-flex flex-wrap">
-                    {hotel.amenities?.map((amenity, index) => (
-                      <span key={index} className="badge badge-info m-1">
-                        {amenity}
-                      </span>
-                    ))}
+                <div className="hotel-details-grid">
+                  <div className="detail-item">
+                    <strong>Address</strong>
+                    <span>
+                      {hotel.address}, {hotel.city}
+                    </span>
                   </div>
-                </div>
 
-                <div className="mb-3">
-                  <strong>Contact:</strong>
-                  <p>Phone: {hotel.contactInfo?.phone || 'N/A'}</p>
-                  <p>Email: {hotel.contactInfo?.email || 'N/A'}</p>
+                  <div className="detail-item">
+                    <strong>Rating</strong>
+                    <div className="rating-display">
+                      <span className="rating-value">{hotel.rating.toFixed(1)}/5</span>
+                      <span className="reviews-count">({hotel.reviews?.length || 0} reviews)</span>
+                    </div>
+                  </div>
+
+                  <div className="detail-item">
+                    <strong>Description</strong>
+                    <p className="description-text">{hotel.description}</p>
+                  </div>
+
+                  <div className="detail-item">
+                    <strong>Amenities</strong>
+                    <div className="amenities-container">
+                      {hotel.amenities?.map((amenity, index) => (
+                        <span key={index} className="amenity-badge">
+                          {amenity}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="detail-item">
+                    <strong>Contact</strong>
+                    <div className="contact-info">
+                      <div className="contact-item">
+                        <i className="fas fa-phone contact-icon"></i>
+                        {hotel.contactInfo?.phone || 'N/A'}
+                      </div>
+                      <div className="contact-item">
+                        <i className="fas fa-envelope contact-icon"></i>
+                        {hotel.contactInfo?.email || 'N/A'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -370,8 +389,7 @@ const HotelDetail = () => {
                       </td>
                       <td>
                         <button
-                          className="btn btn-info btn-sm"
-                          style={{ marginRight: '10px' }}
+                          className="btn btn-info btn-sm mx-2"
                           onClick={() => handleViewRoom(room._id)}
                         >
                           View/Edit
@@ -390,6 +408,35 @@ const HotelDetail = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="reviews-section">
+        <h3>Reviews ({hotel?.reviews?.length || 0})</h3>
+        {hotel?.reviews?.length === 0 ? (
+          <div className="alert alert-info">No reviews yet.</div>
+        ) : (
+          <div className="reviews-container">
+            {hotel?.reviews?.map((review, index) => (
+              <div key={index} className="review-card">
+                <div className="review-header">
+                  <span className="reviewer-name">{review.user?.name || 'Anonymous'}</span>
+                  <div className="rating-stars">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className={`star ${i < review.rating ? 'active' : ''}`}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p className="review-content">{review.comment}</p>
+                <span className="review-date">
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

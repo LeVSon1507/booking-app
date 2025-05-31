@@ -1,4 +1,4 @@
-.reviews-section {
+/* .reviews-section {
   padding: 20px;
 }
 
@@ -217,4 +217,268 @@
   100% {
     transform: rotate(360deg);
   }
+} */
+
+.user-reviews-section {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.user-reviews-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+}
+
+.user-reviews-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.user-reviews-header h2 {
+  color: #333;
+  margin: 0;
+}
+
+.user-reviews-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.user-reviews-loading .spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e2ba76;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.user-no-reviews {
+  text-align: center;
+  padding: 40px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.user-empty-icon {
+  font-size: 3rem;
+  color: #e2ba76;
+  margin-bottom: 15px;
+}
+
+.user-no-reviews h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.user-no-reviews p {
+  color: #666;
+}
+
+.user-review-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  height: 100%;
+}
+
+.user-review-card:hover {
+  transform: translateY(-5px);
+}
+
+.user-review-hotel-info {
+  position: relative;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.user-hotel-images {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.user-hotel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-hotel-details {
+  padding: 10px 0;
+}
+
+.user-hotel-name {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.user-hotel-address {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.user-hotel-address i {
+  color: #e2ba76;
+  margin-right: 5px;
+}
+
+.user-review-content {
+  padding: 15px;
+}
+
+.user-review-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-review-rating i {
+  color: #ddd;
+  margin-right: 2px;
+}
+
+.user-review-rating i.filled {
+  color: #ffc107;
+}
+
+.user-rating-value {
+  margin-left: 5px;
+  color: #666;
+  font-weight: bold;
+}
+
+.user-review-text {
+  margin-bottom: 15px;
+}
+
+.user-review-title {
+  color: #333;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.user-review-comment {
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.user-review-images {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.user-review-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.user-review-image:hover {
+  transform: scale(1.05);
+}
+
+.user-stay-details {
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 15px 0;
+}
+
+.user-room-info,
+.user-stay-dates {
+  color: #666;
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
+
+.user-room-info i,
+.user-stay-dates i {
+  color: #e2ba76;
+  margin-right: 5px;
+}
+
+.user-review-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.user-review-date {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.user-review-date i {
+  margin-right: 5px;
+}
+
+.user-review-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.user-btn-edit,
+.user-btn-delete {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.user-btn-edit {
+  background-color: #e2ba76;
+  color: white;
+}
+
+.user-btn-edit:hover {
+  background-color: #d4a95d;
+}
+
+.user-btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.user-btn-delete:hover {
+  background-color: #c82333;
 }

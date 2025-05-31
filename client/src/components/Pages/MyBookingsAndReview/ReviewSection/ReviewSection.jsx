@@ -52,7 +52,7 @@ const ReviewSection = () => {
 
   if (loading) {
     return (
-      <div className="reviews-loading">
+      <div className="user-reviews-loading">
         <div className="spinner"></div>
         <p>Loading your reviews...</p>
       </div>
@@ -60,15 +60,15 @@ const ReviewSection = () => {
   }
 
   return (
-    <div className="reviews-section">
-      <div className="reviews-header">
+    <div className="user-reviews-section">
+      <div className="user-reviews-header">
         <IconReview width={'4rem'} height={'4rem'} />
-        <h2>My Reviews</h2>
+        <h2 className="user-reviews-title">My Reviews</h2>
       </div>
 
       {isEmpty(reviews) ? (
-        <div className="no-reviews">
-          <i className="fas fa-comment-slash empty-icon"></i>
+        <div className="user-no-reviews">
+          <i className="fas fa-comment-slash user-empty-icon"></i>
           <h3>You haven't written any reviews yet</h3>
           <p>After completing your stay, you can review hotels from the "My Bookings" page.</p>
         </div>
@@ -77,21 +77,21 @@ const ReviewSection = () => {
           <div className="row">
             {reviews.map((review = {}) => (
               <div className="col-md-6 col-lg-4 mb-4" key={review._id}>
-                <div className="review-card">
+                <div className="user-review-card">
                   {/* Hotel Info Section */}
-                  <div className="review-hotel-info">
-                    <div className="hotel-images">
+                  <div className="user-review-hotel-info">
+                    <div className="user-hotel-images">
                       {review.hotel.imageUrls && review.hotel.imageUrls.length > 0 && (
                         <img
                           src={review.hotel.imageUrls[0]}
                           alt={review.hotel.name}
-                          className="hotel-image"
+                          className="user-hotel-image"
                         />
                       )}
                     </div>
-                    <div className="hotel-details">
-                      <h4 className="hotel-name">{review.hotel.name}</h4>
-                      <p className="hotel-address">
+                    <div className="user-hotel-details">
+                      <h4 className="user-hotel-name">{review.hotel.name}</h4>
+                      <p className="user-hotel-address">
                         <i className="fas fa-map-marker-alt"></i> {review.hotel.address},{' '}
                         {review.hotel.city}
                       </p>
@@ -99,24 +99,23 @@ const ReviewSection = () => {
                   </div>
 
                   {/* Review Content Section */}
-                  <div className="review-content">
-                    <div className="review-rating">
+                  <div className="user-review-content">
+                    <div className="user-review-rating">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <i
                           key={star}
                           className={`fas fa-star ${review.rating >= star ? 'filled' : ''}`}
                         ></i>
                       ))}
-                      <span className="rating-value">({review.rating})</span>
+                      <span className="user-rating-value">({review.rating})</span>
                     </div>
 
-                    <div className="review-text">
-                      <h5 className="review-title">{review.title}</h5>
-                      <p className="review-comment">{review.comment}</p>
+                    <div className="user-review-text">
+                      <h5 className="user-review-title">{review.title}</h5>
+                      <p className="user-review-comment">{review.comment}</p>
                     </div>
 
-                    <div className="review-images">
-                      {/* Review Images */}
+                    <div className="user-review-images">
                       {review.imageUrls && review.imageUrls.length > 0 && (
                         <>
                           {review?.imageUrls.map((url, index) => (
@@ -124,7 +123,7 @@ const ReviewSection = () => {
                               key={index}
                               src={url}
                               alt={`Review ${index + 1}`}
-                              className="review-image"
+                              className="user-review-image"
                             />
                           ))}
                         </>
@@ -132,11 +131,11 @@ const ReviewSection = () => {
                     </div>
 
                     {/* Stay Details */}
-                    <div className="stay-details">
-                      <p className="room-info">
+                    <div className="user-stay-details">
+                      <p className="user-room-info">
                         <i className="fas fa-bed"></i> {review.room.name}
                       </p>
-                      <p className="stay-dates">
+                      <p className="user-stay-dates">
                         <i className="fas fa-calendar"></i> Stayed:{' '}
                         {moment(review.booking.startDate).format('MMM DD')} -{' '}
                         {moment(review.booking.endDate).format('MMM DD, YYYY')}
@@ -144,22 +143,25 @@ const ReviewSection = () => {
                     </div>
 
                     {/* Review Meta */}
-                    <div className="review-meta">
-                      <span className="review-date">
+                    <div className="user-review-meta">
+                      <span className="user-review-date">
                         <i className="far fa-clock"></i> Posted{' '}
                         {moment(review.createdAt).format('MMM DD, YYYY')}
                       </span>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="review-actions">
+                    <div className="user-review-actions">
                       <button
-                        className="btn-edit"
+                        className="user-btn-edit"
                         onClick={() => handleEditReview(review._id, review.hotel._id)}
                       >
                         <i className="fas fa-edit"></i> Edit
                       </button>
-                      <button className="btn-delete" onClick={() => handleDeleteReview(review._id)}>
+                      <button
+                        className="user-btn-delete"
+                        onClick={() => handleDeleteReview(review._id)}
+                      >
                         <i className="fas fa-trash"></i> Delete
                       </button>
                     </div>

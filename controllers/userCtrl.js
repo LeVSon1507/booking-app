@@ -18,7 +18,7 @@ const createActivationToken = (payload) => {
 
 const createAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "24h",
   });
 };
 
@@ -38,7 +38,6 @@ const setRefreshTokenCookie = (res, userId) => {
   const refresh_token = createRefreshToken({ id: userId });
   res.cookie("refreshtoken", refresh_token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
     path: "/api/auth/refresh_token",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -143,6 +142,7 @@ const userCtrl = {
 
       res.status(200).json({
         token: access_token,
+        refreshToken: refresh_token,
         message: "Login successful!",
         user: {
           id: user._id,

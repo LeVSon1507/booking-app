@@ -103,7 +103,7 @@ const Room = ({ room, startDate, endDate }) => {
                       <h5 className="section-title">Amenities:</h5>
                       <div className="amenities-list">
                         {room.amenities?.map((amenity, index) => (
-                          <span key={index} className="amenity-badge">
+                          <span key={index} className="amenity-badge" style={{ color: 'black' }}>
                             {amenity}
                           </span>
                         ))}

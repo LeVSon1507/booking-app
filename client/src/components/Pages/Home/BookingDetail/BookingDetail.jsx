@@ -28,6 +28,7 @@ import BookingSummary from './BookingSummary';
 import GuestInfo from './GuestInfo';
 import ReviewInfo from './ReviewInfo';
 import ReviewForm from './ReviewForm';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 const { Title, Text } = Typography;
 
@@ -247,17 +248,6 @@ const BookingDetail = () => {
             <GuestInfo booking={booking} user={user} />
 
             <Space direction="vertical" style={{ width: '100%' }}>
-              {booking.status === 'booked' && !booking.hasReviewed && (
-                <Button
-                  type="primary"
-                  icon={<StarOutlined />}
-                  block
-                  onClick={() => setReviewModalVisible(true)}
-                >
-                  Leave a Review
-                </Button>
-              )}
-
               {booking.status === 'booked' && !booking.hasReviewed ? (
                 <Button
                   type="primary"
@@ -326,6 +316,25 @@ const BookingDetail = () => {
           fileList={fileList}
           setFileList={setFileList}
         />
+      </Modal>
+      <Modal
+        title="Cancel Booking"
+        open={cancelModalVisible}
+        onOk={handleCancelBooking}
+        onCancel={() => setCancelModalVisible(false)}
+        okText="Yes, Cancel Booking"
+        cancelText="No, Keep Booking"
+        okButtonProps={{ danger: true }}
+      >
+        <div style={{ textAlign: 'center', padding: '16px 0' }}>
+          <Title level={4} style={{ color: '#ff4d4f' }}>
+            Are you sure you want to cancel this booking?
+          </Title>
+          <Paragraph>
+            This action cannot be undone. Please check the hotel's cancellation policy for any
+            applicable fees.
+          </Paragraph>
+        </div>
       </Modal>
 
       <Image

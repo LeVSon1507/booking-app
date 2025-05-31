@@ -147,26 +147,29 @@ const Hotel = ({ hotel }) => {
                 <div className="hotel-details">
                   <div className="row">
                     <div className="col-md-6 mb-3">
-                      <h5 className="section-title">Hotel Details:</h5>
+                      <h5 className="section-title text-black">Hotel Details:</h5>
                       <ul className="list-unstyled">
                         <li>
-                          <span className="detail-label">Address:</span> {hotel.address}
+                          <span className="detail-label text-black">Address:</span>
+                          <span className="text-black">{hotel.address}</span>
                         </li>
                         <li>
-                          <span className="detail-label">City:</span> {hotel.city}
+                          <span className="detail-label text-black">City:</span>
+                          <span className="text-black">{hotel.city}</span>
                         </li>
                         <li>
-                          <span className="detail-label">Rating:</span> {hotel.rating.toFixed(1)}/5
+                          <span className="detail-label text-black">Rating:</span>
+                          <span className="text-black">{hotel.rating.toFixed(1)}/5</span>
                           <i className="fas fa-star ms-1 text-warning"></i>
                         </li>
                       </ul>
                     </div>
 
                     <div className="col-md-6 mb-3">
-                      <h5 className="section-title">Amenities:</h5>
+                      <h5 className="section-title text-black">Amenities:</h5>
                       <div className="amenities-list">
                         {hotel.amenities?.map((amenity, index) => (
-                          <span key={index} className="amenity-badge">
+                          <span key={index} className="amenity-badge" style={{ color: 'black' }}>
                             {amenity}
                           </span>
                         ))}
