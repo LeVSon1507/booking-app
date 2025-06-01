@@ -36,7 +36,7 @@ app.use("/api", require("./router/bookingRouter"));
 app.use("/api", require("./router/upload"));
 app.use("/api", require("./router/hotelRouter"));
 app.use("/api", require("./router/reviewRouter"));
-
+app.use("/api", require("./router/chatbotRoute"));
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
 

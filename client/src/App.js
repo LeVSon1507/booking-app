@@ -8,6 +8,7 @@ import './App.css';
 import Header from './components/Layout/Header';
 import { dispatchGetUser, dispatchLogin, fetchUser } from './redux/actions/authAction';
 import { ToastContainer } from 'react-toastify';
+import Chatbot from './components/Chatbot/Chatbot';
 
 function App() {
   const dispatch = useDispatch();
@@ -71,6 +72,7 @@ function App() {
           <Routes />
         </div>
         <Footer />
+        <Chatbot />
       </div>
       <ToastContainer />
     </Router>
